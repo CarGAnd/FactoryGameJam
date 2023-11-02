@@ -124,7 +124,7 @@ public class AssemblyConnectorController : MonoBehaviour
         positions[2] = new Vector3(positions[3].x - midX, midY, positions[3].z);
 
         if (endAssembly.IsOutput)
-            positions.Reverse();
+            Array.Reverse(positions);
     }
 
     private void ResetParameters()

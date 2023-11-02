@@ -5,16 +5,16 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-public class ModuleAssemblyController : MonoBehaviour, IAssemblyController<AssemblyLineObject>
+public class ModuleAssemblyController : MonoBehaviour, IAssemblyController<AssemblyObject>
 {
-    private Action<ITravelAssemblyLine<AssemblyLineObject>> recievedObject;
+    private Action<ITravelAssemblyLine<AssemblyObject>> recievedObject;
     public void Initialize() {
         GetAttachedAseemblies(gameObject);
     }
 
     private List<IAssembly> assemblies;
     public List<IAssembly> Assemblies { get => assemblies; private set => assemblies = value; }
-    public Action<ITravelAssemblyLine<AssemblyLineObject>> RecievedObject { get => recievedObject; set => recievedObject = value; }
+    public Action<ITravelAssemblyLine<AssemblyObject>> RecievedObject { get => recievedObject; set => recievedObject = value; }
 
     private void GetAttachedAseemblies(GameObject parent)
     {
@@ -29,8 +29,8 @@ public class ModuleAssemblyController : MonoBehaviour, IAssemblyController<Assem
     public virtual List<IAssembly> GetIntakeAssemblies() {
         return Assemblies.Where(assembly => assembly.IsOutput == false).ToList();
     }
-    public void ReceivedAssemblyObject(ITravelAssemblyLine<AssemblyLineObject> travelAssemblyLineObject)
+    public void ReceivedAssemblyObject(ITravelAssemblyLine<AssemblyObject> travelAssemblyObject)
     {
-        RecievedObject?.Invoke(travelAssemblyLineObject);
+        RecievedObject?.Invoke(travelAssemblyObject);
     }
 }

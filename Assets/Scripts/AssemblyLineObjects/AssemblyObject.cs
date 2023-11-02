@@ -47,7 +47,7 @@ public class AssemblyObject : MonoBehaviour
     private void ApplyProperties()
     {
         //Update rotation
-        //transform.rotation = Properties.Rotation;
+        transform.rotation = Properties.Rotation;
         //Update color
         Renderer renderer = GetComponent<Renderer>();
         if(renderer != null)

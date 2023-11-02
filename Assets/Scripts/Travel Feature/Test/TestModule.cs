@@ -22,22 +22,22 @@ public class TestModule : MonoBehaviour
 
     [Button]
     private void CreateAndSendObject() {
-        AssemblyLineObject assemblyLineObject = Instantiate(assemblyLinePrefab, transform.position, quaternion.identity, transform).GetComponent<AssemblyLineObject>();
-        SendObject(assemblyLineObject.TravelAssemblyLine);
+        AssemblyObject AssemblyObject = Instantiate(assemblyLinePrefab, transform.position, quaternion.identity, transform).GetComponent<AssemblyObject>();
+        SendObject(AssemblyObject.TravelAssemblyLine);
     }
 
-    private void OnRecievedObject(ITravelAssemblyLine<AssemblyLineObject> assemblyObject)
+    private void OnRecievedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
         //Debug.Log($"Received an Object with {assemblyObject.Value.TestName}.");
         SendObject(assemblyObject);
     }
 
-    private void SendObject(ITravelAssemblyLine<AssemblyLineObject> assemblyLineObject) {
+    private void SendObject(ITravelAssemblyLine<AssemblyObject> AssemblyObject) {
         IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[0];
 
         if (!assembly.IsConnected)
             return;
 
-        assemblyLineObject.StartTravel(assembly.GetTravelPositions());
+        AssemblyObject.StartTravel(assembly.GetTravelPositions());
     }
 }
