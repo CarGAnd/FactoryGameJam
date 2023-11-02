@@ -251,6 +251,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9769dec8362b970479da1358227083f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSpawnPhaseEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
+    useLocalConstant: 0
   winGameEvent:
     name: 
     scriptableObject: {fileID: 11400000, guid: 89c4096a5068a8c499bef297e7925b85, type: 2}
@@ -857,8 +861,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:
@@ -990,8 +994,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: StartSpawnPhase
         m_Mode: 1
         m_Arguments:
@@ -1123,8 +1127,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:
@@ -1467,8 +1471,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: LevelManager, Assembly-CSharp
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
         m_Mode: 1
         m_Arguments:

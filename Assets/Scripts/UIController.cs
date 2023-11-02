@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SOS;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] private GameEvent startSpawnPhaseEvent;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
 
@@ -32,5 +34,13 @@ public class UIController : MonoBehaviour
         winUI.SetActive(true);
         loseUI.SetActive(false); 
         gameplayUI.SetActive(false);
+    }
+
+    public void StartSpawnPhase() {
+        startSpawnPhaseEvent.Invoke();
+    }
+
+    public void RestartLevel() {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
