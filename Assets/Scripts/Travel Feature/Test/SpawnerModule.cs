@@ -31,11 +31,11 @@ public class SpawnerModule : MonoBehaviour
     }
 
     private void CreateAndSendObject() {
-        AssemblyLineObject assemblyLineObject = Instantiate(assemblyLinePrefab, transform.position, Quaternion.identity, transform).GetComponent<AssemblyLineObject>();
+        AssemblyObject assemblyLineObject = Instantiate(assemblyLinePrefab, transform.position, Quaternion.identity, transform).GetComponent<AssemblyObject>();
         SendObject(assemblyLineObject.TravelAssemblyLine);
     }
 
-    private void SendObject(ITravelAssemblyLine<AssemblyLineObject> assemblyLineObject) {
+    private void SendObject(ITravelAssemblyLine<AssemblyObject> assemblyLineObject) {
         IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[0];
 
         if (!assembly.IsConnected)

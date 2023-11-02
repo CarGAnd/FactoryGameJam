@@ -16,7 +16,7 @@ public class AssemblyObject : MonoBehaviour
         private set 
         {
             properties = value; 
-            ApplyProperties();
+            //ApplyProperties();
         } 
     }
     private void Awake(){
