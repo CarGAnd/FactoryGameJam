@@ -7,15 +7,21 @@ public class AssemblyObject : MonoBehaviour
     [SerializeField]
     private float speed = 5;
     [SerializeField]
-    Properties properties;
+    AssetProperties assetProperties;
+    
+    Properties properties = null;
     public Properties Properties 
     { 
         get => properties; 
         private set 
         {
             properties = value; 
-            ApplyProperties(); 
+            ApplyProperties();
         } 
+    }
+    private void Awake(){
+        if(assetProperties != null)
+            Properties = assetProperties.CreateProperties();
     }
 
     ITravelAssemblyLine<AssemblyObject> travelAssemblyLine;
@@ -40,19 +46,27 @@ public class AssemblyObject : MonoBehaviour
 
         TravelAssemblyLine.UpdateTravel();
     }
-    private void OnValidate(){
-        ApplyProperties();
-    }
 
     private void ApplyProperties()
     {
         //Update rotation
-        transform.rotation = Properties.Rotation;
-        //Update color
-        Renderer renderer = GetComponent<Renderer>();
-        if(renderer != null)
+        Quaternion rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
+
+        if(rotation != null)
         {
-            renderer.sharedMaterial.color = Properties.Color;
+            transform.rotation = rotation;
         }
+        //Update color
+        Color color = properties.GetProperty<Color>(PropertyType.Color);
+        if(color != null)
+        {
+            Renderer renderer = GetComponent<Renderer>();
+            if(renderer != null)
+            {
+                renderer.sharedMaterial.color = color;
+            }
+        }
+        
     }
+    
 }

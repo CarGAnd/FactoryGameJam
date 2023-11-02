@@ -118,7 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28377b5dda50a4b4ebcb28b9dff8c4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  properties:
-    Color: {r: 0, g: 0.09324503, b: 1, a: 0}
-    Rotation: {x: 0, y: 0, z: 0, w: 1}
+  speed: 4
+  assetProperties: {fileID: 11400000, guid: 023f3731ab44eca4eb3bf43dc16e172c, type: 2}
