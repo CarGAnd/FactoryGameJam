@@ -2,47 +2,81 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[System.Serializable]
-public struct Properties : IPropertyComparator
+public enum PropertyType
 {
-    public Color Color;
-    public Quaternion Rotation;
+    Color,
+    Rotation
+}
 
-    public bool CompareColor(Properties other)
+[System.Serializable]
+public class Properties
+{
+    private Dictionary<PropertyType, object> properties = new Dictionary<PropertyType, object>();
+    
+    public void SetProperty(PropertyType propertyType, object value)
     {
-        return Color == other.Color;
-    }
-
-    public bool CompareRotation(Properties other)
-    {
-        return Rotation == other.Rotation;
-    }
-    // The idea here is only comparing the properties between a reference property and a other property found in the PropertyType List.
-    public bool CompareProperties(Properties other, Properties reference, List<PropertyType> propertiesToCompare){
-        foreach (var property in propertiesToCompare)
+        if (properties.ContainsKey(propertyType))
         {
-            switch (property)
-            {
-                case PropertyType.Color:
-                    if (!reference.CompareColor(other))
-                        return false;
-                    break;
-                case PropertyType.Rotation:
-                    if (!reference.CompareRotation(other))
-                        return false;
-                    break;
-                default:
-                    Debug.LogError("Unrecognized PropertyType: " + property);
-                    break;
+            properties[propertyType] = value;
+        }
+        else
+        {
+            properties.Add(propertyType, value);
+        }
+    }
 
+    public object GetProperty(PropertyType propertyType)
+    {
+        if (properties.ContainsKey(propertyType))
+        {
+            return properties[propertyType];
+        }
+        else
+        {
+            Debug.LogError("PropertyType: " + propertyType + " not found.");
+            return null;
+        }
+    }
+
+    public T GetProperty<T>(PropertyType propertyType)
+    {
+        if (properties.ContainsKey(propertyType))
+        {
+            return (T)properties[propertyType];
+        }
+        else
+        {
+            Debug.LogError("PropertyType: " + propertyType + " not found.");
+            return default(T);
+        }
+    }
+
+    //Function to compare a given property to another property.
+    public bool CompareProperty(PropertyType propertyType, object value)
+    {
+        if (properties.ContainsKey(propertyType))
+        {
+            return properties[propertyType].Equals(value);
+        }
+        else
+        {
+            Debug.LogError("PropertyType: " + propertyType + " not found.");
+            return false;
+        }
+    }
+
+    //Function to compare to property classes
+    public bool CompareProperties(Properties properties)
+    {
+        foreach (KeyValuePair<PropertyType, object> property in properties.properties)
+        {
+            if (!CompareProperty(property.Key, property.Value))
+            {
+                return false;
             }
         }
         return true;
     }
 }
 
-public enum PropertyType
-{
-    Color,
-    Rotation
-}
+
