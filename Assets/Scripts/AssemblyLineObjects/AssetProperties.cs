@@ -23,7 +23,7 @@ public class AssetProperties : ScriptableObject
         public Color colorValue;
 
         [ShowIf("PropertyType", PropertyType.Rotation)]
-        public Quaternion rotationValue;
+        public Vector3 rotationValue;
 
         public PropertyEntry(PropertyType propertyType)
         {
@@ -37,7 +37,7 @@ public class AssetProperties : ScriptableObject
                 case PropertyType.Color:
                     return colorValue;
                 case PropertyType.Rotation:
-                    return rotationValue;
+                    return Quaternion.Euler(rotationValue);
                 default:
                     Debug.LogError("Unsupported property type: " + propertyType);
                     return null;

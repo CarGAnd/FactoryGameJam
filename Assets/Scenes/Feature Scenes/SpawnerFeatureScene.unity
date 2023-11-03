@@ -439,27 +439,57 @@ PrefabInstance:
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
       propertyPath: properties.Array.data[0].colorValue.r
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
       propertyPath: properties.Array.data[0].propertyType
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
       propertyPath: properties.Array.data[1].colorValue.r
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
       propertyPath: properties.Array.data[1].propertyType
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
       propertyPath: properties.Array.data[0].rotationValue.w
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[0].rotationValue.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[0].rotationValue.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[0].rotationValue.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[1].rotationValue.x
+      value: 144
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[1].rotationValue.y
+      value: 54
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: properties.Array.data[1].rotationValue.z
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 862163978282010726, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
