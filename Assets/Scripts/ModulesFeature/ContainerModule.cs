@@ -13,7 +13,11 @@ public class ContainerModule : ModuleBase
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
     [SerializeField] private List<PropertyEntry> properties;
-    
+
+    public int NumItemsCollected { get { return NumCorrectItemsCollected + NumWrongItemsCollected; } }
+    public int NumCorrectItemsCollected { get; private set; }
+    public int NumWrongItemsCollected { get; private set; }
+
     private Properties expectedProperties;
 
     [Button("Add Property")]
@@ -52,10 +56,13 @@ public class ContainerModule : ModuleBase
 
     private void CorrectObjectReceived(AssemblyObject aObject) {
         scoreRef.Value += 1;
+        NumCorrectItemsCollected += 1;
         OnItemCollected?.Invoke();
     }
 
     private void WrongObjectReceived(AssemblyObject aObject) {
+        NumWrongItemsCollected += 1;
+        OnItemCollected?.Invoke();
         Debug.Log("Wrong object received: " + aObject.name);
     }
 }

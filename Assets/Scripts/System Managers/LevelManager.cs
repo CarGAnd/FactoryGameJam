@@ -5,10 +5,14 @@ using SOS;
 
 public class LevelManager : MonoBehaviour
 {
+    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseStartedEvent;
+    [SerializeField] private GameEvent runPhaseEndedEvent;
 
     private LevelState currentLevelState;
+
+    private ObjectTracker objectTracker;
 
     private void Start() {
         currentLevelState = LevelState.LevelLoaded;
@@ -30,6 +34,7 @@ public class LevelManager : MonoBehaviour
         if(currentLevelState == LevelState.BuildPhase) {
             currentLevelState = LevelState.RunPhase;
             runPhaseStartedEvent.Invoke();
+            objectTracker = new ObjectTracker(factoryTracker, this);
             Debug.Log("Run phase");
         }  
     }
@@ -37,6 +42,7 @@ public class LevelManager : MonoBehaviour
     public void GoToLevelCompletedPhase() {
         if (currentLevelState == LevelState.RunPhase) {
             currentLevelState = LevelState.LevelOver;
+            runPhaseEndedEvent.Invoke();
             Debug.Log("Level completed phase");
         }
     }
