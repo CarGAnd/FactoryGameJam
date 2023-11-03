@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace SOS {
@@ -8,5 +7,10 @@ namespace SOS {
     public class ScriptableGameEvent : ScriptableObject
     {
         public Action DynamicInvoked;
+
+        [Button(ButtonSizes.Gigantic), GUIColor(0, 1, 0.5058824f)]
+        private void Invoke() {
+            DynamicInvoked?.Invoke();
+        }
     }
 }

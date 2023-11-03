@@ -24,9 +24,7 @@ namespace SOS {
 
         // Local constant Value, only exists for this reference.
         [SerializeReference]
-        [HideIf("@variable || !string.IsNullOrEmpty(name)")]
-        [HideLabel]
-        [HorizontalGroup("row", Width = 0.35f)]
+        [HideInInspector]
         protected B localConstantValue;
 
         // Whether to use local, global or dynamic values, only for inspector.

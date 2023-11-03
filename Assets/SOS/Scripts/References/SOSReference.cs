@@ -33,6 +33,11 @@ namespace SOS {
         protected A scriptableObject;
 
         // Scriptable Object of specific type.
+        [ShowInInspector]
+        [HorizontalGroup("row", Width = 0.14f)]
+        [PropertyOrder(100)]
+        [DrawWithUnity]
+        [HideLabel]
         [Required]
         protected virtual A variable {
             get {return scriptableObject;}
@@ -50,7 +55,8 @@ namespace SOS {
         [HorizontalGroup("row", Width = 0.35f)]
         [LabelWidth(150)]
         [Button("Create"), GUIColor(0, 0.9f, 0)]
-        [HideIf("@variable || string.IsNullOrEmpty(name)")]
+        [DisableIf("@string.IsNullOrEmpty(name)")]
+        [HideIf("@variable")]
         protected virtual void CreateScriptableObject () {
             variable = ScriptableObject.CreateInstance<A>();
             AssetDatabase.CreateAsset(variable, Path.Combine(SettingsHelperSOS.GetSettings().SosDynamicParentPath, sOSaveLocation, name + ".asset"));
