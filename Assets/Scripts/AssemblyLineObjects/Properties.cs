@@ -70,6 +70,8 @@ public class Properties
     {
         foreach (KeyValuePair<PropertyType, object> property in properties.properties)
         {
+            Debug.Log($"Property: {property.Key}, Expected Value: {property.Value}, Actual Value: {this.properties[property.Key]}");
+            Debug.Log(CompareProperty(property.Key, property.Value));
             if (!CompareProperty(property.Key, property.Value))
             {
                 return false;
