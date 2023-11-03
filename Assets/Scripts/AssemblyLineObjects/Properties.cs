@@ -25,19 +25,6 @@ public class Properties
         }
     }
 
-    public object GetProperty(PropertyType propertyType)
-    {
-        if (properties.ContainsKey(propertyType))
-        {
-            return properties[propertyType];
-        }
-        else
-        {
-            Debug.LogError("PropertyType: " + propertyType + " not found.");
-            return null;
-        }
-    }
-
     public T GetProperty<T>(PropertyType propertyType)
     {
         if (properties.ContainsKey(propertyType))
@@ -46,8 +33,7 @@ public class Properties
         }
         else
         {
-            Debug.LogError("PropertyType: " + propertyType + " not found.");
-            return default(T);
+            throw new PropertyNotFoundException("PropertyType: " + propertyType + " not found.");
         }
     }
 
@@ -56,6 +42,12 @@ public class Properties
     {
         if (properties.ContainsKey(propertyType))
         {
+            if(value is Quaternion && properties[propertyType] is Quaternion)
+            {
+                Quaternion quaternion1 = (Quaternion)value;
+                Quaternion quaternion2 = (Quaternion)properties[propertyType];
+                return Quaternion.Angle(quaternion1, quaternion2) == 0f;                
+            }
             return properties[propertyType].Equals(value);
         }
         else

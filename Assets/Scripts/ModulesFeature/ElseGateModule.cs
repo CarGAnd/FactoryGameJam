@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Unity.VisualScripting;
+using UnityEngine.Rendering;
 
 public class ElseGateModule : ModuleBase
 {
@@ -14,8 +16,15 @@ public class ElseGateModule : ModuleBase
 
     [ShowIf("propertyToCompare", PropertyType.Rotation)]
     [SerializeField]
-    private Quaternion rotationToCompare;
+    private Vector3 rotationToCompare;
 
+    private Quaternion rotationToCompareQuat;
+    void Start(){
+        if(propertyToCompare == PropertyType.Rotation){
+            rotationToCompareQuat = Quaternion.Euler(rotationToCompare);
+        }
+        
+    }
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
         switch(propertyToCompare)
@@ -31,7 +40,7 @@ public class ElseGateModule : ModuleBase
                 }
                 break;
             case PropertyType.Rotation:
-                if(CompareProperty(assemblyObject.Value.Properties, rotationToCompare))
+                if(CompareProperty(assemblyObject.Value.Properties, rotationToCompareQuat))
                 {
                     SendObject(assemblyObject);
                 }

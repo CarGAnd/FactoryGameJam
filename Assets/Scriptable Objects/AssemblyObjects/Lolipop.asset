@@ -15,7 +15,7 @@ MonoBehaviour:
   properties:
   - propertyType: 0
     colorValue: {r: 1, g: 0, b: 0, a: 0}
-    rotationValue: {x: 0, y: 0, z: 0, w: 0}
+    rotationValue: {x: 0, y: 0, z: 0}
   - propertyType: 1
     colorValue: {r: 0, g: 0, b: 0, a: 0}
-    rotationValue: {x: 0.70710677, y: 0, z: 0, w: 0.70710677}
+    rotationValue: {x: 90, y: 0, z: 0}
