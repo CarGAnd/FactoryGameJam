@@ -5,9 +5,10 @@ using SOS;
 
 public class SpawnerModule : MonoBehaviour
 {
+    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent spawnPhaseStartedEvent;
     [SerializeField] private float timeBetweenSpawns;
-    [SerializeField] private float totalNumSpawns;
+    [field: SerializeField] public int TotalNumSpawns { get; private set; }
 
     [SerializeField]
     private GameObject assemblyLinePrefab;
@@ -20,10 +21,12 @@ public class SpawnerModule : MonoBehaviour
 
     private void OnEnable() {
         spawnPhaseStartedEvent.EventInvoked += StartSpawning;
+        factoryTracker.RegisterSpawner(this);
     }
 
     private void OnDisable() {
         spawnPhaseStartedEvent.EventInvoked -= StartSpawning;
+        factoryTracker.DeregisterSpawner(this);
     }
 
     private void StartSpawning() {
@@ -45,7 +48,7 @@ public class SpawnerModule : MonoBehaviour
     }
 
     private IEnumerator StartSpawningObjects() {
-        for(int i = 0; i < totalNumSpawns; i++) {
+        for(int i = 0; i < TotalNumSpawns; i++) {
             CreateAndSendObject();
             yield return new WaitForSeconds(timeBetweenSpawns);
         }

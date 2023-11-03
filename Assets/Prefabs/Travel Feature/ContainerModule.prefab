@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9eda13a75a77d34b82dd4a275ded9d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
   scoreRef:
     name: LevelScore
     scriptableObject: {fileID: 11400000, guid: ec8d9f525501e414d9e981fc80300b0a, type: 2}

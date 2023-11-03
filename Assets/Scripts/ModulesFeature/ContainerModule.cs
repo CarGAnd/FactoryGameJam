@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using SOS;
 using static AssetProperties;
+using System;
 
 public class ContainerModule : ModuleBase
 {
+    public Action OnItemCollected;
+
+    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
     [SerializeField] private List<PropertyEntry> properties;
     
@@ -16,6 +20,14 @@ public class ContainerModule : ModuleBase
     public void AddNewProperty(PropertyType propertyType) {
         PropertyEntry newEntry = new PropertyEntry(propertyType);
         properties.Add(newEntry);
+    }
+
+    private void OnEnable() {
+        factoryTracker.RegisterContainer(this);
+    }
+
+    private void OnDisable() {
+        factoryTracker.DeregisterContainer(this);
     }
 
     private void Start() {
@@ -40,6 +52,7 @@ public class ContainerModule : ModuleBase
 
     private void CorrectObjectReceived(AssemblyObject aObject) {
         scoreRef.Value += 1;
+        OnItemCollected?.Invoke();
     }
 
     private void WrongObjectReceived(AssemblyObject aObject) {
