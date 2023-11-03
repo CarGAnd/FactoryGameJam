@@ -2,15 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(ModuleAssemblyController))]
 public abstract class ModuleBase : MonoBehaviour
 {
-    protected ModuleAssemblyController moduleAssemblyController;
+    protected ModuleAssemblyController<AssemblyObject> moduleAssemblyController;
 
     void Awake()
     {
-        moduleAssemblyController = GetComponent<ModuleAssemblyController>();
-        moduleAssemblyController.Initialize();
+        moduleAssemblyController = new ModuleAssemblyController<AssemblyObject>(gameObject);
         moduleAssemblyController.RecievedObject += OnReceivedObject;
     }
 
@@ -20,9 +18,9 @@ public abstract class ModuleBase : MonoBehaviour
     {
         IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[outputIndex];
 
-        if (!assembly.IsConnected)
+        if (assembly.ConnectedTo == null)
             return;
 
-        AssemblyObject.StartTravel(assembly.GetTravelPositions());
+        AssemblyObject.StartTravel(assembly.ConnectedTo);
     }
 }

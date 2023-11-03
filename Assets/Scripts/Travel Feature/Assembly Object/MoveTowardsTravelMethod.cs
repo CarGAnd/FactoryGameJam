@@ -9,6 +9,7 @@ public class MoveTowardsTravelMethod<T> : ITravelAssemblyLine<T>
     private Action<GameObject> travelStopped;
     private GameObject gameObject;
     private Queue<Vector3> travelPoints;
+    private IAssembly destination;
     private bool isTraveling = false;
     private float speed = 1.0f;
     private float minimumDistance = 0.01f;
@@ -32,6 +33,7 @@ public class MoveTowardsTravelMethod<T> : ITravelAssemblyLine<T>
     public Action<GameObject> TravelStarted { get => travelStarted; set => travelStarted = value; }
     public Action<GameObject> TravelStopped { get => travelStopped; set => travelStopped = value; }
     public T Value {get => objectValue; private set => objectValue = value; }
+    public IAssembly DestinationAssembly {get => destination; private set => destination = value; }
 
     public MoveTowardsTravelMethod (GameObject _gameObject, T _value, float _speed = 1f, float _minimumDistance = 0.01f) {
         Value = _value;
@@ -40,9 +42,10 @@ public class MoveTowardsTravelMethod<T> : ITravelAssemblyLine<T>
         minimumDistance = _minimumDistance;
     }
 
-    public void StartTravel(List<Vector3> _travelPoints)
+    public void StartTravel(IAssembly _destination)
     {
-        travelPoints = new Queue<Vector3>(_travelPoints);
+        DestinationAssembly = _destination;
+        travelPoints = new Queue<Vector3>(_destination.GetTravelPositions());
         targetPosition = travelPoints.Dequeue();
         IsTraveling = true;
     }
@@ -80,28 +83,6 @@ public class MoveTowardsTravelMethod<T> : ITravelAssemblyLine<T>
 
     public void OnTravelFinished()
     {
-        IAssemblyController<T> assemblyController = GetAssemblyController();
-
-        if (assemblyController == null)
-            return;
-
-        assemblyController.ReceivedAssemblyObject(this);
-    }
-    
-    // TODO: Change to avoid using casts, and get direct reference instead.
-    private IAssemblyController<T> GetAssemblyController() {
-        RaycastHit[] hits;
-        hits = Physics.RaycastAll(gameObject.transform.position, Vector3.right, 100.0F);
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (hits[i].transform.gameObject.TryGetComponent(out IAssemblyController<T> assemblyController)) {
-                return assemblyController;
-            }
-        }
-
-        Debug.LogWarning("No AssemblyController was found!");
-
-        return null;
+        DestinationAssembly.OnObjectArrived(this);
     }
 }
