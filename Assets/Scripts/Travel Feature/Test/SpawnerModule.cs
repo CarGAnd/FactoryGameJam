@@ -11,11 +11,10 @@ public class SpawnerModule : MonoBehaviour
 
     [SerializeField]
     private GameObject assemblyLinePrefab;
-    private ModuleAssemblyController moduleAssemblyController;
+    private ModuleAssemblyController<AssemblyObject> moduleAssemblyController;
     // Start is called before the first frame update
     void Awake() {
-        moduleAssemblyController = GetComponent<ModuleAssemblyController>();
-        moduleAssemblyController.Initialize();
+        moduleAssemblyController = new ModuleAssemblyController<AssemblyObject>(gameObject);
     }
 
     private void OnEnable() {
@@ -41,7 +40,7 @@ public class SpawnerModule : MonoBehaviour
         if (!assembly.IsConnected)
             return;
 
-        assemblyLineObject.StartTravel(assembly.GetTravelPositions());
+        assemblyLineObject.StartTravel(assembly.ConnectedTo);
     }
 
     private IEnumerator StartSpawningObjects() {

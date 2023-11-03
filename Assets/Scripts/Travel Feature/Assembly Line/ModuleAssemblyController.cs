@@ -5,16 +5,16 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-public class ModuleAssemblyController : MonoBehaviour, IAssemblyController<AssemblyObject>
+public class ModuleAssemblyController<T> : IAssemblyController<T>
 {
-    private Action<ITravelAssemblyLine<AssemblyObject>> recievedObject;
-    public void Initialize() {
-        GetAttachedAseemblies(gameObject);
+    public ModuleAssemblyController (GameObject parent) {
+        GetAttachedAseemblies(parent);
+        SubscribeToAssemblies();
     }
-
+    private Action<ITravelAssemblyLine<T>> recievedObject;
     private List<IAssembly> assemblies;
     public List<IAssembly> Assemblies { get => assemblies; private set => assemblies = value; }
-    public Action<ITravelAssemblyLine<AssemblyObject>> RecievedObject { get => recievedObject; set => recievedObject = value; }
+    public Action<ITravelAssemblyLine<T>> RecievedObject { get => recievedObject; set => recievedObject = value; }
 
     private void GetAttachedAseemblies(GameObject parent)
     {
@@ -29,8 +29,17 @@ public class ModuleAssemblyController : MonoBehaviour, IAssemblyController<Assem
     public virtual List<IAssembly> GetIntakeAssemblies() {
         return Assemblies.Where(assembly => assembly.IsOutput == false).ToList();
     }
-    public void ReceivedAssemblyObject(ITravelAssemblyLine<AssemblyObject> travelAssemblyObject)
+    public void ReceivedAssemblyObject(ITravelAssemblyLine<T> travelAssemblyObject)
     {
         RecievedObject?.Invoke(travelAssemblyObject);
+    }
+
+    private void SubscribeToAssemblies() {
+        if (assemblies == null || assemblies.Count <= 0)
+            return;
+
+        foreach (IAssembly assembly in assemblies) {
+            assembly.SetAction<T>((assemblyObject) => recievedObject?.Invoke(assemblyObject)); 
+        }
     }
 }

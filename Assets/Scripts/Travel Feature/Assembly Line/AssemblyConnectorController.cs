@@ -101,8 +101,8 @@ public class AssemblyConnectorController : MonoBehaviour
 
     private void SetAssemblies(BezierLineRenderer bezierLineRenderer)
     {
-        startAssembly.Connect(bezierLineRenderer);
-        endAssembly.Connect(bezierLineRenderer);
+        startAssembly.Connect(bezierLineRenderer, endAssembly);
+        endAssembly.Connect(bezierLineRenderer, startAssembly);
     }
 
     private void CreateAndSetLineRenderer()

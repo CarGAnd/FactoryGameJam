@@ -24,7 +24,11 @@ public interface ITravelAssemblyLine<T>
         get;
     }
 
-    public abstract void StartTravel(List<Vector3> travelPoints);
+    public IAssembly DestinationAssembly {
+        get;
+    }
+
+    public abstract void StartTravel(IAssembly destination);
     public abstract void UpdateTravel();
     public abstract void OnTravelFinished();
 }
