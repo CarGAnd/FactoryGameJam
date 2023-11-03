@@ -241,12 +241,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76872f3f31bcbce449e6af297c2a7642, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
   spawnPhaseStartedEvent:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
     useLocalConstant: 0
   timeBetweenSpawns: 1
-  totalNumSpawns: 10
+  <TotalNumSpawns>k__BackingField: 10
   assemblyLinePrefab: {fileID: 6295694056182817170, guid: 8f0cd6ce13781b848890af3e3d516435,
     type: 3}
 --- !u!1 &6807752892782733541

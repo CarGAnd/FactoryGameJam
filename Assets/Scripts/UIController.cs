@@ -7,7 +7,7 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private GameEvent startSpawnPhaseEvent;
+    [SerializeField] private LevelManager levelManager;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
     [SerializeField] private IntRef levelScore;
@@ -52,7 +52,7 @@ public class UIController : MonoBehaviour
     }
 
     public void StartSpawnPhase() {
-        startSpawnPhaseEvent.Invoke();
+        levelManager.GoToRunPhase();
     }
 
     public void RestartLevel() {
