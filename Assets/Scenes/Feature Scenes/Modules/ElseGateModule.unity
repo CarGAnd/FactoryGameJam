@@ -400,6 +400,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 1
 --- !u!136 &323051544
 CapsuleCollider:
@@ -521,6 +531,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 1
 --- !u!136 &377634381
 CapsuleCollider:
@@ -1009,6 +1029,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 0
 --- !u!136 &683082377
 CapsuleCollider:
@@ -1202,6 +1232,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1982329852751581780, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 1982329852751581780, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
+    - target: {fileID: 2663591905141455895, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 2663591905141455895, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
     - target: {fileID: 2928649888973571466, guid: 57558244b5baf684e98a43307d4040a0,
         type: 3}
       propertyPath: m_Name
@@ -1212,6 +1266,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ElseGateModule
       objectReference: {fileID: 0}
+    - target: {fileID: 6934884600577754660, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 6934884600577754660, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
     - target: {fileID: 7086662530996699392, guid: 57558244b5baf684e98a43307d4040a0,
         type: 3}
       propertyPath: m_Name
@@ -1387,6 +1453,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 0
 --- !u!136 &1826012184
 CapsuleCollider:
@@ -1655,6 +1731,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1982329852751581780, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 1982329852751581780, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
+    - target: {fileID: 2663591905141455895, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 2663591905141455895, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
     - target: {fileID: 2928649888973571466, guid: 57558244b5baf684e98a43307d4040a0,
         type: 3}
       propertyPath: m_Name
@@ -1665,6 +1765,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ElseGateModule (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6934884600577754660, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: assemblySpeed.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b,
+        type: 2}
+    - target: {fileID: 6934884600577754660, guid: 57558244b5baf684e98a43307d4040a0,
+        type: 3}
+      propertyPath: minimumDistance.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1,
+        type: 2}
     - target: {fileID: 7086662530996699392, guid: 57558244b5baf684e98a43307d4040a0,
         type: 3}
       propertyPath: m_Name

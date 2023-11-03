@@ -120,6 +120,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 1
 --- !u!1 &5616139308689287776
 GameObject:
@@ -246,6 +256,8 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
     useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   timeBetweenSpawns: 1
   <TotalNumSpawns>k__BackingField: 10
   assemblyLinePrefab: {fileID: 6295694056182817170, guid: 8f0cd6ce13781b848890af3e3d516435,

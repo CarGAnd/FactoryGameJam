@@ -1,12 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using SOS;
 using UnityEngine;
 
 public class ModuleAssemblyConnection : MonoBehaviour, IAssembly
 {
     private Action<ITravelAssemblyLine<AssemblyObject>> receivedItem;
 
+    [SerializeField]
+    private FloatRef assemblySpeed;
+    [SerializeField]
+    private FloatRef minimumDistance;
     [SerializeField]
     private bool isOutConnection = false;
     private bool isConnected = false;
@@ -15,6 +20,7 @@ public class ModuleAssemblyConnection : MonoBehaviour, IAssembly
     public bool IsConnected { get => isConnected; private set => isConnected = value; }
     public bool IsOutput { get => isOutConnection; set => isOutConnection = value; }
     public IAssembly ConnectedTo {get { return connectedTo; } private set {connectedTo = value; } }
+    public IAssemblyTravelMethod AssemblyTravelMethod { get => new MoveTowardsTravelMethod(assemblySpeed.Value, minimumDistance.Value); }
 
     public Vector3 GetTransformPosition()
     {

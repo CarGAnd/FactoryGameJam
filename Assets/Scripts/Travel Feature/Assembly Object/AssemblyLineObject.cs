@@ -7,8 +7,6 @@ using UnityEngine;
 
 public class AssemblyLineObject : MonoBehaviour
 {
-    [SerializeField]
-    private float speed = 5;
     public string TestName = "Testing";
     ITravelAssemblyLine<AssemblyLineObject> travelAssemblyLine;
     public ITravelAssemblyLine<AssemblyLineObject> TravelAssemblyLine { get => travelAssemblyLine; private set => travelAssemblyLine = value; }
@@ -22,7 +20,7 @@ public class AssemblyLineObject : MonoBehaviour
         if (TravelAssemblyLine != null)
             return;
             
-        TravelAssemblyLine = new MoveTowardsTravelMethod<AssemblyLineObject>(gameObject, this, speed);
+        TravelAssemblyLine = new ObjectTravelAssemblyLine<AssemblyLineObject>(this);
     }
 
     // Update is called once per frame 

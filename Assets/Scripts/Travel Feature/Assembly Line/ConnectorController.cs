@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class AssemblyConnectorController : MonoBehaviour
+public class ConnectorController : MonoBehaviour
 {
     public Action DragStarted, DragStopped, DragSuccessful, DragFailure;
 

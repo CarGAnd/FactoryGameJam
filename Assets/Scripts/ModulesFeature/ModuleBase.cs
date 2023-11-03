@@ -21,6 +21,7 @@ public abstract class ModuleBase : MonoBehaviour
         if (assembly.ConnectedTo == null)
             return;
 
-        AssemblyObject.StartTravel(assembly.ConnectedTo);
+        // Debug.Log($"Assembly at {gameObject.name} was not null.");
+        AssemblyObject.InitializeAtAssemblyLine(assembly, AssemblyObject.Value.transform);
     }
 }

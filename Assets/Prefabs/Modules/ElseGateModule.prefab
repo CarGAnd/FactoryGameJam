@@ -120,6 +120,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 0
 --- !u!1 &2928649888973571466
 GameObject:
@@ -241,6 +251,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 1
 --- !u!1 &5616139308689287776
 GameObject:
@@ -366,7 +386,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propertyToCompare: 0
   colorToCompare: {r: 1, g: 0, b: 0, a: 0}
-  rotationToCompare: {x: 0, y: 0, z: 0, w: 0}
+  rotationToCompare: {x: 0, y: 0, z: 0}
 --- !u!1 &6807752892782733541
 GameObject:
   m_ObjectHideFlags: 0
@@ -594,4 +614,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf40b6256511041429d90e4fdda0220e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  assemblySpeed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  minimumDistance:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   isOutConnection: 1

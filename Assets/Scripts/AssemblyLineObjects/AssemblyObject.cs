@@ -5,8 +5,6 @@ using UnityEngine;
 public class AssemblyObject : MonoBehaviour
 {
     [SerializeField]
-    private float speed = 5;
-    [SerializeField]
     AssetProperties assetProperties;
     
     Properties properties = null;
@@ -36,7 +34,7 @@ public class AssemblyObject : MonoBehaviour
         if (TravelAssemblyLine != null)
             return;
             
-        TravelAssemblyLine = new MoveTowardsTravelMethod<AssemblyObject>(gameObject, this, speed);
+        TravelAssemblyLine = new ObjectTravelAssemblyLine<AssemblyObject>(this);
     }
  
     void Update()

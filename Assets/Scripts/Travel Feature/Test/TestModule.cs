@@ -19,6 +19,7 @@ public class TestModule : ModuleBase
 
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
+        Debug.Log($"Object was received at {gameObject.name}.");
         SendObject(assemblyObject);
     }
 

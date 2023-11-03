@@ -43,7 +43,7 @@ public class SpawnerModule : MonoBehaviour
         if (!assembly.IsConnected)
             return;
 
-        assemblyLineObject.StartTravel(assembly.ConnectedTo);
+        assemblyLineObject.InitializeAtAssemblyLine(assembly, assemblyLineObject.Value.transform);
     }
 
     private IEnumerator StartSpawningObjects() {
