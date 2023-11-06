@@ -42,4 +42,25 @@ public class ModuleAssemblyController<T> : IAssemblyController<T>
             assembly.SetAction<T>((assemblyObject) => recievedObject?.Invoke(assemblyObject)); 
         }
     }
+
+    public bool DisconnectAssembly(int index)
+    {
+        if (Assemblies[index] == null)
+            return false;
+
+        Assemblies[index].Disconnect();
+        return true;
+    }
+
+    public bool DisconnectAllAssemblies()
+    {
+        if (Assemblies == null || Assemblies.Count < 1)
+            return false;
+
+        foreach (IAssembly assembly in Assemblies) {
+            assembly.Disconnect();
+        }
+
+        return true;
+    }
 }

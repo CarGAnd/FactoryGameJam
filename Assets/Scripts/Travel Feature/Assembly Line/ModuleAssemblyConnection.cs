@@ -38,6 +38,34 @@ public class ModuleAssemblyConnection : MonoBehaviour, IAssembly
         IsConnected = true;
     }
 
+    public void Disconnect() {
+        if (!IsConnected)
+            return;
+        
+        IsConnected = false;
+
+        RemoveLine();
+        RemoveConnectedTo();
+    }
+
+    private void RemoveLine() {
+        if (line != null)
+        {
+            if (line.gameObject != null)
+                GameObject.Destroy(line.gameObject);
+
+            line = null;
+        }
+    }
+
+    private void RemoveConnectedTo() {
+        if (ConnectedTo == null)
+            return;
+
+        ConnectedTo.Disconnect();
+        ConnectedTo = null;
+    }
+
     public void OnObjectArrived<T>(ITravelAssemblyLine<T> assemblyObject)
     {
         GetAction<T>()?.Invoke(assemblyObject);

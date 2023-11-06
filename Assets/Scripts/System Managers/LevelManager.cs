@@ -5,12 +5,23 @@ using SOS;
 
 public class LevelManager : MonoBehaviour
 {
+    public static LevelManager Instance { get; private set; }
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseEndedEvent;
 
+    public LevelState CurrentLevelState { get => currentLevelState; private set => currentLevelState = value; }
     private LevelState currentLevelState;
+
+    private void Awake(){
+        if(Instance == null){
+            Instance = this;
+        }
+        else{
+            Destroy(gameObject);
+        }
+    }
 
     private void Start() {
         currentLevelState = LevelState.LevelLoaded;

@@ -15,6 +15,7 @@ public interface IAssembly
 
     public abstract Vector3 GetTransformPosition();
     public abstract void Connect(BezierLineRenderer bezierLineRenderer, IAssembly _connectedTo);
+    public abstract void Disconnect();
     public abstract List<Vector3> GetTravelPositions();
     public abstract void OnObjectArrived<T> (ITravelAssemblyLine<T> assemblyObject);
 }
