@@ -45,6 +45,10 @@ public class ModulesManager : MonoBehaviour
     }
 
     public void ToggleGizmos(bool show){
+        if(LevelManager.Instance.CurrentLevelState != LevelState.BuildPhase)
+        {
+            return;
+        }
         ShowGizmos = show;
         if(ShowGizmos){
             rangeIndicatorPrefab.SetActive(true);
@@ -56,7 +60,7 @@ public class ModulesManager : MonoBehaviour
     public void PlaceModule(ModuleTypes moduleType)
     {
         GameObject modulePrefab = GetModulePrefab(moduleType);
-        if (modulePrefab != null && CanPlaceModule)
+        if (modulePrefab != null && CanPlaceModule && LevelManager.Instance.CurrentLevelState == LevelState.BuildPhase)
         {
             Instantiate(modulePrefab, LastHitPoint, Quaternion.identity);
         }
