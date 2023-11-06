@@ -23,5 +23,10 @@ public class TestModule : ModuleBase
         SendObject(assemblyObject);
     }
 
+    public override void SelectModule()
+    {
+        throw new NotImplementedException();
+    }
+
 }
 

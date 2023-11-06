@@ -2,7 +2,7 @@
     "name": "PlayerControls",
     "maps": [
         {
-            "name": "ModulePlacing",
+            "name": "Modules",
             "id": "d1a202f8-4adb-45d2-a190-0a18f57f5da6",
             "actions": [
                 {
@@ -27,6 +27,15 @@
                     "name": "ToggleBuildMode",
                     "type": "Button",
                     "id": "a052e65f-2af7-4fdb-a3c5-ddfcd01fac93",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SelectModule",
+                    "type": "Button",
+                    "id": "340f904c-489c-4876-8fdc-610aae87f74d",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -64,6 +73,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ToggleBuildMode",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b1f03af0-496e-4fad-8d1a-f8e41897cefb",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectModule",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6d8abbde-8e3f-4389-85ef-f5cd8252883e",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SelectModule",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

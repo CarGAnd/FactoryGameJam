@@ -694,6 +694,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
         type: 3}
+      propertyPath: colorName
+      value: Blue
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
+      propertyPath: rotationName
+      value: 45 Degrees
+      objectReference: {fileID: 0}
+    - target: {fileID: -3495508721933451795, guid: 229ecec3b2fa6f14ba951b2aca3dc4d0,
+        type: 3}
       propertyPath: levelProperties
       value: 
       objectReference: {fileID: 11400000, guid: 59c28b87067fa4449a467845b41e4cd0,

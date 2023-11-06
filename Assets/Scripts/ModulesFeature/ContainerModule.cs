@@ -68,4 +68,8 @@ public class ContainerModule : ModuleBase
         OnItemCollected?.Invoke();
         Debug.Log("Wrong object received: " + aObject.name);
     }
+
+    public override void SelectModule() {
+        throw new System.NotImplementedException();
+    }
 }

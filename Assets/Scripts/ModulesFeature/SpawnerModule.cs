@@ -47,4 +47,8 @@ public class SpawnerModule : ModuleBase
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
         throw new System.NotImplementedException();
     }
+
+    public override void SelectModule() {
+        throw new System.NotImplementedException();
+    }
 }
