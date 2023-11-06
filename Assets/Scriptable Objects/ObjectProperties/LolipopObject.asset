@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: LolipopObject
   m_EditorClassIdentifier: 
   levelProperties: {fileID: 11400000, guid: 59c28b87067fa4449a467845b41e4cd0, type: 2}
-  colorName: NONE
+  colorName: Blue
   rotationName: NONE

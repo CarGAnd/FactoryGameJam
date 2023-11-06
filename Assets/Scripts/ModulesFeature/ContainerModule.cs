@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SOS;
-using static AssetProperties;
 using System;
 
 public class ContainerModule : ModuleBase
