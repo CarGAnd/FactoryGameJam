@@ -118,5 +118,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28377b5dda50a4b4ebcb28b9dff8c4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
-  assetProperties: {fileID: 11400000, guid: c234c47b4ab0fde4b997ac18d592de55, type: 2}
+  objectProperties: {fileID: 11400000, guid: 5e7baec48f6547649a89be2a3df71763, type: 2}

@@ -5,7 +5,7 @@ using UnityEngine;
 public class AssemblyObject : MonoBehaviour
 {
     [SerializeField]
-    AssetProperties assetProperties;
+    ObjectProperties objectProperties;
     
     Properties properties = null;
     public Properties Properties 
@@ -18,8 +18,8 @@ public class AssemblyObject : MonoBehaviour
         } 
     }
     private void Awake(){
-        if(assetProperties != null)
-            Properties = assetProperties.CreateProperties();
+        if(objectProperties != null)
+            Properties = objectProperties.CreateProperties();
     }
 
     ITravelAssemblyLine<AssemblyObject> travelAssemblyLine;
