@@ -5,9 +5,11 @@ using UnityEngine;
 public abstract class ModuleBase : MonoBehaviour
 {
     protected ModuleAssemblyController<AssemblyObject> moduleAssemblyController;
+    public bool ModuleIsRemoveable { get; protected set; }
 
-    void Awake()
+    protected virtual void Awake()
     {
+        ModuleIsRemoveable = true;
         moduleAssemblyController = new ModuleAssemblyController<AssemblyObject>(gameObject);
         moduleAssemblyController.RecievedObject += OnReceivedObject;
     }
@@ -23,5 +25,28 @@ public abstract class ModuleBase : MonoBehaviour
 
         // Debug.Log($"Assembly at {gameObject.name} was not null.");
         AssemblyObject.InitializeAtAssemblyLine(assembly, AssemblyObject.Value.transform);
+    }
+
+    public void RemoveModule() {
+        if (!ModuleIsRemoveable) {
+            return;
+        }
+
+        List<IAssembly> inputs = moduleAssemblyController.GetIntakeAssemblies();
+        List<IAssembly> outputs = moduleAssemblyController.GetIntakeAssemblies();
+
+        foreach(IAssembly ia in inputs) {
+            if (ia.IsConnected) {
+                //RemoveConnection();
+            }
+        }
+
+        foreach (IAssembly ia in outputs) {
+            if (ia.IsConnected) {
+                //RemoveConnection();
+            }
+        }
+
+        Destroy(gameObject);
     }
 }

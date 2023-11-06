@@ -11,11 +11,12 @@ public class ObjectTracker
     private FactoryTracker factoryTracker;
     private LevelManager levelManager;
 
-    public ObjectTracker(FactoryTracker factoryTracker, LevelManager levelManager) {
+    public void StartTracking(FactoryTracker factoryTracker, LevelManager levelManager) {
         this.factoryTracker = factoryTracker;
         this.levelManager = levelManager;
         numSpawnedObjects = factoryTracker.GetNumObjectsInLevel();
         factoryTracker.OnObjectCollected += OnObjectCollected;
+        numCollectedObjects = 0;
     }
 
     private void OnObjectCollected() {

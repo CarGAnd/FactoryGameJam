@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SOS;
 
-public class SpawnerModule : MonoBehaviour
+public class SpawnerModule : ModuleBase
 {
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent spawnPhaseStartedEvent;
@@ -12,10 +12,10 @@ public class SpawnerModule : MonoBehaviour
 
     [SerializeField]
     private GameObject assemblyLinePrefab;
-    private ModuleAssemblyController<AssemblyObject> moduleAssemblyController;
-    // Start is called before the first frame update
-    void Awake() {
-        moduleAssemblyController = new ModuleAssemblyController<AssemblyObject>(gameObject);
+
+    protected override void Awake() {
+        base.Awake();
+        ModuleIsRemoveable = false;
     }
 
     private void OnEnable() {
@@ -37,19 +37,14 @@ public class SpawnerModule : MonoBehaviour
         SendObject(assemblyLineObject.TravelAssemblyLine);
     }
 
-    private void SendObject(ITravelAssemblyLine<AssemblyObject> assemblyLineObject) {
-        IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[0];
-
-        if (!assembly.IsConnected)
-            return;
-
-        assemblyLineObject.InitializeAtAssemblyLine(assembly, assemblyLineObject.Value.transform);
-    }
-
     private IEnumerator StartSpawningObjects() {
         for(int i = 0; i < TotalNumSpawns; i++) {
             CreateAndSendObject();
             yield return new WaitForSeconds(timeBetweenSpawns);
         }
+    }
+
+    protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
+        throw new System.NotImplementedException();
     }
 }

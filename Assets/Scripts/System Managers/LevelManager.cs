@@ -12,8 +12,6 @@ public class LevelManager : MonoBehaviour
 
     private LevelState currentLevelState;
 
-    private ObjectTracker objectTracker;
-
     private void Start() {
         currentLevelState = LevelState.LevelLoaded;
         StartCoroutine(StartBuildPhase());
@@ -24,7 +22,7 @@ public class LevelManager : MonoBehaviour
         GoToBuildPhase();
     }
 
-    private void GoToBuildPhase() {
+    public void GoToBuildPhase() {
         currentLevelState = LevelState.BuildPhase;
         buildPhaseStartedEvent.Invoke();
         Debug.Log("Build phase");
@@ -34,7 +32,8 @@ public class LevelManager : MonoBehaviour
         if(currentLevelState == LevelState.BuildPhase) {
             currentLevelState = LevelState.RunPhase;
             runPhaseStartedEvent.Invoke();
-            objectTracker = new ObjectTracker(factoryTracker, this);
+            ObjectTracker objectTracker = new ObjectTracker();
+            objectTracker.StartTracking(factoryTracker, this);
             Debug.Log("Run phase");
         }  
     }

@@ -260,7 +260,7 @@ MonoBehaviour:
     subscribeOnPlay: 1
   timeBetweenSpawns: 1
   <TotalNumSpawns>k__BackingField: 10
-  assemblyLinePrefab: {fileID: 6295694056182817170, guid: 8f0cd6ce13781b848890af3e3d516435,
+  assemblyLinePrefab: {fileID: 6295694056182817170, guid: fbb81b644f66baf4283806cef2c6118a,
     type: 3}
 --- !u!1 &6807752892782733541
 GameObject:
