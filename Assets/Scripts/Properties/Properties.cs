@@ -82,7 +82,6 @@ public class Properties
             if(colorValue != null)
             {
                 properties.SetProperty(PropertyType.Color, colorValue);
-                Debug.Log("Color value: " + colorValue);
             }
         }
 
@@ -92,7 +91,6 @@ public class Properties
             if(rotationValue != null)
             {
                 properties.SetProperty(PropertyType.Rotation, rotationValue);
-                Debug.Log("Rotation value: " + rotationValue);
             }
         }
 
