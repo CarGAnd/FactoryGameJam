@@ -53,13 +53,18 @@ public class ConnectorController : MonoBehaviour
     {
         IAssembly assemblyToRemove = TryGetIAssembly();
 
-        if (assemblyToRemove == null)
+        if (assemblyToRemove == null) {
+            SpawnScreenText.SpawnDebugText("No Assembly found to remove.");
             return;
+        }
 
-        if (!assemblyToRemove.IsConnected)
+        if (!assemblyToRemove.IsConnected) {
+            SpawnScreenText.SpawnDebugText("Can't remove; Assembly isn't connected.");
             return;
+        }
 
         assemblyToRemove.Disconnect();
+        SpawnScreenText.SpawnDebugText("Assembly removed.");
     }
 
     private IAssembly TryGetIAssembly() {
@@ -95,6 +100,7 @@ public class ConnectorController : MonoBehaviour
 
     private void DragFailed() {
         DragFailure?.Invoke();
+        SpawnScreenText.SpawnDebugText("Drag Failed.");
         Debug.Log("Drag failed.");
         ResetParameters();
     }
@@ -111,6 +117,7 @@ public class ConnectorController : MonoBehaviour
         PreparePositionArray();
         CreateAndSetLineRenderer();
         DragSuccessful?.Invoke();
+        SpawnScreenText.SpawnDebugText("Drag succeeded.");
         Debug.Log("Drag succeeded.");
         ResetParameters();
     }
