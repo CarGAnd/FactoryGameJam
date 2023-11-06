@@ -5,7 +5,7 @@ using UnityEngine;
 public enum PropertyType
 {
     Color,
-    Rotation
+    Rotation,
 }
 
 [System.Serializable]
@@ -52,15 +52,17 @@ public class Properties
         }
         else
         {
-            Debug.LogError("PropertyType: " + propertyType + " not found.");
+            // This can happen if an object has the property value of NONE
             return false;
         }
     }
 
     //Function to compare to property classes
-    public bool CompareProperties(Properties properties)
+    public bool CompareProperties(Properties other)
     {
-        foreach (KeyValuePair<PropertyType, object> property in properties.properties)
+        if(other == null){
+        }
+        foreach (KeyValuePair<PropertyType, object> property in other.properties)
         {
             if (!CompareProperty(property.Key, property.Value))
             {
@@ -68,6 +70,33 @@ public class Properties
             }
         }
         return true;
+    }
+
+    public static Properties CreateProperties(LevelProperties levelProperties, string colorName, string rotationName)
+    {
+        var properties = new Properties();
+
+        if(!string.IsNullOrEmpty(colorName))
+        {
+            var colorValue = levelProperties.GetPropertyByName(colorName);
+            if(colorValue != null)
+            {
+                properties.SetProperty(PropertyType.Color, colorValue);
+                Debug.Log("Color value: " + colorValue);
+            }
+        }
+
+        if(!string.IsNullOrEmpty(rotationName))
+        {
+            var rotationValue = levelProperties.GetPropertyByName(rotationName);
+            if(rotationValue != null)
+            {
+                properties.SetProperty(PropertyType.Rotation, rotationValue);
+                Debug.Log("Rotation value: " + rotationValue);
+            }
+        }
+
+        return properties;
     }
 }
 

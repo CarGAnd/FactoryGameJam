@@ -12,7 +12,16 @@ public class ContainerModule : ModuleBase
 
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
-    [SerializeField] private List<PropertyEntry> containerProperties;
+
+    [SerializeField] private LevelProperties levelProperties;
+
+    [ShowIf("@PropertyDropdownHelper.IsColorAvailable(levelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetColorNames(levelProperties)")]
+    public string colorName;
+    
+    [ShowIf("@PropertyDropdownHelper.IsRotationAvailable(levelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(levelProperties)")]
+    public string rotationName;
 
     public int NumItemsCollected { get { return NumCorrectItemsCollected + NumWrongItemsCollected; } }
     public int NumCorrectItemsCollected { get; private set; }
@@ -20,19 +29,10 @@ public class ContainerModule : ModuleBase
 
     private Properties expectedProperties;
 
-    //TODO: this should not need to be here
-    //ideally the properties editor should be "in one piece" instead of requiring this function
-    [Button("Add Property")]
-    public void AddNewProperty(PropertyType propertyType) {
-        PropertyEntry newEntry = new PropertyEntry(propertyType);
-        containerProperties.Add(newEntry);
-    }
-
     protected override void Awake() {
         base.Awake();
         ModuleIsRemoveable = false;
     }
-
     private void OnEnable() {
         factoryTracker.RegisterContainer(this);
     }
@@ -40,14 +40,11 @@ public class ContainerModule : ModuleBase
     private void OnDisable() {
         factoryTracker.DeregisterContainer(this);
     }
-
+    
     private void Start() {
-        expectedProperties = new Properties();
-        foreach (PropertyEntry entry in containerProperties) {
-            expectedProperties.SetProperty(entry.PropertyType, entry.GetValue());
-        }
+        expectedProperties = Properties.CreateProperties(levelProperties, colorName, rotationName); 
     }
-
+    
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
         AssemblyObject aObject = assemblyObject.Value;
         
