@@ -27,26 +27,12 @@ public abstract class ModuleBase : MonoBehaviour
         AssemblyObject.InitializeAtAssemblyLine(assembly, AssemblyObject.Value.transform);
     }
 
-    public void RemoveModule() {
+    public void DestroyModule() {
         if (!ModuleIsRemoveable) {
             return;
         }
 
-        List<IAssembly> inputs = moduleAssemblyController.GetIntakeAssemblies();
-        List<IAssembly> outputs = moduleAssemblyController.GetIntakeAssemblies();
-
-        foreach(IAssembly ia in inputs) {
-            if (ia.IsConnected) {
-                //RemoveConnection();
-            }
-        }
-
-        foreach (IAssembly ia in outputs) {
-            if (ia.IsConnected) {
-                //RemoveConnection();
-            }
-        }
-
+        moduleAssemblyController.DisconnectAllAssemblies();
         Destroy(gameObject);
     }
 }
