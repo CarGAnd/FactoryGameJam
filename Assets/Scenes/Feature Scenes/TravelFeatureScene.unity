@@ -1209,8 +1209,8 @@ MonoBehaviour:
   assemblySpeed:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
+    useLocalConstant: 1
+    localConstantValue: 10
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}

@@ -43,7 +43,23 @@ public class ConnectorController : MonoBehaviour
         } 
         else if (Input.GetMouseButtonUp(0) && IsDragging) {
             EndDrag();
-        }   
+        }
+        if (Input.GetMouseButtonDown(1)) {
+            DisconnectAssembly();
+        } 
+    }
+
+    private void DisconnectAssembly()
+    {
+        IAssembly assemblyToRemove = TryGetIAssembly();
+
+        if (assemblyToRemove == null)
+            return;
+
+        if (!assemblyToRemove.IsConnected)
+            return;
+
+        assemblyToRemove.Disconnect();
     }
 
     private IAssembly TryGetIAssembly() {

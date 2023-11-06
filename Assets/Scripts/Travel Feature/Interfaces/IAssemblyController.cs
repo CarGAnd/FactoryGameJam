@@ -11,5 +11,7 @@ public interface IAssemblyController<T>
     public abstract List<IAssembly> GetAllAssemblies();
     public abstract List<IAssembly> GetOutputAssemblies();
     public abstract List<IAssembly> GetIntakeAssemblies();
+    public abstract bool DisconnectAssembly(int index);
+    public abstract bool DisconnectAllAssemblies();
     public abstract void ReceivedAssemblyObject(ITravelAssemblyLine<T> travelAssemblyLineObject);
 }
