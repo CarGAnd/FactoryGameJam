@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector.Editor.Modules;
+using SOS;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private LevelStateRef currentLevelStateRef;
     bool buildModeEnabled = false;
 
     PlayerControls playerControls;
@@ -56,7 +58,7 @@ public class Player : MonoBehaviour
 
     private void OnSelectModule(InputAction.CallbackContext context)
     {
-        if(LevelManager.Instance.CurrentLevelState != LevelState.BuildPhase)
+        if(currentLevelStateRef.Value != LevelState.BuildPhase)
         {
             return;
         }

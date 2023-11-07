@@ -10,9 +10,8 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseEndedEvent;
-
-    public LevelState CurrentLevelState { get => currentLevelState; private set => currentLevelState = value; }
-    private LevelState currentLevelState;
+    [SerializeField] private LevelStateRef currentLevelStateRef;
+    public LevelStateRef CurrentLevelStateRef { get => currentLevelStateRef; private set => currentLevelStateRef = value; }
 
     private void Awake(){
         if(Instance == null){
@@ -24,7 +23,7 @@ public class LevelManager : MonoBehaviour
     }
 
     private void Start() {
-        currentLevelState = LevelState.LevelLoaded;
+        CurrentLevelStateRef.Value = LevelState.LevelLoaded;
         StartCoroutine(StartBuildPhase());
     }
 
@@ -34,14 +33,14 @@ public class LevelManager : MonoBehaviour
     }
 
     public void GoToBuildPhase() {
-        currentLevelState = LevelState.BuildPhase;
+        CurrentLevelStateRef.Value = LevelState.BuildPhase;
         buildPhaseStartedEvent.Invoke();
         Debug.Log("Build phase");
     }
 
     public void GoToRunPhase() {
-        if(currentLevelState == LevelState.BuildPhase) {
-            currentLevelState = LevelState.RunPhase;
+        if(CurrentLevelStateRef.Value == LevelState.BuildPhase) {
+            CurrentLevelStateRef.Value = LevelState.RunPhase;
             runPhaseStartedEvent.Invoke();
             ObjectTracker objectTracker = new ObjectTracker();
             objectTracker.StartTracking(factoryTracker, this);
@@ -50,8 +49,8 @@ public class LevelManager : MonoBehaviour
     }
 
     public void GoToLevelCompletedPhase() {
-        if (currentLevelState == LevelState.RunPhase) {
-            currentLevelState = LevelState.LevelOver;
+        if (CurrentLevelStateRef.Value == LevelState.RunPhase) {
+            CurrentLevelStateRef.Value = LevelState.LevelOver;
             runPhaseEndedEvent.Invoke();
             Debug.Log("Level completed phase");
         }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using SOS;
 using UnityEngine;
 
 public enum ModuleTypes
@@ -13,6 +14,7 @@ public class ModulesManager : MonoBehaviour
 {
     public static ModulesManager Instance { get; private set; }
 
+    [SerializeField] private LevelStateRef currentLevelStateRef;
     [SerializeField]
     private GameObject turnModulePrefab;
     [SerializeField]
@@ -29,7 +31,6 @@ public class ModulesManager : MonoBehaviour
     public bool ShowGizmos {get; private set;}
     public Vector3 LastHitPoint { get; private set; }
     public bool CanPlaceModule { get; private set; }
-
     private bool isModuleSelected = false;
 
     void Awake()
@@ -48,7 +49,7 @@ public class ModulesManager : MonoBehaviour
     }
 
     public void ToggleGizmos(bool show){
-        if(LevelManager.Instance.CurrentLevelState != LevelState.BuildPhase)
+        if(currentLevelStateRef.Value != LevelState.BuildPhase)
         {
             return;
         }
@@ -63,7 +64,7 @@ public class ModulesManager : MonoBehaviour
     public void PlaceModule(ModuleTypes moduleType)
     {
         GameObject modulePrefab = GetModulePrefab(moduleType);
-        if (modulePrefab != null && CanPlaceModule && LevelManager.Instance.CurrentLevelState == LevelState.BuildPhase)
+        if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
             Instantiate(modulePrefab, LastHitPoint, Quaternion.identity);
         }

@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using SOS;
+using SOS.Example;
 using UnityEngine;
 
 public class LevelPropertiesHolder : MonoBehaviour

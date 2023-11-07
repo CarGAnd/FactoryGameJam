@@ -1,0 +1,70 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7870600895419160663
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6408661777669725849}
+  - component: {fileID: 384249353508455965}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6408661777669725849
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7870600895419160663}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.192811, y: 3.515812, z: -6.9882555}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &384249353508455965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7870600895419160663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c10ec3c32492d448b4adc7bfb89118, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
+  buildPhaseStartedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 9b10340c89eeb5b45adbe2f93c052383, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
+  runPhaseStartedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
+  runPhaseEndedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 63befbb7a7ade6147874d20005790bd9, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
+  currentLevelStateRef:
+    name: CurrentLevelState
+    scriptableObject: {fileID: 11400000, guid: fb4c6e10bc51e01418ff4c293fa9157a, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0

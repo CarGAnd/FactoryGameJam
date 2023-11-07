@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine.UI;
+using System;
 
-public class TurnModule : ModuleBase
+public class TurnModule : ConfigurableModule
 {
     [SerializeField]
     private Vector3 rotationToApply;
 
-    [SerializeField]
-    private GameObject UIScreen;
-    [SerializeField]
     private TMP_Dropdown valueDropdown;
 
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
@@ -19,24 +19,19 @@ public class TurnModule : ModuleBase
         Properties objectProperties = assemblyObject.Value.Properties;
         try{
             Quaternion currentRotation = objectProperties.GetProperty<Quaternion>(PropertyType.Rotation);
+            //Debug.Log($"Rotation to apply is {rotationToApply}, and calculated new rocation is {currentRotation * Quaternion.Euler(rotationToApply)}.");
             objectProperties.SetProperty(PropertyType.Rotation, currentRotation * Quaternion.Euler(rotationToApply));
-
         }
         catch(PropertyNotFoundException){
             objectProperties.SetProperty(PropertyType.Rotation, Quaternion.Euler(rotationToApply));
-
         }
+
         assemblyObject.Value.ApplyProperties();
+
         SendObject(assemblyObject);
     }
 
-    public override void SelectModule()
-    {
-        UIScreen.SetActive(true);
-        
-    }
-
-    public void ApplySettings()
+    public override void ApplySettings()
     {
         Vector3 newRotation = new Vector3(0, 0, 0);
         switch(valueDropdown.value)
@@ -48,9 +43,17 @@ public class TurnModule : ModuleBase
                 newRotation = new Vector3(0, -45, 0);
                 break;
         }
-        
+
         rotationToApply = newRotation;
-        UIScreen.SetActive(false);
-        ModulesManager.Instance.DeselectModule();
+
+        base.ApplySettings();
+        UI.SetActive(false);
+    }
+
+    protected override void SetUIElements()
+    {
+        base.SetUIElements();
+
+        valueDropdown = UI.GetComponentInChildren<TMP_Dropdown>();;
     }
 }
