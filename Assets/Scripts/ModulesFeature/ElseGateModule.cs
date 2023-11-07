@@ -29,6 +29,9 @@ public class ElseGateModule : ModuleBase
     [SerializeField]
     private TMP_Dropdown propertyValueDropdown;
 
+    [SerializeField]
+    private TMP_Text comparisonText;
+
     void Start(){
         if(propertyToCompare == PropertyType.Rotation){
             rotationToCompareQuat = Quaternion.Euler(rotationToCompare);
@@ -121,7 +124,7 @@ public class ElseGateModule : ModuleBase
                     propertyToCompare = PropertyType.NONE;
                     break;
                 }
-                
+                comparisonText.text = colorName;
                 Color colorToCompare = (Color) LevelPropertiesHolder.Instance.Properties.GetPropertyByName(colorName);
                 SetColorToCompare(colorToCompare);
                 break;
@@ -132,7 +135,7 @@ public class ElseGateModule : ModuleBase
                     propertyToCompare = PropertyType.NONE;
                     break;
                 }
-
+                comparisonText.text = rotationName;
                 Quaternion rotationToCompareQuat = (Quaternion) LevelPropertiesHolder.Instance.Properties.GetPropertyByName(rotationName);
                 rotationToCompare = rotationToCompareQuat.eulerAngles;
                 SetRotationToCompare(rotationToCompare);

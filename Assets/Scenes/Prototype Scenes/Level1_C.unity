@@ -4039,6 +4039,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1917385144}
+    - target: {fileID: 3544424608372942426, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3544424608372942426, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 4551652589893405915, guid: 2d27a0720bd254343af4961287732efd,
         type: 3}
       propertyPath: m_Mesh
@@ -4064,6 +4074,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 222522029}
+    - target: {fileID: 5212916341799607164, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5212916341799607164, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 5795478870159838191, guid: 2d27a0720bd254343af4961287732efd,
         type: 3}
       propertyPath: m_Mesh
@@ -4073,6 +4093,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: ElseGateModule
+      objectReference: {fileID: 0}
+    - target: {fileID: 6171623665437078003, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6171623665437078003, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 2.28
       objectReference: {fileID: 0}
     - target: {fileID: 6529208596809244046, guid: 2d27a0720bd254343af4961287732efd,
         type: 3}
@@ -4099,6 +4129,16 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1868775496}
+    - target: {fileID: 7523602419210982888, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7523602419210982888, guid: 2d27a0720bd254343af4961287732efd,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 1.99
+      objectReference: {fileID: 0}
     - target: {fileID: 7662382929342127016, guid: 2d27a0720bd254343af4961287732efd,
         type: 3}
       propertyPath: m_Mesh
