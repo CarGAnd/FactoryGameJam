@@ -52,6 +52,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
+  moduleLayer:
+    serializedVersion: 2
+    m_Bits: 128
   rangeIndicatorPrefab: {fileID: 1040146368720312782, guid: 66b592e07bb652b4e9077f5c04b6ef4b,
     type: 3}
   checkRadius: 0.65

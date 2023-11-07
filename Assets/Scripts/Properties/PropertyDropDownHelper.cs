@@ -16,24 +16,24 @@ public static class PropertyDropdownHelper
         return levelProperties != null && levelProperties.rotationProperties.Count > 0;
     }
     public static IEnumerable<string> GetColorNames(LevelProperties levelProperties)
-{
-    var names = new List<string> { "NONE" };
-    if (levelProperties != null)
     {
-        names.AddRange(levelProperties.colorProperties.Select(x => x.name));
+        var names = new List<string> { "NONE" };
+        if (levelProperties != null)
+        {
+            names.AddRange(levelProperties.colorProperties.Select(x => x.name));
+        }
+        return names;
     }
-    return names;
-}
 
-public static IEnumerable<string> GetRotationNames(LevelProperties levelProperties)
-{
-    var names = new List<string> { "NONE" };
-    if (levelProperties != null)
+    public static IEnumerable<string> GetRotationNames(LevelProperties levelProperties)
     {
-        names.AddRange(levelProperties.rotationProperties.Select(x => x.name));
+        var names = new List<string> { "NONE" };
+        if (levelProperties != null)
+        {
+            names.AddRange(levelProperties.rotationProperties.Select(x => x.name));
+        }
+        return names;
     }
-    return names;
-}
 
 }
 

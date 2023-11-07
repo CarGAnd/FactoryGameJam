@@ -24,7 +24,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
-            ""name"": ""ModulePlacing"",
+            ""name"": ""Modules"",
             ""id"": ""d1a202f8-4adb-45d2-a190-0a18f57f5da6"",
             ""actions"": [
                 {
@@ -49,6 +49,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""ToggleBuildMode"",
                     ""type"": ""Button"",
                     ""id"": ""a052e65f-2af7-4fdb-a3c5-ddfcd01fac93"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SelectModule"",
+                    ""type"": ""Button"",
+                    ""id"": ""340f904c-489c-4876-8fdc-610aae87f74d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -88,17 +97,40 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleBuildMode"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b1f03af0-496e-4fad-8d1a-f8e41897cefb"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6d8abbde-8e3f-4389-85ef-f5cd8252883e"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectModule"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
     ],
     ""controlSchemes"": []
 }");
-        // ModulePlacing
-        m_ModulePlacing = asset.FindActionMap("ModulePlacing", throwIfNotFound: true);
-        m_ModulePlacing_PlaceElseGate = m_ModulePlacing.FindAction("PlaceElseGate", throwIfNotFound: true);
-        m_ModulePlacing_PlaceTurnGate = m_ModulePlacing.FindAction("PlaceTurnGate", throwIfNotFound: true);
-        m_ModulePlacing_ToggleBuildMode = m_ModulePlacing.FindAction("ToggleBuildMode", throwIfNotFound: true);
+        // Modules
+        m_Modules = asset.FindActionMap("Modules", throwIfNotFound: true);
+        m_Modules_PlaceElseGate = m_Modules.FindAction("PlaceElseGate", throwIfNotFound: true);
+        m_Modules_PlaceTurnGate = m_Modules.FindAction("PlaceTurnGate", throwIfNotFound: true);
+        m_Modules_ToggleBuildMode = m_Modules.FindAction("ToggleBuildMode", throwIfNotFound: true);
+        m_Modules_SelectModule = m_Modules.FindAction("SelectModule", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -157,28 +189,30 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         return asset.FindBinding(bindingMask, out action);
     }
 
-    // ModulePlacing
-    private readonly InputActionMap m_ModulePlacing;
-    private List<IModulePlacingActions> m_ModulePlacingActionsCallbackInterfaces = new List<IModulePlacingActions>();
-    private readonly InputAction m_ModulePlacing_PlaceElseGate;
-    private readonly InputAction m_ModulePlacing_PlaceTurnGate;
-    private readonly InputAction m_ModulePlacing_ToggleBuildMode;
-    public struct ModulePlacingActions
+    // Modules
+    private readonly InputActionMap m_Modules;
+    private List<IModulesActions> m_ModulesActionsCallbackInterfaces = new List<IModulesActions>();
+    private readonly InputAction m_Modules_PlaceElseGate;
+    private readonly InputAction m_Modules_PlaceTurnGate;
+    private readonly InputAction m_Modules_ToggleBuildMode;
+    private readonly InputAction m_Modules_SelectModule;
+    public struct ModulesActions
     {
         private @PlayerControls m_Wrapper;
-        public ModulePlacingActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @PlaceElseGate => m_Wrapper.m_ModulePlacing_PlaceElseGate;
-        public InputAction @PlaceTurnGate => m_Wrapper.m_ModulePlacing_PlaceTurnGate;
-        public InputAction @ToggleBuildMode => m_Wrapper.m_ModulePlacing_ToggleBuildMode;
-        public InputActionMap Get() { return m_Wrapper.m_ModulePlacing; }
+        public ModulesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @PlaceElseGate => m_Wrapper.m_Modules_PlaceElseGate;
+        public InputAction @PlaceTurnGate => m_Wrapper.m_Modules_PlaceTurnGate;
+        public InputAction @ToggleBuildMode => m_Wrapper.m_Modules_ToggleBuildMode;
+        public InputAction @SelectModule => m_Wrapper.m_Modules_SelectModule;
+        public InputActionMap Get() { return m_Wrapper.m_Modules; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
         public bool enabled => Get().enabled;
-        public static implicit operator InputActionMap(ModulePlacingActions set) { return set.Get(); }
-        public void AddCallbacks(IModulePlacingActions instance)
+        public static implicit operator InputActionMap(ModulesActions set) { return set.Get(); }
+        public void AddCallbacks(IModulesActions instance)
         {
-            if (instance == null || m_Wrapper.m_ModulePlacingActionsCallbackInterfaces.Contains(instance)) return;
-            m_Wrapper.m_ModulePlacingActionsCallbackInterfaces.Add(instance);
+            if (instance == null || m_Wrapper.m_ModulesActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_ModulesActionsCallbackInterfaces.Add(instance);
             @PlaceElseGate.started += instance.OnPlaceElseGate;
             @PlaceElseGate.performed += instance.OnPlaceElseGate;
             @PlaceElseGate.canceled += instance.OnPlaceElseGate;
@@ -188,9 +222,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleBuildMode.started += instance.OnToggleBuildMode;
             @ToggleBuildMode.performed += instance.OnToggleBuildMode;
             @ToggleBuildMode.canceled += instance.OnToggleBuildMode;
+            @SelectModule.started += instance.OnSelectModule;
+            @SelectModule.performed += instance.OnSelectModule;
+            @SelectModule.canceled += instance.OnSelectModule;
         }
 
-        private void UnregisterCallbacks(IModulePlacingActions instance)
+        private void UnregisterCallbacks(IModulesActions instance)
         {
             @PlaceElseGate.started -= instance.OnPlaceElseGate;
             @PlaceElseGate.performed -= instance.OnPlaceElseGate;
@@ -201,27 +238,31 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @ToggleBuildMode.started -= instance.OnToggleBuildMode;
             @ToggleBuildMode.performed -= instance.OnToggleBuildMode;
             @ToggleBuildMode.canceled -= instance.OnToggleBuildMode;
+            @SelectModule.started -= instance.OnSelectModule;
+            @SelectModule.performed -= instance.OnSelectModule;
+            @SelectModule.canceled -= instance.OnSelectModule;
         }
 
-        public void RemoveCallbacks(IModulePlacingActions instance)
+        public void RemoveCallbacks(IModulesActions instance)
         {
-            if (m_Wrapper.m_ModulePlacingActionsCallbackInterfaces.Remove(instance))
+            if (m_Wrapper.m_ModulesActionsCallbackInterfaces.Remove(instance))
                 UnregisterCallbacks(instance);
         }
 
-        public void SetCallbacks(IModulePlacingActions instance)
+        public void SetCallbacks(IModulesActions instance)
         {
-            foreach (var item in m_Wrapper.m_ModulePlacingActionsCallbackInterfaces)
+            foreach (var item in m_Wrapper.m_ModulesActionsCallbackInterfaces)
                 UnregisterCallbacks(item);
-            m_Wrapper.m_ModulePlacingActionsCallbackInterfaces.Clear();
+            m_Wrapper.m_ModulesActionsCallbackInterfaces.Clear();
             AddCallbacks(instance);
         }
     }
-    public ModulePlacingActions @ModulePlacing => new ModulePlacingActions(this);
-    public interface IModulePlacingActions
+    public ModulesActions @Modules => new ModulesActions(this);
+    public interface IModulesActions
     {
         void OnPlaceElseGate(InputAction.CallbackContext context);
         void OnPlaceTurnGate(InputAction.CallbackContext context);
         void OnToggleBuildMode(InputAction.CallbackContext context);
+        void OnSelectModule(InputAction.CallbackContext context);
     }
 }

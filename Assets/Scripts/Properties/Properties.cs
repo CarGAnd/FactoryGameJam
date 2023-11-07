@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum PropertyType
 {
+    NONE,
     Color,
     Rotation,
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector.Editor.Modules;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,9 +13,10 @@ public class Player : MonoBehaviour
     void Awake()
     {
         playerControls = new PlayerControls();
-        playerControls.ModulePlacing.ToggleBuildMode.performed += OnToggleBuildMode;
-        playerControls.ModulePlacing.PlaceTurnGate.performed += OnPlaceTurnModule;
-        playerControls.ModulePlacing.PlaceElseGate.performed += OnPlaceElseGateModule;
+        playerControls.Modules.ToggleBuildMode.performed += OnToggleBuildMode;
+        playerControls.Modules.PlaceTurnGate.performed += OnPlaceTurnModule;
+        playerControls.Modules.PlaceElseGate.performed += OnPlaceElseGateModule;
+        playerControls.Modules.SelectModule.performed += OnSelectModule;
     }
     private void PlaceModule(ModuleTypes moduleTypes)
     {
@@ -23,12 +25,12 @@ public class Player : MonoBehaviour
 
     private void OnEnable()
     {
-        playerControls.ModulePlacing.Enable();
+        playerControls.Modules.Enable();
     }
 
     private void OnDisable()
     {
-        playerControls.ModulePlacing.Disable();
+        playerControls.Modules.Disable();
     }
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
@@ -49,5 +51,15 @@ public class Player : MonoBehaviour
         {
             PlaceModule(ModuleTypes.ElseGateModule);
         }
+    }
+
+
+    private void OnSelectModule(InputAction.CallbackContext context)
+    {
+        if(LevelManager.Instance.CurrentLevelState != LevelState.BuildPhase)
+        {
+            return;
+        }
+        ModulesManager.Instance.SelectModule();
     }
 }

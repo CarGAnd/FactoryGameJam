@@ -20,6 +20,7 @@ public class ModulesManager : MonoBehaviour
     [SerializeField]
     private Camera cam;
     public LayerMask groundLayer;
+    public LayerMask moduleLayer;
     [SerializeField]
     private GameObject rangeIndicatorPrefab;
     [SerializeField]
@@ -72,6 +73,21 @@ public class ModulesManager : MonoBehaviour
         {
             UpdatePlacementInfo();
             UpdateSpherePosition();
+        }
+    }
+
+    public void SelectModule()
+    {
+        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        // Cast the ray and check if it hits a module directly
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity, moduleLayer))
+        {
+            ModuleBase module = hit.collider.gameObject.GetComponent<ModuleBase>();
+            if (module != null)
+            {
+                module.SelectModule(); // Or however you handle module selection
+            }
         }
     }
 
