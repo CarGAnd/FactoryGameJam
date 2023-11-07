@@ -49,5 +49,6 @@ public class TurnModule : ModuleBase
         rotationToApply = newRotation;
                 
         UIScreen.SetActive(false);
+        ModulesManager.Instance.DeselectModule();
     }
 }

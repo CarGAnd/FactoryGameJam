@@ -100,7 +100,7 @@ public class ConnectorController : MonoBehaviour
 
     private void DragFailed() {
         DragFailure?.Invoke();
-        SpawnScreenText.SpawnDebugText("Drag Failed.");
+        //SpawnScreenText.SpawnDebugText("Drag Failed."); :C
         Debug.Log("Drag failed.");
         ResetParameters();
     }

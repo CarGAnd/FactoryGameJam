@@ -30,6 +30,8 @@ public class ModulesManager : MonoBehaviour
     public Vector3 LastHitPoint { get; private set; }
     public bool CanPlaceModule { get; private set; }
 
+    private bool isModuleSelected = false;
+
     void Awake()
     {
         if(Instance == null)
@@ -78,6 +80,7 @@ public class ModulesManager : MonoBehaviour
 
     public void SelectModule()
     {
+        if(isModuleSelected) return;
         Ray ray = cam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         // Cast the ray and check if it hits a module directly
@@ -86,9 +89,15 @@ public class ModulesManager : MonoBehaviour
             ModuleBase module = hit.collider.gameObject.GetComponent<ModuleBase>();
             if (module != null)
             {
-                module.SelectModule(); // Or however you handle module selection
+                module.SelectModule();
+                isModuleSelected = true;
             }
         }
+    }
+
+    public void DeselectModule()
+    {
+        isModuleSelected = false;
     }
 
     private void UpdatePlacementInfo()

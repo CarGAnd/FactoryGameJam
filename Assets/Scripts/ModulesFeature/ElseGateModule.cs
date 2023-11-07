@@ -142,6 +142,7 @@ public class ElseGateModule : ModuleBase
                 return;
         }
         UI.SetActive(false);
+        ModulesManager.Instance.DeselectModule();
     }
 
     public void PopulateDropdowns()
