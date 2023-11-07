@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using SOS;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class ConfigurableModule : ModuleBase
 {
+    [SerializeField]
+    private int cost = 5;
+    [SerializeField]
+    private IntRef LevelCost;
     [Required]
     [SerializeField]
     protected Canvas UICanvas;
@@ -22,6 +27,7 @@ public abstract class ConfigurableModule : ModuleBase
     }
 
     protected virtual void Initialize() {
+        LevelCost.Value += cost;
         SetUIElements();
         UICanvas.gameObject.SetActive(true);
     }
@@ -70,6 +76,7 @@ public abstract class ConfigurableModule : ModuleBase
             return;
         }
 
+        LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
         Destroy(gameObject);
         ModulesManager.Instance.DeselectModule();

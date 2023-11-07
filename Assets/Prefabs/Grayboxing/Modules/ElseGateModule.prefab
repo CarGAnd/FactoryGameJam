@@ -13322,6 +13322,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691cde241a1cde34f8d841b2a140defc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cost: 10
+  LevelCost:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   UICanvas: {fileID: 5718944169615127241}
   UI: {fileID: 8752724425265803844}
   propertyToCompare: 0

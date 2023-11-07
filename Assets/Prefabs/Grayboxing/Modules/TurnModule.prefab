@@ -1186,6 +1186,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d933f41e00e59324f9c02d126a73970b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cost: 5
+  LevelCost:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   UICanvas: {fileID: 4283858890504133015}
   UI: {fileID: 2213850035002690018}
   rotationToApply: {x: 0, y: 0, z: 0}
