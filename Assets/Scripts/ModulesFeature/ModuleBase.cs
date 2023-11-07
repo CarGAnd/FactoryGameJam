@@ -34,6 +34,8 @@ public abstract class ModuleBase : MonoBehaviour
 
         moduleAssemblyController.DisconnectAllAssemblies();
         Destroy(gameObject);
+
+        ModulesManager.Instance.DeselectModule();
     }
 
     public abstract void SelectModule();

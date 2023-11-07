@@ -34,7 +34,7 @@ public class Properties
         }
         else
         {
-            throw new PropertyNotFoundException("PropertyType: " + propertyType + " not found.");
+            return default(T);
         }
     }
 
@@ -47,6 +47,7 @@ public class Properties
             {
                 Quaternion quaternion1 = (Quaternion)value;
                 Quaternion quaternion2 = (Quaternion)properties[propertyType];
+
                 return Quaternion.Angle(quaternion1, quaternion2) == 0f;                
             }
             return properties[propertyType].Equals(value);

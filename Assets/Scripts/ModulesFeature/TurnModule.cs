@@ -20,11 +20,13 @@ public class TurnModule : ModuleBase
         try{
             Quaternion currentRotation = objectProperties.GetProperty<Quaternion>(PropertyType.Rotation);
             objectProperties.SetProperty(PropertyType.Rotation, currentRotation * Quaternion.Euler(rotationToApply));
+
         }
         catch(PropertyNotFoundException){
             objectProperties.SetProperty(PropertyType.Rotation, Quaternion.Euler(rotationToApply));
-        }
 
+        }
+        assemblyObject.Value.ApplyProperties();
         SendObject(assemblyObject);
     }
 
@@ -40,14 +42,14 @@ public class TurnModule : ModuleBase
         switch(valueDropdown.value)
         {
             case 0:
-                newRotation = new Vector3(45, 0, 0);
+                newRotation = new Vector3(0, 45, 0);
                 break;
             case 1:
-                newRotation = new Vector3(-45, 0, 0);
+                newRotation = new Vector3(0, -45, 0);
                 break;
         }
+        
         rotationToApply = newRotation;
-                
         UIScreen.SetActive(false);
         ModulesManager.Instance.DeselectModule();
     }

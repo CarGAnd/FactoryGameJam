@@ -6,6 +6,8 @@ public class AssemblyObject : MonoBehaviour
 {
     [SerializeField]
     ObjectProperties objectProperties;
+    [SerializeField]
+    Renderer lollipopRenderer;
     
     private Properties properties = null;
     public Properties Properties 
@@ -14,7 +16,7 @@ public class AssemblyObject : MonoBehaviour
         set 
         {
             properties = value; 
-            //ApplyProperties();
+            ApplyProperties();
         } 
     }
     private void Awake(){
@@ -46,26 +48,22 @@ public class AssemblyObject : MonoBehaviour
         TravelAssemblyLine.UpdateTravel();
     }
 
-    private void ApplyProperties()
+    public void ApplyProperties()
     {
         //Update rotation
         Quaternion rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
 
-        if(rotation != null)
-        {
-            transform.rotation = rotation;
-        }
-        //Update color
+        transform.rotation = rotation;
+
+
         Color color = properties.GetProperty<Color>(PropertyType.Color);
-        if(color != null)
-        {
-            Renderer renderer = GetComponent<Renderer>();
-            if(renderer != null)
-            {
-                renderer.sharedMaterial.color = color;
-            }
-        }
         
+        MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
+        lollipopRenderer.GetPropertyBlock(propBlock, 0);
+
+        propBlock.SetColor("_BaseColor", color);
+
+        lollipopRenderer.SetPropertyBlock(propBlock, 0);
     }
     
 }

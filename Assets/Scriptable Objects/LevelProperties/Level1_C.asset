@@ -23,16 +23,16 @@ MonoBehaviour:
   - name: 0 Degrees
     rotation: {x: 0, y: 0, z: 0}
   - name: 45 Degrees
-    rotation: {x: 45, y: 0, z: 0}
+    rotation: {x: 0, y: 45, z: 0}
   - name: 90 Degrees
-    rotation: {x: 90, y: 0, z: 0}
+    rotation: {x: 0, y: 90, z: 0}
   - name: 135 Degrees
-    rotation: {x: 135, y: 0, z: 0}
+    rotation: {x: 0, y: 135, z: 0}
   - name: 180 Degrees
-    rotation: {x: 180, y: 0, z: 0}
+    rotation: {x: 0, y: 180, z: 0}
   - name: 225 Degrees
-    rotation: {x: 225, y: 0, z: 0}
+    rotation: {x: 0, y: 225, z: 0}
   - name: 270 Degrees
-    rotation: {x: 270, y: 0, z: 0}
+    rotation: {x: 0, y: 270, z: 0}
   - name: 315 Degrees
-    rotation: {x: 315, y: 0, z: 0}
+    rotation: {x: 0, y: 315, z: 0}
