@@ -14,7 +14,19 @@ public class BezierLineRenderer : MonoBehaviour
         
         transform.localScale = new Vector3(1,1,1);
 
-        EasySmooth(positions, curveResolution, bendFactor);
+        Straight(positions);
+
+        //EasySmooth(positions, curveResolution, bendFactor);
+    }
+
+    private void Straight(Vector3[] positions) {
+        Line.positionCount = positions.Count();
+
+        // Calculate and set the positions of points on the curve
+        for (int i = 0; i <= positions.Count() - 1; i++)
+        {
+            Line.SetPosition(i, positions[i]);
+        }
     }
 
     public List<Vector3> GetPositions() {

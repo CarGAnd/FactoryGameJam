@@ -137,8 +137,10 @@ public class ConnectorController : MonoBehaviour
 
     private void PreparePositionArray()
     {
+        positions[0].z = positions[0].z + 0.5f;
+        positions[3].z = positions[3].z - 0.5f;
         float midX = Mathf.Abs(positions[0].x - positions[3].x) / 2;
-        float midY = (positions[0].y - positions[3].y) / 2;
+        float midY = (positions[0].y + positions[3].y) / 2;
 
         if (positions[0].x > positions[3].x)
             midX = -midX;
