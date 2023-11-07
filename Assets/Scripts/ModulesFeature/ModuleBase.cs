@@ -27,14 +27,5 @@ public abstract class ModuleBase : MonoBehaviour
         AssemblyObject.InitializeAtAssemblyLine(assembly, AssemblyObject.Value.transform);
     }
 
-    public void DestroyModule() {
-        if (!ModuleIsRemoveable) {
-            return;
-        }
-
-        moduleAssemblyController.DisconnectAllAssemblies();
-        Destroy(gameObject);
-    }
-
     public abstract void SelectModule();
 }

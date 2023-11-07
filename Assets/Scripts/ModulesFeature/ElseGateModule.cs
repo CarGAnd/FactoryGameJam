@@ -4,8 +4,10 @@ using UnityEngine;
 using Sirenix.OdinInspector;
 using TMPro;
 using System.Linq;
+using System;
+using UnityEngine.UI;
 
-public class ElseGateModule : ModuleBase
+public class ElseGateModule : ConfigurableModule
 {
     [SerializeField]
     private PropertyType propertyToCompare;
@@ -19,22 +21,37 @@ public class ElseGateModule : ModuleBase
     private Vector3 rotationToCompare;
 
     private Quaternion rotationToCompareQuat;
-
-    [Header("UI")]
-    [SerializeField]
-    private GameObject UI;
-
-    [SerializeField]
     private TMP_Dropdown propertyTypeDropdown;
-    [SerializeField]
     private TMP_Dropdown propertyValueDropdown;
 
     void Start(){
         if(propertyToCompare == PropertyType.Rotation){
             rotationToCompareQuat = Quaternion.Euler(rotationToCompare);
         }
-        
+
+        Initialize();
     }
+
+    protected override void SetUIElements()
+    {
+        base.SetUIElements();
+
+        UI = UICanvas.transform.Find("ModuleUI/ElseGate_UI_Panel").gameObject;
+
+        if (UI == null) {
+            Debug.LogWarning ("ElseGate UI not found.");
+            return;
+        }
+
+        Button[] buttons = UI.GetComponentsInChildren<Button>();
+        deleteButton = buttons[0];
+        saveButton = buttons[1];
+
+        TMP_Dropdown[] dropdowns = UI.GetComponentsInChildren<TMP_Dropdown>();
+        propertyTypeDropdown = dropdowns[0];
+        propertyValueDropdown = dropdowns[1];
+    }
+
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
         switch(propertyToCompare)
@@ -87,17 +104,13 @@ public class ElseGateModule : ModuleBase
         return property.CompareProperty(propertyToCompare, value);
     }
 
-    void OnDisable(){
-        UI.SetActive(false);
-    }
-
     public override void SelectModule()
     {
-        UI.SetActive(true);
+        base.SelectModule();
         PopulateDropdowns();
     }
     
-    public void ApplySettings()
+    public override void ApplySettings()
     {
         switch(propertyTypeDropdown.value)
         {
@@ -141,6 +154,8 @@ public class ElseGateModule : ModuleBase
                 Debug.LogError("Unsupported property type: " + propertyToCompare);
                 return;
         }
+
+        base.ApplySettings();
         UI.SetActive(false);
     }
 

@@ -3,16 +3,20 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
+using UnityEngine.UI;
 
-public class TurnModule : ModuleBase
+public class TurnModule : ConfigurableModule
 {
     [SerializeField]
     private Vector3 rotationToApply;
 
     [SerializeField]
-    private GameObject UIScreen;
-    [SerializeField]
     private TMP_Dropdown valueDropdown;
+
+    private void Start() {
+        Initialize();
+    }
 
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
@@ -28,13 +32,7 @@ public class TurnModule : ModuleBase
         SendObject(assemblyObject);
     }
 
-    public override void SelectModule()
-    {
-        UIScreen.SetActive(true);
-        
-    }
-
-    public void ApplySettings()
+    public override void ApplySettings()
     {
         Vector3 newRotation = new Vector3(0, 0, 0);
         switch(valueDropdown.value)
@@ -47,7 +45,26 @@ public class TurnModule : ModuleBase
                 break;
         }
         rotationToApply = newRotation;
-                
-        UIScreen.SetActive(false);
+        
+        base.ApplySettings();
+        UI.SetActive(false);
+    }
+
+    protected override void SetUIElements()
+    {
+        base.SetUIElements();
+
+        UI = UICanvas.transform.Find("ModuleUI/TurnGate_UI_Panel").gameObject;
+
+        if (UI == null) {
+            Debug.LogWarning ("ElseGate UI not found.");
+            return;
+        }
+
+        Button[] buttons = UI.GetComponentsInChildren<Button>();
+        deleteButton = buttons[0];
+        saveButton = buttons[1];
+
+        valueDropdown = UI.GetComponentInChildren<TMP_Dropdown>();;
     }
 }
