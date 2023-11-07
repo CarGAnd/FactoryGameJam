@@ -7,19 +7,20 @@ public class AssemblyObject : MonoBehaviour
     [SerializeField]
     ObjectProperties objectProperties;
     
-    Properties properties = null;
+    private Properties properties = null;
     public Properties Properties 
     { 
         get => properties; 
-        private set 
+        set 
         {
             properties = value; 
             //ApplyProperties();
         } 
     }
     private void Awake(){
-        if(objectProperties != null)
+        if (objectProperties != null && properties == null)
             Properties = objectProperties.CreateProperties();
+        
     }
 
     ITravelAssemblyLine<AssemblyObject> travelAssemblyLine;

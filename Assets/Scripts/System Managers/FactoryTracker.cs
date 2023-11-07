@@ -48,7 +48,7 @@ public class FactoryTracker : ScriptableObject
     public int GetNumObjectsInLevel() {
         int total = 0;
         foreach(SpawnerModule sm in spawners) {
-            total += sm.TotalNumSpawns;
+            total += sm.GetTotalNumSpawns();
         }
         return total;
     }

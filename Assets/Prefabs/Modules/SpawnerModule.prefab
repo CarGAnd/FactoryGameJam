@@ -260,6 +260,11 @@ MonoBehaviour:
     subscribeOnPlay: 1
   timeBetweenSpawns: 1
   <TotalNumSpawns>k__BackingField: 10
+  spawns:
+  - <TotalNumSpawns>k__BackingField: 5
+    levelProperties: {fileID: 11400000, guid: 59c28b87067fa4449a467845b41e4cd0, type: 2}
+    colorName: Blue
+    rotationName: 90 Degrees
   assemblyLinePrefab: {fileID: 6295694056182817170, guid: fbb81b644f66baf4283806cef2c6118a,
     type: 3}
 --- !u!1 &6807752892782733541
