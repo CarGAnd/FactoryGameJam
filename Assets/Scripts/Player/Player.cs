@@ -19,6 +19,7 @@ public class Player : MonoBehaviour
         playerControls.Modules.PlaceTurnGate.performed += OnPlaceTurnModule;
         playerControls.Modules.PlaceElseGate.performed += OnPlaceElseGateModule;
         playerControls.Modules.SelectModule.performed += OnSelectModule;
+        playerControls.Modules.PlaceMergeGate.performed += OnPlaceMergeModule;
     }
     private void PlaceModule(ModuleTypes moduleTypes)
     {
@@ -52,6 +53,14 @@ public class Player : MonoBehaviour
         if (buildModeEnabled)
         {
             PlaceModule(ModuleTypes.ElseGateModule);
+        }
+    }
+
+    private void OnPlaceMergeModule(InputAction.CallbackContext context)
+    {
+        if (buildModeEnabled)
+        {
+            PlaceModule(ModuleTypes.MergeModule);
         }
     }
 

@@ -40,6 +40,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "PlaceMergeGate",
+                    "type": "Button",
+                    "id": "6cf2d337-ac9a-4f27-b840-b5e942104f41",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -95,6 +104,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SelectModule",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7abd3f69-1ea5-423d-8e39-3d2ad3dab5ad",
+                    "path": "<Keyboard>/t",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlaceMergeGate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

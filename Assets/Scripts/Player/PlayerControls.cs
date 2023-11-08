@@ -62,6 +62,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PlaceMergeGate"",
+                    ""type"": ""Button"",
+                    ""id"": ""6cf2d337-ac9a-4f27-b840-b5e942104f41"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -119,6 +128,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""SelectModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7abd3f69-1ea5-423d-8e39-3d2ad3dab5ad"",
+                    ""path"": ""<Keyboard>/t"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PlaceMergeGate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -131,6 +151,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Modules_PlaceTurnGate = m_Modules.FindAction("PlaceTurnGate", throwIfNotFound: true);
         m_Modules_ToggleBuildMode = m_Modules.FindAction("ToggleBuildMode", throwIfNotFound: true);
         m_Modules_SelectModule = m_Modules.FindAction("SelectModule", throwIfNotFound: true);
+        m_Modules_PlaceMergeGate = m_Modules.FindAction("PlaceMergeGate", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -196,6 +217,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Modules_PlaceTurnGate;
     private readonly InputAction m_Modules_ToggleBuildMode;
     private readonly InputAction m_Modules_SelectModule;
+    private readonly InputAction m_Modules_PlaceMergeGate;
     public struct ModulesActions
     {
         private @PlayerControls m_Wrapper;
@@ -204,6 +226,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         public InputAction @PlaceTurnGate => m_Wrapper.m_Modules_PlaceTurnGate;
         public InputAction @ToggleBuildMode => m_Wrapper.m_Modules_ToggleBuildMode;
         public InputAction @SelectModule => m_Wrapper.m_Modules_SelectModule;
+        public InputAction @PlaceMergeGate => m_Wrapper.m_Modules_PlaceMergeGate;
         public InputActionMap Get() { return m_Wrapper.m_Modules; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -225,6 +248,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SelectModule.started += instance.OnSelectModule;
             @SelectModule.performed += instance.OnSelectModule;
             @SelectModule.canceled += instance.OnSelectModule;
+            @PlaceMergeGate.started += instance.OnPlaceMergeGate;
+            @PlaceMergeGate.performed += instance.OnPlaceMergeGate;
+            @PlaceMergeGate.canceled += instance.OnPlaceMergeGate;
         }
 
         private void UnregisterCallbacks(IModulesActions instance)
@@ -241,6 +267,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SelectModule.started -= instance.OnSelectModule;
             @SelectModule.performed -= instance.OnSelectModule;
             @SelectModule.canceled -= instance.OnSelectModule;
+            @PlaceMergeGate.started -= instance.OnPlaceMergeGate;
+            @PlaceMergeGate.performed -= instance.OnPlaceMergeGate;
+            @PlaceMergeGate.canceled -= instance.OnPlaceMergeGate;
         }
 
         public void RemoveCallbacks(IModulesActions instance)
@@ -264,5 +293,6 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         void OnPlaceTurnGate(InputAction.CallbackContext context);
         void OnToggleBuildMode(InputAction.CallbackContext context);
         void OnSelectModule(InputAction.CallbackContext context);
+        void OnPlaceMergeGate(InputAction.CallbackContext context);
     }
 }

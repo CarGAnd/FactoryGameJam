@@ -146,7 +146,6 @@ public class ElseGateModule : ConfigurableModule
         }
 
         base.ApplySettings();
-        UI.SetActive(false);
     }
 
     public void PopulateDropdowns()

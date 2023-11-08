@@ -47,7 +47,6 @@ public class TurnModule : ConfigurableModule
         rotationToApply = newRotation;
 
         base.ApplySettings();
-        UI.SetActive(false);
     }
 
     protected override void SetUIElements()

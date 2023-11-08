@@ -53,6 +53,8 @@ MonoBehaviour:
     type: 3}
   elseGateModulePrefab: {fileID: 5819931380753502364, guid: 2d27a0720bd254343af4961287732efd,
     type: 3}
+  mergeModulePrefab: {fileID: 5819931380753502364, guid: 7329d2c2380fbeb4a8f784b58bae98fe,
+    type: 3}
   cam: {fileID: 0}
   groundLayer:
     serializedVersion: 2

@@ -7,7 +7,8 @@ using UnityEngine;
 public enum ModuleTypes
 {
     TurnModule,
-    ElseGateModule
+    ElseGateModule,
+    MergeModule,
 }
 
 public class ModulesManager : MonoBehaviour
@@ -19,6 +20,8 @@ public class ModulesManager : MonoBehaviour
     private GameObject turnModulePrefab;
     [SerializeField]
     private GameObject elseGateModulePrefab;
+    [SerializeField]
+    private GameObject mergeModulePrefab;
     [SerializeField]
     private Camera cam;
     public LayerMask groundLayer;
@@ -151,6 +154,8 @@ public class ModulesManager : MonoBehaviour
                 return turnModulePrefab;
             case ModuleTypes.ElseGateModule:
                 return elseGateModulePrefab;
+            case ModuleTypes.MergeModule:
+                return mergeModulePrefab;
             default:
                 Debug.LogError("Unsupported module type: " + moduleType);
                 return null;
