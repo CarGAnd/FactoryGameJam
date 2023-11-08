@@ -7,7 +7,6 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
-    [SerializeField] private LevelManager levelManager;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
     [SerializeField] private IntRef levelScore;
@@ -39,6 +38,12 @@ public class UIController : MonoBehaviour
         scoreText.text = "Score: " + newScore;
     }
 
+    private void ShowGameUI() {
+        loseUI.SetActive(false);
+        winUI.SetActive(false);
+        gameplayUI.SetActive(true);
+    }
+
     private void ShowLoseUI() {
         loseUI.SetActive(true);
         winUI.SetActive(false);
@@ -52,7 +57,22 @@ public class UIController : MonoBehaviour
     }
 
     public void StartSpawnPhase() {
-        levelManager.GoToRunPhase();
+        if(LevelManager.Instance != null) {
+            LevelManager.Instance.GoToRunPhase();
+        }
+        else {
+            Debug.LogError("UI requires a LevelManager in the scene to change state");
+        } 
+    }
+
+    public void GoToBuildPhase() {
+        if (LevelManager.Instance != null) {
+            LevelManager.Instance.GoToBuildPhase();
+            ShowGameUI();
+        }
+        else {
+            Debug.LogError("UI requires a LevelManager in the scene to change state");
+        }
     }
 
     public void RestartLevel() {
