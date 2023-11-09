@@ -12,19 +12,48 @@ public class LevelDataHolder : ScriptableObject
     List<LevelData> levelData;
 
     public LevelData GetCurrentLevelInformation() {
-        return levelData.Find(info => info.SceneIndex == SceneManager.GetActiveScene().buildIndex);
+        LevelData? data = levelData.Find(info => info.SceneIndex == SceneManager.GetActiveScene().buildIndex);
+
+        return CheckValid(data);
     }
 
     public LevelData GetLevelInformation(int index) {
-        return levelData.Find(info => info.SceneIndex == index);
+        LevelData? data = levelData.Find(info => info.SceneIndex == index);
+
+        return CheckValid(data);
     }
 
     public LevelData GetLevelInformation(Scene scene) {
-        return levelData.Find(info => info.Scene == scene);
+        LevelData? data = levelData.Find(info => info.Scene == scene);
+
+        return CheckValid(data);
     }
 
     public LevelData GetLevelInformation(string name) {
-        return levelData.Find(info => info.SceneName == name);
+        LevelData? data = levelData.Find(info => info.SceneName == name);
+
+        return CheckValid(data);
+    }
+
+    private LevelData CheckValid(LevelData? data) {
+        if (data == null) {
+            IfEmptyDebug(SceneManager.GetActiveScene().buildIndex);
+            return default;
+        }
+
+        return data.Value;
+    }
+
+    private void IfEmptyDebug<T>(T type) {
+        if (type is string)
+            Debug.LogWarning($"A scene by the name of {type} was not found. Check Build Settings if the scene has been added, and LevelDataHolder if the name is correct.");
+        else if (type is int)
+            Debug.LogWarning($"A scene with a buildindex of {type} was not found. Check Build Settings if the scene has been added.");
+        else if (type is Scene) {
+            Scene? scene = type as Scene?;
+            Debug.LogWarning($"The scene with name of {scene.Value.name} and buildindex of {scene.Value.buildIndex} was not found. Check Build Settings if the scene has been added, and LevelDataHolder if the name is correct.");
+        }
+            
     }
 
     private void UpdateByIndex()

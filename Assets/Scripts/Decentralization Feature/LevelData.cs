@@ -14,6 +14,7 @@ public struct LevelData {
     private LevelProperties levelProperties;
 
     private Scene scene;
+    private string savedSceneName;
 
     public int SceneIndex { get => sceneIndex; private set => sceneIndex = value; }
     public string SceneName { get => sceneName; private set => sceneName = value; }
@@ -34,5 +35,28 @@ public struct LevelData {
         }
 
         SceneName = Scene.name;
+        savedSceneName = SceneName;
+    }
+
+    [ShowIf("@sceneName != savedSceneName")]
+    [Button]
+    public void TryGetSceneByName() {
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        bool sceneFound = false;
+
+        for (int i = 0; i < sceneCount; i++) {
+            Scene sceneAtIndex = SceneManager.GetSceneByBuildIndex(i);
+            if (sceneAtIndex.name == SceneName) {
+                savedSceneName = SceneName;
+                Scene = sceneAtIndex;
+                SceneIndex = i;
+                sceneFound = true;
+                break;
+            }
+        }
+
+        if (!sceneFound) {
+            Debug.LogWarning($"No scene by the name of {sceneName} can be found. Make sure it is added in Build Settings, or alternatively provide its build index.");
+        } 
     }
 }
