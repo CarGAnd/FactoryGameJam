@@ -7,17 +7,15 @@ using System.Linq;
 [CreateAssetMenu(fileName = "ObjectProperties", menuName = "Properties/ObjectProperties", order = 1)]
 public class ObjectProperties : ScriptableObject
 {
-    public LevelProperties levelProperties;
-
-    [ShowIf("@PropertyDropdownHelper.IsColorAvailable(levelProperties)")]
-    [ValueDropdown("@PropertyDropdownHelper.GetColorNames(levelProperties)")]
+    [ShowIf("@PropertyDropdownHelper.IsColorAvailable(LevelDataGetter.GetCurrent().LevelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetColorNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string colorName;
     
-    [ShowIf("@PropertyDropdownHelper.IsRotationAvailable(levelProperties)")]
-    [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(levelProperties)")]
+    [ShowIf("@PropertyDropdownHelper.IsRotationAvailable(LevelDataGetter.GetCurrent().LevelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string rotationName;
     public Properties CreateProperties()
     {
-        return Properties.CreateProperties(levelProperties, colorName, rotationName);
+        return Properties.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties, colorName, rotationName);
     }
 }

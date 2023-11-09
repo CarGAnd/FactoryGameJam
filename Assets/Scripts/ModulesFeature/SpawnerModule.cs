@@ -73,17 +73,15 @@ public class SpawnerModule : ModuleBase
 [System.Serializable]
 public class SpawnWave {
     [field: SerializeField] public int TotalNumSpawns { get; private set; }
-    //TODO: LevelProperties should not be here
-    [SerializeField] private LevelProperties levelProperties;
 
-    [ValueDropdown("@PropertyDropdownHelper.GetColorNames(levelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetColorNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string colorName;
 
-    [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(levelProperties)")]
+    [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string rotationName;
 
     public Properties CreateProperties() {
-        return Properties.CreateProperties(levelProperties, colorName, rotationName);
+        return Properties.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties, colorName, rotationName);
     }
 }
 

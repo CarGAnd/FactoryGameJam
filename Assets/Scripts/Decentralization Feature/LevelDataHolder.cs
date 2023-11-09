@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 [CreateAssetMenu(fileName = "LevelInformation", menuName = "Level/LevelInformation", order = 0)]
 public class LevelDataHolder : ScriptableObject
 {
+    [InfoBox("It is only possible to set scene by index / name, while in that specific scene is loaded, and only if the scene has been added in Build Settings.")]
     [SerializeField]
     [ListDrawerSettings(DefaultExpandedState = true, OnTitleBarGUI = "UpdateByIndex")]
     List<LevelData> levelData;

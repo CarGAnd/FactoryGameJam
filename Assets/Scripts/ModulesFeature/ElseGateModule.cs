@@ -125,7 +125,7 @@ public class ElseGateModule : ConfigurableModule
                     break;
                 }
                 comparisonText.text = colorName;
-                Color colorToCompare = (Color) LevelPropertiesHolder.Instance.Properties.GetPropertyByName(colorName);
+                Color colorToCompare = (Color) LevelDataGetter.GetCurrent().LevelProperties.GetPropertyByName(colorName);
                 SetColorToCompare(colorToCompare);
                 break;
             case PropertyType.Rotation:
@@ -136,7 +136,7 @@ public class ElseGateModule : ConfigurableModule
                     break;
                 }
                 comparisonText.text = rotationName;
-                Quaternion rotationToCompareQuat = (Quaternion) LevelPropertiesHolder.Instance.Properties.GetPropertyByName(rotationName);
+                Quaternion rotationToCompareQuat = (Quaternion) LevelDataGetter.GetCurrent().LevelProperties.GetPropertyByName(rotationName);
                 rotationToCompare = rotationToCompareQuat.eulerAngles;
                 SetRotationToCompare(rotationToCompare);
                 break;
@@ -150,16 +150,14 @@ public class ElseGateModule : ConfigurableModule
 
     public void PopulateDropdowns()
     {
-        LevelProperties levelProperties = LevelPropertiesHolder.Instance.Properties;
-
         propertyTypeDropdown.ClearOptions();
         propertyTypeDropdown.AddOptions(new List<string> { "Color", "Rotation" });
 
         propertyTypeDropdown.onValueChanged.AddListener(delegate {
-            UpdatePropertyValueDropdown(levelProperties);
+            UpdatePropertyValueDropdown(LevelDataGetter.GetCurrent().LevelProperties);
         });
 
-        UpdatePropertyValueDropdown(levelProperties);
+        UpdatePropertyValueDropdown(LevelDataGetter.GetCurrent().LevelProperties);
     }
 
     private void UpdatePropertyValueDropdown(LevelProperties levelProperties)
@@ -168,11 +166,11 @@ public class ElseGateModule : ConfigurableModule
 
         if (propertyTypeDropdown.value == 0) // Assuming 'Color' is the first option
         {
-            propertyValueDropdown.AddOptions(PropertyDropdownHelper.GetColorNames(levelProperties).ToList());
+            propertyValueDropdown.AddOptions(PropertyDropdownHelper.GetColorNames(LevelDataGetter.GetCurrent().LevelProperties).ToList());
         }
         else // Assuming 'Rotation' is the second option
         {
-            propertyValueDropdown.AddOptions(PropertyDropdownHelper.GetRotationNames(levelProperties).ToList());
+            propertyValueDropdown.AddOptions(PropertyDropdownHelper.GetRotationNames(LevelDataGetter.GetCurrent().LevelProperties).ToList());
         }
     }
 }

@@ -1,5 +1,8 @@
 using System;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities.Editor;
+using Unity.VisualScripting;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,7 +18,6 @@ public struct LevelData {
 
     private Scene scene;
     private string savedSceneName;
-
     public int SceneIndex { get => sceneIndex; private set => sceneIndex = value; }
     public string SceneName { get => sceneName; private set => sceneName = value; }
     public Scene Scene { get => scene; private set => scene = value; }

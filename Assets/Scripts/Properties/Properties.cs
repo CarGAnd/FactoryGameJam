@@ -80,7 +80,7 @@ public class Properties
 
         if(!string.IsNullOrEmpty(colorName))
         {
-            var colorValue = levelProperties.GetPropertyByName(colorName);
+            var colorValue = LevelDataGetter.GetCurrent().LevelProperties.GetPropertyByName(colorName);
             if(colorValue != null)
             {
                 properties.SetProperty(PropertyType.Color, colorValue);
@@ -89,7 +89,7 @@ public class Properties
 
         if(!string.IsNullOrEmpty(rotationName))
         {
-            var rotationValue = levelProperties.GetPropertyByName(rotationName);
+            var rotationValue = LevelDataGetter.GetCurrent().LevelProperties.GetPropertyByName(rotationName);
             if(rotationValue != null)
             {
                 properties.SetProperty(PropertyType.Rotation, rotationValue);
