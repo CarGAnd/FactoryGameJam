@@ -9,32 +9,32 @@ public class LevelDataHolder : ScriptableObject
 {
     [SerializeField]
     [ListDrawerSettings(DefaultExpandedState = true, OnTitleBarGUI = "UpdateByIndex")]
-    List<LevelData> levelInformations;
+    List<LevelData> levelData;
 
     public LevelData GetCurrentLevelInformation() {
-        return levelInformations.Find(info => info.SceneIndex == SceneManager.GetActiveScene().buildIndex);
+        return levelData.Find(info => info.SceneIndex == SceneManager.GetActiveScene().buildIndex);
     }
 
     public LevelData GetLevelInformation(int index) {
-        return levelInformations.Find(info => info.SceneIndex == index);
+        return levelData.Find(info => info.SceneIndex == index);
     }
 
     public LevelData GetLevelInformation(Scene scene) {
-        return levelInformations.Find(info => info.Scene == scene);
+        return levelData.Find(info => info.Scene == scene);
     }
 
     public LevelData GetLevelInformation(string name) {
-        return levelInformations.Find(info => info.SceneName == name);
+        return levelData.Find(info => info.SceneName == name);
     }
 
     private void UpdateByIndex()
     {
         if (SirenixEditorGUI.ToolbarButton(EditorIcons.Refresh))
         {
-            if (levelInformations == null || levelInformations.Count < 1)
+            if (levelData == null || levelData.Count < 1)
                 return;
 
-            foreach (LevelData levelInformation in levelInformations) {
+            foreach (LevelData levelInformation in levelData) {
                 levelInformation.GetSceneNameByIndex();
             }
         }
