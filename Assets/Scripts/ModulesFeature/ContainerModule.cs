@@ -11,6 +11,7 @@ public class ContainerModule : ModuleBase
 
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
+    [SerializeField] private GameEvent runPhaseStartedEvent;
 
     [SerializeField] private LevelProperties levelProperties;
 
@@ -32,12 +33,20 @@ public class ContainerModule : ModuleBase
         base.Awake();
         ModuleIsRemoveable = false;
     }
+
     private void OnEnable() {
+        runPhaseStartedEvent.EventInvoked += ResetCollectedCounts;
         factoryTracker.RegisterContainer(this);
     }
 
     private void OnDisable() {
+        runPhaseStartedEvent.EventInvoked -= ResetCollectedCounts;
         factoryTracker.DeregisterContainer(this);
+    }
+
+    private void ResetCollectedCounts() {
+        NumCorrectItemsCollected = 0;
+        NumWrongItemsCollected = 0;
     }
     
     private void Start() {

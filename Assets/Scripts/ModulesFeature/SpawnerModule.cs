@@ -34,6 +34,7 @@ public class SpawnerModule : ModuleBase
     }
 
     private void StartSpawning() {
+        spawner.Reset();
         StartCoroutine(StartSpawningObjects());
     }
 
@@ -98,6 +99,10 @@ public class Spawner {
 
     public Spawner(List<SpawnWave> waves) {
         this.wavesToSpawn = waves;
+        Reset();
+    }
+
+    public void Reset() {
         StartWaveNumber(0);
         IsFinished = false;
     }

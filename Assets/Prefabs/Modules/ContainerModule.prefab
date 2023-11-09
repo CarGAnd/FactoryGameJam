@@ -257,10 +257,15 @@ MonoBehaviour:
     scriptableObject: {fileID: 11400000, guid: ec8d9f525501e414d9e981fc80300b0a, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
-  properties:
-  - propertyType: 1
-    colorValue: {r: 0, g: 0, b: 0, a: 0}
-    rotationValue: {x: 0, y: 0, z: 0}
+  runPhaseStartedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
+  levelProperties: {fileID: 0}
+  colorName: 
+  rotationName: 
 --- !u!1 &6807752892782733541
 GameObject:
   m_ObjectHideFlags: 0
