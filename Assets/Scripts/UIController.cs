@@ -69,6 +69,7 @@ public class UIController : MonoBehaviour
         if (LevelManager.Instance != null) {
             LevelManager.Instance.GoToBuildPhase();
             ShowGameUI();
+            levelScore.Value = 0;
         }
         else {
             Debug.LogError("UI requires a LevelManager in the scene to change state");

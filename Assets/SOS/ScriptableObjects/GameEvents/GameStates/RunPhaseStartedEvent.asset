@@ -10,5 +10,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db8a75ad0ee655a4d92dcdba3c1b7bc6, type: 3}
-  m_Name: SpawnPhaseStartedEvent
+  m_Name: RunPhaseStartedEvent
   m_EditorClassIdentifier: 
