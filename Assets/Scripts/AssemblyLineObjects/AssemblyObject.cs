@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AssemblyObject : MonoBehaviour
 {
+    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField]
     ObjectProperties objectProperties;
     [SerializeField]
@@ -23,6 +24,11 @@ public class AssemblyObject : MonoBehaviour
         if (objectProperties != null && properties == null)
             Properties = objectProperties.CreateProperties();
         
+    }
+
+    public void DestroyObject() {
+        factoryTracker.OnObjectDestroyed.Invoke();
+        Destroy(gameObject);
     }
 
     ITravelAssemblyLine<AssemblyObject> travelAssemblyLine;

@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour
     }
 
     private IEnumerator StartBuildPhase() {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.2f);
         GoToBuildPhase();
     }
 

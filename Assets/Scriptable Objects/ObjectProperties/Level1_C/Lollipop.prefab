@@ -151,6 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28377b5dda50a4b4ebcb28b9dff8c4f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
   objectProperties: {fileID: 11400000, guid: e7f6055912feb7b439342c22b509ce42, type: 2}
   lollipopRenderer: {fileID: 4805249071730125117}
 --- !u!1 &8892210209504019474
