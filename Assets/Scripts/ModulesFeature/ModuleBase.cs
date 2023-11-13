@@ -31,4 +31,15 @@ public abstract class ModuleBase : MonoBehaviour
     }
 
     public abstract void SelectModule();
+
+    public int GetNumberOfConnectedOutputs() {
+        int total = 0;
+        List<IAssembly> outputs = moduleAssemblyController.GetOutputAssemblies();
+        foreach(IAssembly ia in outputs) {
+            if (ia.IsConnected) {
+                total += 1;
+            }
+        }
+        return total;
+    }
 }
