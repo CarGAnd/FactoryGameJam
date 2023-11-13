@@ -31,6 +31,10 @@ public class TurnModule : ConfigurableModule
         SendObject(assemblyObject);
     }
 
+    private void Start() {
+        ApplySettings();
+    }
+
     public override void ApplySettings()
     {
         Vector3 newRotation = new Vector3(0, 0, 0);
