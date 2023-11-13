@@ -2403,6 +2403,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
+  buildPhaseStartedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 9b10340c89eeb5b45adbe2f93c052383, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   spawnPhaseStartedEvent:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
@@ -2410,17 +2416,15 @@ MonoBehaviour:
     allowInvoking: 1
     subscribeOnPlay: 1
   timeBetweenSpawns: 1
+  timeBetweenGhostSpawns: 3
   spawns:
   - <TotalNumSpawns>k__BackingField: 5
-    levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
     colorName: Purple
     rotationName: 0 Degrees
   - <TotalNumSpawns>k__BackingField: 5
-    levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
     colorName: Yellow
     rotationName: 0 Degrees
   - <TotalNumSpawns>k__BackingField: 5
-    levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
     colorName: Turquise
     rotationName: 0 Degrees
   assemblyLinePrefab: {fileID: 7064534236754089873, guid: 012a58685e11b1e438982af5643b0a32,

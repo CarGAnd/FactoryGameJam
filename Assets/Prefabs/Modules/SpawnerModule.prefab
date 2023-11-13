@@ -252,6 +252,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   factoryTracker: {fileID: 11400000, guid: 11564066cbfe05644b0b28ffec747c81, type: 2}
+  buildPhaseStartedEvent:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 9b10340c89eeb5b45adbe2f93c052383, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   spawnPhaseStartedEvent:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5845f4839a51c9b4daec5f8799282539, type: 2}
@@ -259,10 +265,9 @@ MonoBehaviour:
     allowInvoking: 1
     subscribeOnPlay: 1
   timeBetweenSpawns: 1
-  <TotalNumSpawns>k__BackingField: 10
+  timeBetweenGhostSpawns: 3
   spawns:
   - <TotalNumSpawns>k__BackingField: 5
-    levelProperties: {fileID: 11400000, guid: 59c28b87067fa4449a467845b41e4cd0, type: 2}
     colorName: Blue
     rotationName: 90 Degrees
   assemblyLinePrefab: {fileID: 6295694056182817170, guid: fbb81b644f66baf4283806cef2c6118a,

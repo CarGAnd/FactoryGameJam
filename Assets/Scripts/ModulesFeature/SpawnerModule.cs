@@ -7,35 +7,56 @@ using Sirenix.OdinInspector;
 public class SpawnerModule : ModuleBase
 {
     [SerializeField] private FactoryTracker factoryTracker;
+    [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent spawnPhaseStartedEvent;
+
+    //TODO: make these two SOS objects
     [SerializeField] private float timeBetweenSpawns;
-    
+    [SerializeField] private float timeBetweenGhostSpawns;
+
     [SerializeField] private List<SpawnWave> spawns;
 
     [SerializeField]
     private GameObject assemblyLinePrefab;
 
     private Spawner spawner;
+    private GhostSpawner ghostSpawner;
 
     protected override void Awake() {
         base.Awake();
         ModuleIsRemoveable = false;
-        spawner = new Spawner(spawns);
+        spawner = new Spawner(spawns, assemblyLinePrefab);
+        ghostSpawner = new GhostSpawner(spawns, assemblyLinePrefab);
     }
 
     private void OnEnable() {
         spawnPhaseStartedEvent.EventInvoked += StartSpawning;
+        buildPhaseStartedEvent.EventInvoked += StartSpawningGhosts;
         factoryTracker.RegisterSpawner(this);
     }
 
     private void OnDisable() {
         spawnPhaseStartedEvent.EventInvoked -= StartSpawning;
+        buildPhaseStartedEvent.EventInvoked -= StartSpawningGhosts;
         factoryTracker.DeregisterSpawner(this);
     }
 
+    private void StartSpawningGhosts() {
+        ghostSpawner.Reset();
+        StartCoroutine(SpawnGhostsCoroutine());
+    }
+
+    private IEnumerator SpawnGhostsCoroutine() {
+        while (!ghostSpawner.IsFinished) {
+            CreateAndSendObject(ghostSpawner);
+            yield return new WaitForSeconds(timeBetweenGhostSpawns);
+        }
+    }
+
     private void StartSpawning() {
+        ghostSpawner.StopSpawning();
         spawner.Reset();
-        StartCoroutine(StartSpawningObjects());
+        StartCoroutine(SpawnObjectsCoroutine());
     }
 
     public int GetTotalNumSpawns() {
@@ -46,16 +67,16 @@ public class SpawnerModule : ModuleBase
         return total;
     }
 
-    private void CreateAndSendObject() {
-        AssemblyObject assemblyLineObject = Instantiate(assemblyLinePrefab, transform.position, Quaternion.identity, transform).GetComponent<AssemblyObject>();
-        Properties props = spawner.GetNextObject();
-        assemblyLineObject.Properties = props;
+    private void CreateAndSendObject(Spawner spawner) {
+        AssemblyObject assemblyLineObject = spawner.GetNextObject();
+        assemblyLineObject.transform.position = transform.position;
+        assemblyLineObject.transform.parent = transform;
         SendObject(assemblyLineObject.TravelAssemblyLine);
     }
 
-    private IEnumerator StartSpawningObjects() {
+    private IEnumerator SpawnObjectsCoroutine() {
         while (!spawner.IsFinished) {
-            CreateAndSendObject();
+            CreateAndSendObject(spawner);
             yield return new WaitForSeconds(timeBetweenSpawns);
         }
     }
@@ -87,16 +108,18 @@ public class SpawnWave {
 
 public class Spawner {
 
-    public bool IsFinished { get; private set; }
+    public bool IsFinished { get; protected set; }
 
-    private List<SpawnWave> wavesToSpawn;
+    protected List<SpawnWave> wavesToSpawn;
 
-    private SpawnWave currentWave;
-    private int currentWaveNumber;
-    private int spawnLeftThisWave;
+    protected SpawnWave currentWave;
+    protected int currentWaveNumber;
+    protected int spawnLeftThisWave;
+    protected GameObject spawnPrefab;
 
-    public Spawner(List<SpawnWave> waves) {
+    public Spawner(List<SpawnWave> waves, GameObject prefab) {
         this.wavesToSpawn = waves;
+        this.spawnPrefab = prefab;
         Reset();
     }
 
@@ -105,14 +128,21 @@ public class Spawner {
         IsFinished = false;
     }
 
-    private void StartWaveNumber(int number) {
+    protected void StartWaveNumber(int number) {
         currentWave = wavesToSpawn[number];
         currentWaveNumber = number;
         spawnLeftThisWave = currentWave.TotalNumSpawns;
     }
 
-    public Properties GetNextObject() {
+    protected AssemblyObject CreateObject() {
+        AssemblyObject assemblyLineObject = MonoBehaviour.Instantiate(spawnPrefab).GetComponent<AssemblyObject>();
         Properties props = currentWave.CreateProperties();
+        assemblyLineObject.Properties = props;
+        return assemblyLineObject;
+    }
+
+    public virtual AssemblyObject GetNextObject() {
+        AssemblyObject aObject = CreateObject();
         spawnLeftThisWave -= 1;
 
         if (spawnLeftThisWave <= 0) {
@@ -125,6 +155,31 @@ public class Spawner {
             
         }
         
-        return props;
+        return aObject;
+    }
+}
+
+public class GhostSpawner : Spawner {
+
+    public GhostSpawner(List<SpawnWave> waves, GameObject prefab) : base(waves, prefab) {
+
+    }
+
+    public override AssemblyObject GetNextObject() {
+        AssemblyObject aObject = CreateObject();
+        aObject.IsGhost = true;
+
+        if (currentWaveNumber + 1 < wavesToSpawn.Count) {
+            StartWaveNumber(currentWaveNumber + 1);
+        }
+        else {
+            StartWaveNumber(0);
+        }
+
+        return aObject;
+    }
+
+    public void StopSpawning() {
+        IsFinished = true;
     }
 }

@@ -20,6 +20,9 @@ public class AssemblyObject : MonoBehaviour
             ApplyProperties();
         } 
     }
+
+    public bool IsGhost { get; set; }
+
     private void Awake(){
         if (objectProperties != null && properties == null)
             Properties = objectProperties.CreateProperties();
@@ -27,6 +30,10 @@ public class AssemblyObject : MonoBehaviour
     }
 
     public void DestroyStuckObject() {
+        if (IsGhost) {
+            Destroy(gameObject);
+            return;
+        }
         factoryTracker.OnStuckObjectDestroyed.Invoke();
         Destroy(gameObject);
     }

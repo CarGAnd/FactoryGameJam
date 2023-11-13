@@ -53,6 +53,11 @@ public class ContainerModule : ModuleBase
     
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
         AssemblyObject aObject = assemblyObject.Value;
+
+        if (aObject.IsGhost) {
+            Destroy(aObject.gameObject);
+            return;
+        }
         
         bool fitsContainer = aObject.Properties.CompareProperties(expectedProperties);
 
