@@ -62,6 +62,9 @@ public class ContainerModule : ModuleBase
         else {
             WrongObjectReceived(aObject);
         }
+
+        //TODO: For now we destroy the object. Later we might want a more fancy animation
+        Destroy(aObject.gameObject);
     }
 
     private void CorrectObjectReceived(AssemblyObject aObject) {

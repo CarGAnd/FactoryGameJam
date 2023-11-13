@@ -7,7 +7,7 @@ using System;
 public class FactoryTracker : ScriptableObject
 {
     public Action OnObjectCollected;
-    public Action OnObjectDestroyed;
+    public Action OnStuckObjectDestroyed;
 
     public List<SpawnerModule> Spawners { get { return spawners; } }
     public List<ContainerModule> Containers { get { return containers; } }

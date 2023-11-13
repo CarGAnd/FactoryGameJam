@@ -21,7 +21,7 @@ public abstract class ModuleBase : MonoBehaviour
         IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[outputIndex];
 
         if (assembly.ConnectedTo == null) {
-            assemblyObject.Value.DestroyObject();
+            assemblyObject.Value.DestroyStuckObject();
             return;
         }
             

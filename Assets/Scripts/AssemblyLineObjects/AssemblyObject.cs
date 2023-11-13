@@ -26,8 +26,8 @@ public class AssemblyObject : MonoBehaviour
         
     }
 
-    public void DestroyObject() {
-        factoryTracker.OnObjectDestroyed.Invoke();
+    public void DestroyStuckObject() {
+        factoryTracker.OnStuckObjectDestroyed.Invoke();
         Destroy(gameObject);
     }
 

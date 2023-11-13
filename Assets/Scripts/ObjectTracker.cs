@@ -17,7 +17,7 @@ public class ObjectTracker
         this.levelManager = levelManager;
         numSpawnedObjects = factoryTracker.GetNumObjectsInLevel();
         factoryTracker.OnObjectCollected += OnObjectCollected;
-        factoryTracker.OnObjectDestroyed += OnObjectDestroyed;
+        factoryTracker.OnStuckObjectDestroyed += OnObjectDestroyed;
         numCollectedObjects = 0;
     }
 
@@ -38,7 +38,7 @@ public class ObjectTracker
     private void FinishLevel() {
         levelManager.GoToLevelCompletedPhase();
         factoryTracker.OnObjectCollected -= OnObjectCollected;
-        factoryTracker.OnObjectDestroyed -= OnObjectDestroyed;
+        factoryTracker.OnStuckObjectDestroyed -= OnObjectDestroyed;
     }
 
     private bool AllObjectsDoneMoving() {
