@@ -10,9 +10,8 @@ public class SpawnerModule : ModuleBase
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent spawnPhaseStartedEvent;
 
-    //TODO: make these two SOS objects
-    [SerializeField] private float timeBetweenSpawns;
-    [SerializeField] private float timeBetweenGhostSpawns;
+    [SerializeField] private FloatRef timeBetweenSpawns;
+    [SerializeField] private FloatRef timeBetweenGhostSpawns;
 
     [SerializeField] private List<SpawnWave> spawns;
 
@@ -21,9 +20,12 @@ public class SpawnerModule : ModuleBase
 
     private Spawner spawner;
     private GhostSpawner ghostSpawner;
+    //Contains both ghost and normal objects for now
+    private List<GameObject> spawnedObjects;
 
     protected override void Awake() {
         base.Awake();
+        spawnedObjects = new List<GameObject>();
         ModuleIsRemoveable = false;
         spawner = new Spawner(spawns, assemblyLinePrefab);
         ghostSpawner = new GhostSpawner(spawns, assemblyLinePrefab);
@@ -32,12 +34,14 @@ public class SpawnerModule : ModuleBase
     private void OnEnable() {
         spawnPhaseStartedEvent.EventInvoked += StartSpawning;
         buildPhaseStartedEvent.EventInvoked += StartSpawningGhosts;
+        factoryTracker.OnObjectDestroyed += OnObjectDestroyed;
         factoryTracker.RegisterSpawner(this);
     }
 
     private void OnDisable() {
         spawnPhaseStartedEvent.EventInvoked -= StartSpawning;
         buildPhaseStartedEvent.EventInvoked -= StartSpawningGhosts;
+        factoryTracker.OnObjectDestroyed -= OnObjectDestroyed;
         factoryTracker.DeregisterSpawner(this);
     }
 
@@ -49,12 +53,24 @@ public class SpawnerModule : ModuleBase
     private IEnumerator SpawnGhostsCoroutine() {
         while (!ghostSpawner.IsFinished) {
             CreateAndSendObject(ghostSpawner);
-            yield return new WaitForSeconds(timeBetweenGhostSpawns);
+            yield return new WaitForSeconds(timeBetweenGhostSpawns.Value);
         }
+    }
+
+    private void OnObjectDestroyed(GameObject obj) {
+        spawnedObjects.Remove(obj);
+    }
+
+    private void DestroySpawnedObjects() {
+        for(int i = spawnedObjects.Count - 1; i >= 0; i--) {
+            Destroy(spawnedObjects[i].gameObject);
+        }
+        spawnedObjects = new List<GameObject>();
     }
 
     private void StartSpawning() {
         ghostSpawner.StopSpawning();
+        DestroySpawnedObjects();
         spawner.Reset();
         StartCoroutine(SpawnObjectsCoroutine());
     }
@@ -71,13 +87,14 @@ public class SpawnerModule : ModuleBase
         AssemblyObject assemblyLineObject = spawner.GetNextObject();
         assemblyLineObject.transform.position = transform.position;
         assemblyLineObject.transform.parent = transform;
+        spawnedObjects.Add(assemblyLineObject.gameObject);
         SendObject(assemblyLineObject.TravelAssemblyLine);
     }
 
     private IEnumerator SpawnObjectsCoroutine() {
         while (!spawner.IsFinished) {
             CreateAndSendObject(spawner);
-            yield return new WaitForSeconds(timeBetweenSpawns);
+            yield return new WaitForSeconds(timeBetweenSpawns.Value);
         }
     }
 

@@ -29,12 +29,9 @@ public class AssemblyObject : MonoBehaviour
         
     }
 
-    public void DestroyStuckObject() {
-        if (IsGhost) {
-            Destroy(gameObject);
-            return;
-        }
-        factoryTracker.OnStuckObjectDestroyed.Invoke();
+    //Call an event before the object is destroyed
+    public void DestroyObject() {
+        factoryTracker.OnObjectDestroyed?.Invoke(gameObject);
         Destroy(gameObject);
     }
 

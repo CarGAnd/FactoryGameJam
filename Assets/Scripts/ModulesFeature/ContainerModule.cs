@@ -68,19 +68,19 @@ public class ContainerModule : ModuleBase
             WrongObjectReceived(aObject);
         }
 
+        OnItemCollected?.Invoke();
+
         //TODO: For now we destroy the object. Later we might want a more fancy animation
-        Destroy(aObject.gameObject);
+        aObject.DestroyObject();
     }
 
     private void CorrectObjectReceived(AssemblyObject aObject) {
         scoreRef.Value += 1;
         NumCorrectItemsCollected += 1;
-        OnItemCollected?.Invoke();
     }
 
     private void WrongObjectReceived(AssemblyObject aObject) {
         NumWrongItemsCollected += 1;
-        OnItemCollected?.Invoke();
         Debug.Log("Wrong object received: " + aObject.name);
     }
 

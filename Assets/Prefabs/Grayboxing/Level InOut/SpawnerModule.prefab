@@ -2415,8 +2415,16 @@ MonoBehaviour:
     useLocalConstant: 0
     allowInvoking: 1
     subscribeOnPlay: 1
-  timeBetweenSpawns: 1
-  timeBetweenGhostSpawns: 3
+  timeBetweenSpawns:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 0edca1a91934ac04481e5664e9903461, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  timeBetweenGhostSpawns:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 9e487293c2d2622439122973c3a3941d, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   spawns:
   - <TotalNumSpawns>k__BackingField: 5
     colorName: Purple

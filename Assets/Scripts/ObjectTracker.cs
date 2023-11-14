@@ -6,8 +6,7 @@ using System;
 public class ObjectTracker
 {
     private int numSpawnedObjects;
-    private int numCollectedObjects;
-    private int numDestroyedObject;
+    private int numDestroyedObjects;
 
     private FactoryTracker factoryTracker;
     private LevelManager levelManager;
@@ -16,20 +15,11 @@ public class ObjectTracker
         this.factoryTracker = factoryTracker;
         this.levelManager = levelManager;
         numSpawnedObjects = factoryTracker.GetNumObjectsInLevel();
-        factoryTracker.OnObjectCollected += OnObjectCollected;
-        factoryTracker.OnStuckObjectDestroyed += OnObjectDestroyed;
-        numCollectedObjects = 0;
+        factoryTracker.OnObjectDestroyed += OnObjectDestroyed;
     }
 
-    private void OnObjectCollected() {
-        numCollectedObjects += 1;
-        if (AllObjectsDoneMoving()) {
-            FinishLevel();
-        }
-    }
-
-    private void OnObjectDestroyed() {
-        numDestroyedObject += 1;
+    private void OnObjectDestroyed(GameObject obj) {
+        numDestroyedObjects += 1;
         if (AllObjectsDoneMoving()) {
             FinishLevel();
         }
@@ -37,11 +27,10 @@ public class ObjectTracker
 
     private void FinishLevel() {
         levelManager.GoToLevelCompletedPhase();
-        factoryTracker.OnObjectCollected -= OnObjectCollected;
-        factoryTracker.OnStuckObjectDestroyed -= OnObjectDestroyed;
+        factoryTracker.OnObjectDestroyed -= OnObjectDestroyed;
     }
 
     private bool AllObjectsDoneMoving() {
-        return numCollectedObjects + numDestroyedObject >= numSpawnedObjects;
+        return numDestroyedObjects >= numSpawnedObjects;
     }
 }
