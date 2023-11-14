@@ -5,7 +5,7 @@ namespace SOS {
     public static class SettingsHelperSOS
     {
         public static SOSSettings GetSettings() {
-            return AssetDatabase.LoadAssetAtPath<SOSSettings>("Assets/SOS/ScriptableObjects/Settings/SOSSettings_01.asset");
+            return AssetDatabase.LoadAssetAtPath<SOSSettings>("Assets/Plugins/SOS/ScriptableObjects/Settings/SOSSettings_01.asset");
         }
     }
 }

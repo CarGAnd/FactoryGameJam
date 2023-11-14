@@ -8,11 +8,15 @@ using UnityEngine.TestTools;
 public class ModulePlacementTests
 {    
     
-    // A Test behaves as an ordinary method
+    // This test should place a module and assert that the module placed is the correct type.
     [Test]
-    public void ModulePlacementTestsSimplePasses()
+    public void ModulePlacementTest()
     {
-        // Use the Assert class to test conditions
+        ModulesManager modulesManager = ModulesManager.Instance;
+
+        // Place a turn module
+        modulesManager.PlaceModule(ModuleTypes.TurnModule);
+
     }
 
     // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
