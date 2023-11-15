@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: TimeBetweenSpawns
   m_EditorClassIdentifier: 
   DynamicValue: 15
-  GlobalConstantValue: 5
-  referenceType: 20
+  GlobalConstantValue: 1
+  referenceType: 10
