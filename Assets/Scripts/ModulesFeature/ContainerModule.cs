@@ -50,6 +50,19 @@ public class ContainerModule : ModuleBase
     private void Start() {
         expectedProperties = Properties.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties, colorName, rotationName); 
     }
+
+    private void CollectObject(AssemblyObject aObject) {
+        bool fitsContainer = aObject.Properties.CompareProperties(expectedProperties);
+
+        if (fitsContainer) {
+            CorrectObjectReceived();
+        }
+        else {
+            WrongObjectReceived();
+        }
+
+        OnItemCollected?.Invoke();
+    }
     
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
         AssemblyObject aObject = assemblyObject.Value;
@@ -58,30 +71,24 @@ public class ContainerModule : ModuleBase
             Destroy(aObject.gameObject);
             return;
         }
-        
-        bool fitsContainer = aObject.Properties.CompareProperties(expectedProperties);
 
-        if (fitsContainer) {
-            CorrectObjectReceived(aObject);
-        }
-        else {
-            WrongObjectReceived(aObject);
-        }
-
-        OnItemCollected?.Invoke();
+        CollectObject(aObject);
 
         //TODO: For now we destroy the object. Later we might want a more fancy animation
         aObject.DestroyObject();
     }
 
-    private void CorrectObjectReceived(AssemblyObject aObject) {
-        scoreRef.Value += 1;
+    private void CorrectObjectReceived() {
+        //This check is only here because this object is null when running tests
+        //TODO: have the score counting done somewhere else, likely using the onItemCollectedEvent
+        if(scoreRef != null) {
+            scoreRef.Value += 1;
+        }
         NumCorrectItemsCollected += 1;
     }
 
-    private void WrongObjectReceived(AssemblyObject aObject) {
+    private void WrongObjectReceived() {
         NumWrongItemsCollected += 1;
-        Debug.Log("Wrong object received: " + aObject.name);
     }
 
     public override void SelectModule() {

@@ -112,6 +112,10 @@ public class SpawnerModule : ModuleBase
 public class SpawnWave {
     [field: SerializeField] public int TotalNumSpawns { get; private set; }
 
+    public SpawnWave(int numSpawns) {
+        this.TotalNumSpawns = numSpawns;
+    }
+
     [ValueDropdown("@PropertyDropdownHelper.GetColorNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string colorName;
 
