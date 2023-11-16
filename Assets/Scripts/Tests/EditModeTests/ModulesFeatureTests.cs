@@ -1,31 +1,39 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using NUnit.Framework;
 using UnityEngine;
+using TMPro;
 using UnityEngine.TestTools;
+using NUnit.Framework.Internal;
 
 
 public class ModulePlacementTests
 {    
     
-    // This test should place a module and assert that the module placed is the correct type.
     [Test]
-    public void ModulePlacementTest()
+    public void TurnModuleTest()
     {
-        ModulesManager modulesManager = ModulesManager.Instance;
+        //Setup
+        ModulesManager modulesManager = TestHelper.SetupModulesManagerEditMode();
+        TurnModule turnModule = TestHelper.SetupTurnModuleWithRotation(true);
+        AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(new Vector3(0,0,0), Color.red);
 
-        // Place a turn module
-        modulesManager.PlaceModule(ModuleTypes.TurnModule);
+        //Act
+        MethodInfo rotateMethod = typeof(TurnModule).GetMethod("RotateProperty", BindingFlags.NonPublic | BindingFlags.Instance);
+        rotateMethod?.Invoke(turnModule, new object[] { assemblyTest });
 
+        //Assertion
+        Quaternion expectedQuaternion = Quaternion.Euler(0, 45, 0);
+        Quaternion actualQuaternion = assemblyTest.Properties.GetProperty<Quaternion>(PropertyType.Rotation);
+        Assert.AreEqual(Quaternion.Angle(expectedQuaternion, actualQuaternion), 0);
+
+        //Cleanup
+        Object.DestroyImmediate(modulesManager.gameObject);
+        Object.DestroyImmediate(turnModule.gameObject);
+        Object.DestroyImmediate(assemblyTest.gameObject);
     }
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator ModulePlacementTestsWithEnumeratorPasses()
-    {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
-    }
+    
+
 }

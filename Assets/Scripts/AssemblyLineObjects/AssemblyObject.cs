@@ -5,10 +5,8 @@ using UnityEngine;
 public class AssemblyObject : MonoBehaviour
 {
     [SerializeField] private FactoryTracker factoryTracker;
-    [SerializeField]
-    ObjectProperties objectProperties;
-    [SerializeField]
-    Renderer lollipopRenderer;
+    [SerializeField] private ObjectProperties objectProperties;
+    [SerializeField] private Renderer lollipopRenderer;
     
     private Properties properties = null;
     public Properties Properties 
@@ -17,7 +15,7 @@ public class AssemblyObject : MonoBehaviour
         set 
         {
             properties = value; 
-            ApplyProperties();
+            ApplyAllProperties();
         } 
     }
 
@@ -58,22 +56,33 @@ public class AssemblyObject : MonoBehaviour
         TravelAssemblyLine.UpdateTravel();
     }
 
-    public void ApplyProperties()
+    public void ApplyAllProperties()
     {
-        //Update rotation
-        Quaternion rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
+        foreach(PropertyType propertyType in System.Enum.GetValues(typeof(PropertyType)))
+        {
+            ApplyProperty(propertyType);
+        }
+    }
 
-        transform.rotation = rotation;
+    public void ApplyProperty(PropertyType propertyType)
+    {
+        switch (propertyType)
+        {
+            case PropertyType.Rotation:
+                transform.rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
+                break;
+            case PropertyType.Color:
+                if(lollipopRenderer == null)
+                    return;
+                Color color = properties.GetProperty<Color>(PropertyType.Color);
+                MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
+                lollipopRenderer.GetPropertyBlock(propBlock, 0);
 
+                propBlock.SetColor("_BaseColor", color);
 
-        Color color = properties.GetProperty<Color>(PropertyType.Color);
-        
-        MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
-        lollipopRenderer.GetPropertyBlock(propBlock, 0);
-
-        propBlock.SetColor("_BaseColor", color);
-
-        lollipopRenderer.SetPropertyBlock(propBlock, 0);
+                lollipopRenderer.SetPropertyBlock(propBlock, 0);
+                break;
+        }
     }
     
 }

@@ -46,7 +46,11 @@ public class Player : MonoBehaviour
 
     private void PlaceModule(ModuleTypes moduleTypes)
     {
-        ModulesManager.Instance.PlaceModule(moduleTypes);
+
+        Vector3 mousePosToWorld = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+        ModulesManager.Instance.PlaceModule(moduleTypes, mousePosToWorld);
+
     }
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
@@ -85,6 +89,6 @@ public class Player : MonoBehaviour
         {
             return;
         }
-        ModulesManager.Instance.SelectModule();
+        ModulesManager.Instance.SelectModule(Mouse.current.position.ReadValue());
     }
 }

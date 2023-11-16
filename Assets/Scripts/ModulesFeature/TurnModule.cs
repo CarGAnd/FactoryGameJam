@@ -9,30 +9,35 @@ using System;
 
 public class TurnModule : ConfigurableModule
 {
-    [SerializeField]
-    private Vector3 rotationToApply;
+    [SerializeField] private Vector3 rotationToApply;
 
     private TMP_Dropdown valueDropdown;
 
+    private void Start() {
+        ApplySettings();
+    }
+
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject)
     {
-        Properties objectProperties = assemblyObject.Value.Properties;
-        try{
+        RotateProperty(assemblyObject.Value);
+        SendObject(assemblyObject);
+    }
+
+    private void RotateProperty(AssemblyObject assemblyObject)
+    {
+        Properties objectProperties = assemblyObject.Properties;
+        try
+        {
             Quaternion currentRotation = objectProperties.GetProperty<Quaternion>(PropertyType.Rotation);
             //Debug.Log($"Rotation to apply is {rotationToApply}, and calculated new rocation is {currentRotation * Quaternion.Euler(rotationToApply)}.");
             objectProperties.SetProperty(PropertyType.Rotation, currentRotation * Quaternion.Euler(rotationToApply));
         }
-        catch(PropertyNotFoundException){
+        catch (PropertyNotFoundException)
+        {
             objectProperties.SetProperty(PropertyType.Rotation, Quaternion.Euler(rotationToApply));
         }
 
-        assemblyObject.Value.ApplyProperties();
-
-        SendObject(assemblyObject);
-    }
-
-    private void Start() {
-        ApplySettings();
+        assemblyObject.ApplyProperty(PropertyType.Rotation);
     }
 
     public override void ApplySettings()
@@ -49,7 +54,6 @@ public class TurnModule : ConfigurableModule
         }
 
         rotationToApply = newRotation;
-
         base.ApplySettings();
     }
 

@@ -34,7 +34,10 @@ public abstract class ConfigurableModule : ModuleBase
 
     public virtual void ApplySettings() {
         ModulesManager.Instance.DeselectModule();
-        UI.SetActive(false);
+        if(UI != null)
+        {
+            UI.SetActive(false);
+        }
     }
 
     public override void SelectModule()

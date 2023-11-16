@@ -77,22 +77,22 @@ public class ModulesManager : MonoBehaviour
         rangeIndicatorPrefab.SetActive(show);
     }
     
-    // If possible, place a module at the last hit point
-    public void PlaceModule(ModuleTypes moduleType)
+    // If possible, place a module at the mouse Position.
+    public void PlaceModule(ModuleTypes moduleType, Vector3 position)
     {
         GameObject modulePrefab = GetModulePrefab(moduleType);
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
-            Instantiate(modulePrefab, LastHitPoint, Quaternion.identity);
+            Instantiate(modulePrefab, position, Quaternion.identity);
             modulePlacedEvent?.Invoke();
         }
     }
     
     // Select a module if the cursor is over it.
-    public void SelectModule()
+    public void SelectModule(Vector2 mousePosition)
     {
         if(isModuleSelected) return;
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, moduleLayer))
         {
             if (hit.collider.gameObject.TryGetComponent<ModuleBase>(out var module))
