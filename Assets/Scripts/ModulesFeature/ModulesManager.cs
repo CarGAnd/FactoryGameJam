@@ -35,6 +35,8 @@ public class ModulesManager : MonoBehaviour
     public bool ShowGizmos {get; private set;}
     public Vector3 LastHitPoint { get; private set; }
     public bool CanPlaceModule { get; private set; }
+
+    private GameObject rangeIndicatorObject;
     
     void Awake()
     {
@@ -54,8 +56,8 @@ public class ModulesManager : MonoBehaviour
     }
     private void SetRangeIndicatorPrefab(GameObject prefab)
     {
-        rangeIndicatorPrefab = prefab;
-        rangeIndicatorPrefab.SetActive(false);
+        rangeIndicatorObject = Instantiate(prefab);
+        rangeIndicatorObject.SetActive(false);
     }
     void Update()
     {
@@ -74,7 +76,7 @@ public class ModulesManager : MonoBehaviour
             return;
         }
         ShowGizmos = show;
-        rangeIndicatorPrefab.SetActive(show);
+        rangeIndicatorObject.SetActive(show);
     }
     
     // If possible, place a module at the last hit point
@@ -139,10 +141,10 @@ public class ModulesManager : MonoBehaviour
 
     // Should be updated to provide a transparent version of the module attempted placement.
     private void UpdateSpherePosition(){
-        rangeIndicatorPrefab.transform.position = LastHitPoint;
+        rangeIndicatorObject.transform.position = LastHitPoint;
         Color color = CanPlaceModule ? Color.green : Color.red;
         color = new Vector4(color.r, color.g, color.b, 0.3f);
-        rangeIndicatorPrefab.GetComponent<MeshRenderer>().sharedMaterial.color = color;
+        rangeIndicatorObject.GetComponent<MeshRenderer>().material.color = color;
     }
     
     void OnDrawGizmos()
