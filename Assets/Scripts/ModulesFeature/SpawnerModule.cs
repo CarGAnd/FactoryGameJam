@@ -122,6 +122,10 @@ public class SpawnWave {
     [ValueDropdown("@PropertyDropdownHelper.GetRotationNames(LevelDataGetter.GetCurrent().LevelProperties)")]
     public string rotationName;
 
+    public Properties CreateProperties(LevelProperties levelProperties) {
+        return Properties.CreateProperties(levelProperties, colorName, rotationName);
+    }
+
     public Properties CreateProperties() {
         return Properties.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties, colorName, rotationName);
     }

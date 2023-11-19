@@ -84,4 +84,20 @@ public static class TestHelper
         assemblyTest.Properties.SetProperty(PropertyType.Color, color);
         return assemblyTest;
     }
+
+    public static ContainerModule CreateContainerModuleWithProperties(Vector3 rotation, Color color) {
+        ContainerModule cModule = CreateContainerModule();
+        FieldInfo expectedPropertiesField = typeof(ContainerModule).GetField("expectedProperties", BindingFlags.NonPublic | BindingFlags.Instance);
+        Properties p = new Properties();
+        p.SetProperty(PropertyType.Rotation, Quaternion.Euler(rotation));
+        p.SetProperty(PropertyType.Color, color);
+        expectedPropertiesField.SetValue(cModule, p);
+        return cModule;
+    }
+
+    public static ContainerModule CreateContainerModule() {
+        GameObject g = new GameObject();
+        ContainerModule module = g.AddComponent<ContainerModule>();
+        return module;
+    }
 }

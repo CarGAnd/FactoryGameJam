@@ -28,8 +28,8 @@ public class SpawnerFeatureTests
 
         int objectsPerWave = 3;
 
-        SpawnWave wave1 = new SpawnWave(3);
-        SpawnWave wave2 = new SpawnWave(3);
+        SpawnWave wave1 = new SpawnWave(objectsPerWave);
+        SpawnWave wave2 = new SpawnWave(objectsPerWave);
 
         wave1.rotationName = "45 Degrees";
         wave1.colorName = "Yellow";
@@ -44,10 +44,6 @@ public class SpawnerFeatureTests
         Spawner spawner = new Spawner(waves, g);
 
         for(int i = 0; i < waves.Count; i++) {
-            for (int j = 0; j < objectsPerWave; j++) {
-                AssemblyObject spawnedObject = spawner.GetNextObject();
-                Assert.True(spawnedObject.Properties.CompareProperties(waves[i].CreateProperties()));
-            }
             for (int j = 0; j < objectsPerWave; j++) {
                 AssemblyObject spawnedObject = spawner.GetNextObject();
                 Assert.True(spawnedObject.Properties.CompareProperties(waves[i].CreateProperties()));

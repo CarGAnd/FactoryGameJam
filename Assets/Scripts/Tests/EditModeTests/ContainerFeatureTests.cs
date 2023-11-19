@@ -9,7 +9,7 @@ using SOS;
 
 public class ContainerFeatureTests
 {
-    /*[Test]
+    [Test]
     public void ContainerDoesNotCountGhosts() {
         ContainerModule cModule = CreateContainerObject();
 
@@ -21,19 +21,14 @@ public class ContainerFeatureTests
         Assert.True(cModule.NumItemsCollected == 0);
         collectMethod?.Invoke(cModule, new object[] { assemblyTest });
         Assert.True(cModule.NumItemsCollected == 0);
-    }*/
+    }
 
     [Test]
     public void ContainerCountsCorrectItems() {
         Vector3 rot = new Vector3(0, 45, 0);
         Color col = Color.red;
 
-        ContainerModule cModule = CreateContainerObject();
-        FieldInfo expectedPropertiesField = typeof(ContainerModule).GetField("expectedProperties", BindingFlags.NonPublic | BindingFlags.Instance);
-        Properties p = new Properties();
-        p.SetProperty(PropertyType.Rotation, Quaternion.Euler(rot));
-        p.SetProperty(PropertyType.Color, col);
-        expectedPropertiesField.SetValue(cModule, p);
+        ContainerModule cModule = TestHelper.CreateContainerModuleWithProperties(rot, col);
 
         AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(rot, col);
         MethodInfo collectMethod = typeof(ContainerModule).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -48,12 +43,7 @@ public class ContainerFeatureTests
         Vector3 rot = new Vector3(0, 45, 0);
         Color col = Color.red;
 
-        ContainerModule cModule = CreateContainerObject();
-        FieldInfo expectedPropertiesField = typeof(ContainerModule).GetField("expectedProperties", BindingFlags.NonPublic | BindingFlags.Instance);
-        Properties p = new Properties();
-        p.SetProperty(PropertyType.Rotation, Quaternion.Euler(rot));
-        p.SetProperty(PropertyType.Color, col);
-        expectedPropertiesField.SetValue(cModule, p);
+        ContainerModule cModule = TestHelper.CreateContainerModuleWithProperties(rot, col);
 
         AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(new Vector3(0,0,0), Color.blue);
         MethodInfo collectMethod = typeof(ContainerModule).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -61,6 +51,24 @@ public class ContainerFeatureTests
         Assert.True(cModule.NumWrongItemsCollected == 0);
         collectMethod.Invoke(cModule, new object[] { assemblyTest });
         Assert.True(cModule.NumWrongItemsCollected == 1);
+    }
+
+    [Test]
+    public void ContainerInvokesOnItemCollected() {
+        Vector3 rot = new Vector3(0, 45, 0);
+        Color col = Color.red;
+
+        ContainerModule cModule = TestHelper.CreateContainerModuleWithProperties(rot, col);
+
+        AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(rot, col);
+        MethodInfo collectMethod = typeof(ContainerModule).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance);
+        bool eventWasInvoked = false;
+        cModule.OnItemCollected += () => eventWasInvoked = true;
+
+        Assert.True(cModule.NumItemsCollected == 0);
+        collectMethod.Invoke(cModule, new object[] { assemblyTest });
+        Assert.True(cModule.NumItemsCollected == 1);
+        Assert.True(eventWasInvoked);
     }
 
     private ContainerModule CreateContainerObject() {
