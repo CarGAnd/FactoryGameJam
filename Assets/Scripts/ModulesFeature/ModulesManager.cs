@@ -1,3 +1,4 @@
+using System;
 using SOS;
 using UnityEngine;
 /*
@@ -19,7 +20,7 @@ using UnityEngine;
 */
 public class ModulesManager : MonoBehaviour
 {
-    [SerializeField] private GameEvent modulePlacedEvent;
+    private Action<GameObject> placedModule;
     [SerializeField] private GameEvent moduleSelectedEvent;
     [SerializeField] private LevelStateRef currentLevelStateRef;
     [SerializeField] private GameObject turnModulePrefab;
@@ -54,11 +55,7 @@ public class ModulesManager : MonoBehaviour
             SetRangeIndicatorPrefab(rangeIndicatorPrefab);
         }
     }
-    private void SetRangeIndicatorPrefab(GameObject prefab)
-    {
-        rangeIndicatorObject = Instantiate(prefab);
-        rangeIndicatorObject.SetActive(false);
-    }
+
     void Update()
     {
         // If the player is in build mode, update the placement info
@@ -67,6 +64,16 @@ public class ModulesManager : MonoBehaviour
             UpdatePlacementInfo();
             UpdateSpherePosition();
         }
+    }
+
+    public void SubscribeToOnPlacedModule(Action<GameObject> action)
+    {
+        placedModule += action;
+    }
+
+    public void UnsubscribeFromOnPlacedModule(Action<GameObject> action)
+    {
+        placedModule -= action;
     }
     
     // Toggle gizmos on and off Accessible via player, should be moved to a SelectionManager
@@ -86,7 +93,7 @@ public class ModulesManager : MonoBehaviour
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
             Instantiate(modulePrefab, position, Quaternion.identity);
-            modulePlacedEvent?.Invoke();
+            placedModule?.Invoke(modulePrefab);
         }
     }
     
@@ -145,6 +152,12 @@ public class ModulesManager : MonoBehaviour
         Color color = CanPlaceModule ? Color.green : Color.red;
         color = new Vector4(color.r, color.g, color.b, 0.3f);
         rangeIndicatorObject.GetComponent<MeshRenderer>().material.color = color;
+    }
+
+    private void SetRangeIndicatorPrefab(GameObject prefab)
+    {
+        rangeIndicatorObject = Instantiate(prefab);
+        rangeIndicatorObject.SetActive(false);
     }
     
     void OnDrawGizmos()

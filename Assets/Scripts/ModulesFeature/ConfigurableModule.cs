@@ -1,29 +1,43 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using Sirenix.OdinInspector;
 using SOS;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 public abstract class ConfigurableModule : ModuleBase
 {
-    [SerializeField]
-    private int cost = 5;
-    [SerializeField]
-    private IntRef LevelCost;
-    [Required]
-    [SerializeField]
-    protected Canvas UICanvas;
-    [Required]
-    [SerializeField]
-    protected GameObject UI;
+    private Action<GameObject> removeModule;
+    [SerializeField] private int cost = 5;
+    [SerializeField] private IntRef LevelCost;
+    [Required] [SerializeField] protected Canvas UICanvas;
+    [Required] [SerializeField] protected GameObject UI;
     protected Button deleteButton;
     protected Button saveButton;
 
     protected override void Awake() {
         base.Awake();
         Initialize();
+    }
+
+    void OnEnable () {
+        SubscribeToButtons();
+    }
+
+    void OnDisable() {
+        UnsubscribeFromButtons();
+
+        if (UICanvas == null)
+            return;
+
+        UI.SetActive(true);
+    }
+
+    public void SubscribeToRemoveModule(Action<GameObject> action) {
+        removeModule += action;
+    }
+
+    public void UnsubscribeFromRemoveModule(Action<GameObject> action) {
+        removeModule -= action;
     }
 
     protected virtual void Initialize() {
@@ -45,20 +59,7 @@ public abstract class ConfigurableModule : ModuleBase
         UI.transform.position = GetUIPositionByMouse();
         UI.SetActive(true);
     }
-
-    void OnEnable () {
-        SubscribeToButtons();
-    }
-
-    void OnDisable() {
-        UnsubscribeFromButtons();
-
-        if (UICanvas == null)
-            return;
-
-        UI.SetActive(true);
-    }
-
+   
     protected virtual void SetUIElements() {
         Button[] buttons = UI.GetComponentsInChildren<Button>();
         deleteButton = buttons[0];
@@ -82,8 +83,10 @@ public abstract class ConfigurableModule : ModuleBase
 
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
+        removeModule?.Invoke(gameObject);
         Destroy(gameObject);
         ModulesManager.Instance.DeselectModule();
+
     }
 
     protected Vector2 GetUIPositionByMouse() {
@@ -93,4 +96,6 @@ public abstract class ConfigurableModule : ModuleBase
         out Vector2 uiPos);
         return UICanvas.transform.TransformPoint(uiPos);
     }
+
+    
 }
