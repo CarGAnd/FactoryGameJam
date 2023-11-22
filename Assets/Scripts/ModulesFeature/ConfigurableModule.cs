@@ -1,12 +1,12 @@
-using System;
 using Sirenix.OdinInspector;
 using SOS;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public abstract class ConfigurableModule : ModuleBase
 {
-    private Action<GameObject> onRemoveModule;
+    private UnityEvent<GameObject> onRemoveModule;
     [SerializeField] private int cost = 5;
     [SerializeField] private IntRef LevelCost;
     [Required] [SerializeField] protected Canvas UICanvas;
@@ -32,12 +32,12 @@ public abstract class ConfigurableModule : ModuleBase
         UI.SetActive(true);
     }
 
-    public void SubscribeToRemoveModule(Action<GameObject> action) {
-        onRemoveModule += action;
+    public void SubscribeToRemoveModule(UnityAction<GameObject> action) {
+        onRemoveModule.AddListener(action);
     }
 
-    public void UnsubscribeFromRemoveModule(Action<GameObject> action) {
-        onRemoveModule -= action;
+    public void UnsubscribeFromRemoveModule(UnityAction<GameObject> action) {
+        onRemoveModule.RemoveListener(action);
     }
 
     protected virtual void Initialize() {

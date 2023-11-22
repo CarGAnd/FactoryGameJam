@@ -1,6 +1,6 @@
-using System;
 using SOS;
 using UnityEngine;
+using UnityEngine.Events;
 /*
     ------------------- Review -------------------
     Revivewed by: CarGAnd 14/11/2023 [Accepted]
@@ -20,7 +20,7 @@ using UnityEngine;
 */
 public class ModulesManager : MonoBehaviour
 {
-    private Action<GameObject> onPlacedModule;
+    private UnityEvent<GameObject> onPlacedModule;
     [SerializeField] private GameEvent moduleSelectedEvent;
     [SerializeField] private LevelStateRef currentLevelStateRef;
     [SerializeField] private GameObject turnModulePrefab;
@@ -66,14 +66,15 @@ public class ModulesManager : MonoBehaviour
         }
     }
 
-    public void SubscribeToOnPlacedModule(Action<GameObject> action)
+
+    public void SubscribeToOnPlacedModule(UnityAction<GameObject> action)
     {
-        onPlacedModule += action;
+        onPlacedModule.AddListener(action);
     }
 
-    public void UnsubscribeFromOnPlacedModule(Action<GameObject> action)
+    public void UnsubscribeFromOnPlacedModule(UnityAction<GameObject> action)
     {
-        onPlacedModule -= action;
+        onPlacedModule.RemoveListener(action);
     }
     
     // Toggle gizmos on and off Accessible via player, should be moved to a SelectionManager
