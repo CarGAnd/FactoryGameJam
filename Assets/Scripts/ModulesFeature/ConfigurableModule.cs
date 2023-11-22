@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public abstract class ConfigurableModule : ModuleBase
 {
-    private Action<GameObject> removeModule;
+    private Action<GameObject> onRemoveModule;
     [SerializeField] private int cost = 5;
     [SerializeField] private IntRef LevelCost;
     [Required] [SerializeField] protected Canvas UICanvas;
@@ -33,11 +33,11 @@ public abstract class ConfigurableModule : ModuleBase
     }
 
     public void SubscribeToRemoveModule(Action<GameObject> action) {
-        removeModule += action;
+        onRemoveModule += action;
     }
 
     public void UnsubscribeFromRemoveModule(Action<GameObject> action) {
-        removeModule -= action;
+        onRemoveModule -= action;
     }
 
     protected virtual void Initialize() {
@@ -83,7 +83,7 @@ public abstract class ConfigurableModule : ModuleBase
 
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
-        removeModule?.Invoke(gameObject);
+        onRemoveModule?.Invoke(gameObject);
         Destroy(gameObject);
         ModulesManager.Instance.DeselectModule();
 

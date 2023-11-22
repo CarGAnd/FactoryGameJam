@@ -20,7 +20,7 @@ using UnityEngine;
 */
 public class ModulesManager : MonoBehaviour
 {
-    private Action<GameObject> placedModule;
+    private Action<GameObject> onPlacedModule;
     [SerializeField] private GameEvent moduleSelectedEvent;
     [SerializeField] private LevelStateRef currentLevelStateRef;
     [SerializeField] private GameObject turnModulePrefab;
@@ -68,12 +68,12 @@ public class ModulesManager : MonoBehaviour
 
     public void SubscribeToOnPlacedModule(Action<GameObject> action)
     {
-        placedModule += action;
+        onPlacedModule += action;
     }
 
     public void UnsubscribeFromOnPlacedModule(Action<GameObject> action)
     {
-        placedModule -= action;
+        onPlacedModule -= action;
     }
     
     // Toggle gizmos on and off Accessible via player, should be moved to a SelectionManager
@@ -93,7 +93,7 @@ public class ModulesManager : MonoBehaviour
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
             Instantiate(modulePrefab, position, Quaternion.identity);
-            placedModule?.Invoke(modulePrefab);
+            onPlacedModule?.Invoke(modulePrefab);
         }
     }
     
