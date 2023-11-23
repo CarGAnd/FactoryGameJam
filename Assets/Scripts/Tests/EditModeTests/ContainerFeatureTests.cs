@@ -63,7 +63,8 @@ public class ContainerFeatureTests
         AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(rot, col);
         MethodInfo collectMethod = typeof(ContainerModule).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance);
         bool eventWasInvoked = false;
-        cModule.OnItemCollected += () => eventWasInvoked = true;
+        cModule.ObjectArrivedAtContainer = new UnityEngine.Events.UnityEvent<bool>();
+        cModule.ObjectArrivedAtContainer.AddListener((bool b) => eventWasInvoked = true);
 
         Assert.True(cModule.NumItemsCollected == 0);
         collectMethod.Invoke(cModule, new object[] { assemblyTest });

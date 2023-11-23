@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using SOS;
 using System;
+using UnityEngine.Events;
 
 public class ContainerModule : ModuleBase
 {
-    public Action OnItemCollected;
+    //True if the objects properties matches the containers properties, otherwise false
+    public UnityEvent<bool> ObjectArrivedAtContainer;
 
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
@@ -64,8 +66,6 @@ public class ContainerModule : ModuleBase
         else {
             WrongObjectReceived();
         }
-
-        OnItemCollected?.Invoke();
     }
     
     protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
@@ -84,10 +84,12 @@ public class ContainerModule : ModuleBase
             scoreRef.Value += 1;
         }
         NumCorrectItemsCollected += 1;
+        ObjectArrivedAtContainer?.Invoke(true);
     }
 
     private void WrongObjectReceived() {
         NumWrongItemsCollected += 1;
+        ObjectArrivedAtContainer?.Invoke(false);
     }
 
     public override void SelectModule() {

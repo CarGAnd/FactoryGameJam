@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using SOS;
 using Sirenix.OdinInspector;
+using UnityEngine.Events;
 
 public class SpawnerModule : ModuleBase
 {
+    public UnityEvent ObjectSpawned;
+
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent spawnPhaseStartedEvent;
@@ -20,6 +23,7 @@ public class SpawnerModule : ModuleBase
 
     private Spawner spawner;
     private GhostSpawner ghostSpawner;
+
     //Contains both ghost and normal objects for now
     private List<GameObject> spawnedObjects;
 
@@ -94,6 +98,7 @@ public class SpawnerModule : ModuleBase
     private IEnumerator SpawnObjectsCoroutine() {
         while (!spawner.IsFinished) {
             CreateAndSendObject(spawner);
+            ObjectSpawned?.Invoke();
             yield return new WaitForSeconds(timeBetweenSpawns.Value);
         }
     }
