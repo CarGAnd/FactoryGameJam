@@ -1,5 +1,6 @@
 using SOS;
 using UnityEngine;
+using UnityEngine.Events;
 /*
     ------------------- Review -------------------
     Revivewed by: CarGAnd 14/11/2023 [Accepted]
@@ -19,7 +20,7 @@ using UnityEngine;
 */
 public class ModulesManager : MonoBehaviour
 {
-    [SerializeField] private GameEvent modulePlacedEvent;
+    private UnityEvent<GameObject> onPlacedModule;
     [SerializeField] private GameEvent moduleSelectedEvent;
     [SerializeField] private LevelStateRef currentLevelStateRef;
     [SerializeField] private GameObject turnModulePrefab;
@@ -59,11 +60,7 @@ public class ModulesManager : MonoBehaviour
         }
         buildGrid = new Grid<GameObject>(buildGrid.Width, buildGrid.Height, buildGrid.Origin, buildGrid.CellSize);
     }
-    private void SetRangeIndicatorPrefab(GameObject prefab)
-    {
-        rangeIndicatorObject = Instantiate(prefab);
-        rangeIndicatorObject.SetActive(false);
-    }
+
     void Update()
     {
         // If the player is in build mode, update the placement info
@@ -72,6 +69,17 @@ public class ModulesManager : MonoBehaviour
             UpdatePlacementInfo();
             UpdateSpherePosition();
         }
+    }
+
+
+    public void SubscribeToOnPlacedModule(UnityAction<GameObject> action)
+    {
+        onPlacedModule.AddListener(action);
+    }
+
+    public void UnsubscribeFromOnPlacedModule(UnityAction<GameObject> action)
+    {
+        onPlacedModule.RemoveListener(action);
     }
     
     // Toggle gizmos on and off Accessible via player, should be moved to a SelectionManager
@@ -95,7 +103,7 @@ public class ModulesManager : MonoBehaviour
             Vector3 gridAdjustedPosition = buildGrid.GridCellCenterWorldPos(gridPos.x, gridPos.y);
             GameObject module = Instantiate(modulePrefab, gridAdjustedPosition, Quaternion.identity);
             buildGrid.SetObjectAtCoordinates(gridPos.x, gridPos.y, module);
-            modulePlacedEvent?.Invoke();
+            onPlacedModule?.Invoke(modulePrefab);
         }
     }
     
@@ -157,6 +165,12 @@ public class ModulesManager : MonoBehaviour
         Color color = CanPlaceModule ? Color.green : Color.red;
         color = new Vector4(color.r, color.g, color.b, 0.3f);
         rangeIndicatorObject.GetComponent<MeshRenderer>().material.color = color;
+    }
+
+    private void SetRangeIndicatorPrefab(GameObject prefab)
+    {
+        rangeIndicatorObject = Instantiate(prefab);
+        rangeIndicatorObject.SetActive(false);
     }
     
     void OnDrawGizmos()

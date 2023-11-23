@@ -31,15 +31,15 @@ public class FactoryTracker : ScriptableObject
 
     public void RegisterContainer(ContainerModule container) {
         Containers.Add(container);
-        container.OnItemCollected += ObjectCollected;
+        container.ObjectArrivedAtContainer.AddListener(ObjectCollected);
     }
 
     public void DeregisterContainer(ContainerModule container) {
         Containers.Remove(container);
-        container.OnItemCollected -= ObjectCollected;
+        container.ObjectArrivedAtContainer.RemoveListener(ObjectCollected);
     }
 
-    private void ObjectCollected() {
+    private void ObjectCollected(bool isCorrect) {
         OnObjectCollected?.Invoke();
     }
 
