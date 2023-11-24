@@ -11,7 +11,7 @@ namespace SOS {
         [SerializeField]
         [FoldoutGroup("Paths", expanded: true)]
         [FolderPath(RequireExistingPath = true)]
-        private string sosDynamicParentPath = "Assets/SOS";
+        private string sosDynamicParentPath = "Assets/Plugins/SOS";
         [SerializeField]
         [FoldoutGroup("Paths", expanded: true)]
         [FolderPath(ParentFolder = "$sosDynamicParentPath", RequireExistingPath = true)]

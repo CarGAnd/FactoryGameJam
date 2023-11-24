@@ -24,9 +24,12 @@ namespace SOS
             List<ScriptableFloat> scriptableFloats = AssetUtilities.GetAllAssetsOfType<ScriptableFloat>().ToList();
             List<FloatRef> floatRefs = new List<FloatRef>();
 
-            foreach (ScriptableFloat scriptableFloat in scriptableFloats) {
+            foreach (ScriptableFloat scriptableObject in scriptableFloats) {
+                if (scriptableObject == null)
+                    return;
+
                 FloatRef floatRef = new FloatRef();
-                floatRef.variable = scriptableFloat;
+                floatRef.variable = scriptableObject;
                 floatRefs.Add(floatRef);
             }
             overViewFloats = floatRefs;
@@ -49,6 +52,9 @@ namespace SOS
             List<BoolRef> objectRefs = new List<BoolRef>();
 
             foreach (ScriptableBool scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
                 BoolRef objectRef = new BoolRef();
                 objectRef.variable = scriptableObject;
                 objectRefs.Add(objectRef);
@@ -73,6 +79,9 @@ namespace SOS
             List<IntRef> objectRefs = new List<IntRef>();
 
             foreach (ScriptableInt scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
                 IntRef objectRef = new IntRef();
                 objectRef.variable = scriptableObject;
                 objectRefs.Add(objectRef);
@@ -97,6 +106,9 @@ namespace SOS
             List<QuaternionRef> objectRefs = new List<QuaternionRef>();
 
             foreach (ScriptableQuaternion scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
                 QuaternionRef objectRef = new QuaternionRef();
                 objectRef.variable = scriptableObject;
                 objectRefs.Add(objectRef);
@@ -121,6 +133,9 @@ namespace SOS
             List<Vector2Ref> objectRefs = new List<Vector2Ref>();
 
             foreach (ScriptableVector2 scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
                 Vector2Ref objectRef = new Vector2Ref();
                 objectRef.variable = scriptableObject;
                 objectRefs.Add(objectRef);
@@ -145,6 +160,9 @@ namespace SOS
             List<Vector3Ref> objectRefs = new List<Vector3Ref>();
 
             foreach (ScriptableVector3 scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
                 Vector3Ref objectRef = new Vector3Ref();
                 objectRef.variable = scriptableObject;
                 objectRefs.Add(objectRef);

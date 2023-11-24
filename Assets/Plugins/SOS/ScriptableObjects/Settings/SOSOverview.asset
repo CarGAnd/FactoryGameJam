@@ -12,57 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4081df39518e81746aab20b2853594ab, type: 3}
   m_Name: SOSOverview
   m_EditorClassIdentifier: 
-  overViewFloats:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 531a11fb99739354f8aa6eefe878338f, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 9e487293c2d2622439122973c3a3941d, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 0edca1a91934ac04481e5664e9903461, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  overViewBools:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: bdf37b71c1dcb4b409433b43ad667230, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  overViewInts:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 780df655559f4d2469c1dc6c1a79f482, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: ec8d9f525501e414d9e981fc80300b0a, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-  overViewQuaternions:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 6299e6c630d78a84ea2c9e8f8f07a978, type: 2}
-    useLocalConstant: 0
-    localConstantValue: {x: 0, y: 0, z: 0, w: 0}
-  overViewVector2s:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: 4f5bb377a0d07b5468c5babc4d39a64a, type: 2}
-    useLocalConstant: 0
-    localConstantValue: {x: 0, y: 0}
-  overViewVector3s:
-  - name: 
-    scriptableObject: {fileID: 11400000, guid: d28747de8498baa4ea4fb84ccd7daad5, type: 2}
-    useLocalConstant: 0
-    localConstantValue: {x: 0, y: 0, z: 0}
+  overViewFloats: []
+  overViewBools: []
+  overViewInts: []
+  overViewQuaternions: []
+  overViewVector2s: []
+  overViewVector3s: []
