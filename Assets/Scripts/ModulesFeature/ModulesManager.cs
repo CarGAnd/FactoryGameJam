@@ -136,10 +136,11 @@ public class ModulesManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
             Vector3 position = hit.point;
+            Vector3 cellCenterPos = buildGrid.CellCenterFromWorldPos(position);
             LastHitPoint = position;
             float checkRadius = 0.65f;
 
-            Collider[] colliders = Physics.OverlapSphere(position, checkRadius);
+            Collider[] colliders = Physics.OverlapSphere(cellCenterPos, checkRadius);
             CanPlaceModule = AllCollidersAreGroundLayer(colliders);
             gridMaterial.SetVector("_CenterPos", new Vector4(position.x, position.y, position.z));
             
@@ -160,16 +161,17 @@ public class ModulesManager : MonoBehaviour
 
     // Should be updated to provide a transparent version of the module attempted placement.
     private void UpdateSpherePosition(){
-        Vector3 gridAdjustedPosition = buildGrid.GridCellCenterWorldPos(LastHitPoint);
+        Vector3 gridAdjustedPosition = buildGrid.CellCenterFromWorldPos(LastHitPoint);
         rangeIndicatorObject.transform.position = gridAdjustedPosition;
         Color color = CanPlaceModule ? Color.green : Color.red;
-        color = new Vector4(color.r, color.g, color.b, 0.3f);
+        color = new Vector4(color.r, color.g, color.b, 0.6f);
         rangeIndicatorObject.GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void SetRangeIndicatorPrefab(GameObject prefab)
     {
         rangeIndicatorObject = Instantiate(prefab);
+        rangeIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
         rangeIndicatorObject.SetActive(false);
     }
     
@@ -204,6 +206,9 @@ public class ModulesManager : MonoBehaviour
     }
 
     private void SetGridParameters() {
+        if(gridMaterial == null) {
+            return;
+        }
         gridMaterial.SetVector("_TileSize", Vector4.one * buildGrid.CellSize);
         gridMaterial.SetVector("_GridOffset", new Vector4(buildGrid.Origin.x, buildGrid.Origin.y, buildGrid.Origin.z, 0));
         visualGridObject.transform.position = Vector3.up * 0.01f + new Vector3(buildGrid.Width, 0, buildGrid.Height) / 2 * buildGrid.CellSize + buildGrid.Origin;

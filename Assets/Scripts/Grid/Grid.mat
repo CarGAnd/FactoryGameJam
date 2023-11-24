@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Shader Graphs_GridGraph
+  m_Name: Grid
   m_Shader: {fileID: -6465566751694194690, guid: cd995ee47bad260429eca3a23d43d5e1,
     type: 3}
   m_Parent: {fileID: 0}
@@ -63,7 +63,7 @@ Material:
     m_Colors:
     - _CenterPos: {r: 0, g: 0, b: 0, a: 0}
     - _GridColor: {r: 0.3532396, g: 0.9245283, b: 0.8204269, a: 0.6156863}
-    - _GridOffset: {r: 0, g: 0, b: 0, a: 0}
+    - _GridOffset: {r: -40, g: 0, b: -40, a: 0}
     - _TileColor: {r: 0.41037732, g: 1, b: 0.9468183, a: 0.25490198}
     - _TileSize: {r: 4, g: 4, b: 4, a: 4}
   m_BuildTextureStacks: []

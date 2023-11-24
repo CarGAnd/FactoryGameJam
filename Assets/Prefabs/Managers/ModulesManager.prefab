@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4913905877675344677
 Transform:
   m_ObjectHideFlags: 0
@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 3192852504948729495}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.550529, y: 1.659521, z: -0.72942334}
-  m_LocalScale: {x: 10, y: 0.4, z: 7.6}
+  m_LocalPosition: {x: 48.650528, y: 1.659521, z: 5.0805764}
+  m_LocalScale: {x: 8, y: 0.4, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 556831167441213713}
@@ -128,12 +128,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a622e29d2777941a3fff1d1a4eec8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  modulePlacedEvent:
-    name: 
-    scriptableObject: {fileID: 0}
-    useLocalConstant: 0
-    allowInvoking: 1
-    subscribeOnPlay: 1
   moduleSelectedEvent:
     name: 
     scriptableObject: {fileID: 0}
@@ -152,7 +146,7 @@ MonoBehaviour:
   mergeModulePrefab: {fileID: 5819931380753502364, guid: 7329d2c2380fbeb4a8f784b58bae98fe,
     type: 3}
   cam: {fileID: 0}
-  rangeIndicatorPrefab: {fileID: 1040146368720312782, guid: 66b592e07bb652b4e9077f5c04b6ef4b,
+  rangeIndicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
     type: 3}
   checkRadius: 0.65
   groundLayer:
@@ -162,8 +156,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   buildGrid:
-    <Width>k__BackingField: 25
-    <Height>k__BackingField: 19
+    <Width>k__BackingField: 20
+    <Height>k__BackingField: 20
     <CellSize>k__BackingField: 4
-    <Origin>k__BackingField: {x: 0, y: 0, z: 0}
+    <Origin>k__BackingField: {x: -40, y: 0, z: -40}
   visualGridObject: {fileID: 3192852504948729495}

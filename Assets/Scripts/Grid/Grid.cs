@@ -21,14 +21,26 @@ public class Grid<T> {
     }
 
     public bool PositionIsOccupied(int x, int y) {
+        if (!CoordinatesAreValid(x, y)) {
+            Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
+            return true;
+        }
         return gridCells[x, y] != null;
     }
 
     public T GetObjectAtCoordinates(int x, int y) {
+        if (!CoordinatesAreValid(x, y)) {
+            Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
+            return default(T);
+        }
         return gridCells[x, y];
     }
 
     public void SetObjectAtCoordinates(int x, int y, T newObject) {
+        if (!CoordinatesAreValid(x,y)) {
+            Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
+            return;
+        }
         gridCells[x, y] = newObject;
     }
 
@@ -48,7 +60,7 @@ public class Grid<T> {
         return GridToWorld(x, y) + new Vector3(CellSize, 0, CellSize) / 2;
     }
 
-    public Vector3 GridCellCenterWorldPos(Vector3 position) {
+    public Vector3 CellCenterFromWorldPos(Vector3 position) {
         Vector2Int gridPos = WorldToGrid(position);
         return GridCellCenterWorldPos(gridPos.x, gridPos.y);
     }
