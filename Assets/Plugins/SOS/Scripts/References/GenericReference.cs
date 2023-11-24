@@ -120,13 +120,13 @@ namespace SOS {
             }
             set {
                 if (useLocalConstant) {
-                    OnValueChangedRefFromTo(localConstantValue, value, ReferenceType.Dynamic);
-                    OnValueChangedFromTo(localConstantValue, value);
+                    OnValueChangedRefFromTo?.Invoke(localConstantValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(localConstantValue, value);
                     localConstantValue = value;
                 }
                 else if (variable != null && referenceType == ReferenceType.GlobalConstant){
-                    OnValueChangedRefFromTo(variable.GlobalConstantValue, value, ReferenceType.Dynamic);
-                    OnValueChangedFromTo(variable.GlobalConstantValue, value);
+                    OnValueChangedRefFromTo?.Invoke(variable.GlobalConstantValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.GlobalConstantValue, value);
                     variable.GlobalConstantValue = value;
                     SetDirty();
                 }
@@ -141,8 +141,8 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
-                    OnValueChangedRefFromTo(variable.DynamicValue, value, ReferenceType.Dynamic);
-                    OnValueChangedFromTo(variable.DynamicValue, value);
+                    OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
 
                     variable.OnValueChangedRef?.Invoke(value, ReferenceType.Dynamic);
@@ -156,8 +156,8 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
-                    OnValueChangedRefFromTo(variable.DynamicValue, value, ReferenceType.Dynamic);
-                    OnValueChangedFromTo(variable.DynamicValue, value);
+                    OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
                     EditorUtility.SetDirty(variable);
 

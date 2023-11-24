@@ -262,8 +262,8 @@ RectTransform:
   - {fileID: 2502456890313095453}
   m_Father: {fileID: 110928999258871278}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -581,6 +581,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9769dec8362b970479da1358227083f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnUIButtonPressed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   winGameEvent:
     name: 
     scriptableObject: {fileID: 11400000, guid: 89c4096a5068a8c499bef297e7925b85, type: 2}
@@ -1207,7 +1213,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1719.2115, y: 1206.1344}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3880804753441124917
 GameObject:
@@ -1333,6 +1339,18 @@ MonoBehaviour:
       - m_Target: {fileID: 7898404408154444423}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, MainAssembly
+        m_MethodName: UIButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1475,6 +1493,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, MainAssembly
+        m_MethodName: UIButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4143817127570112554
 GameObject:
   m_ObjectHideFlags: 0
@@ -1599,6 +1629,18 @@ MonoBehaviour:
       - m_Target: {fileID: 7898404408154444423}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, MainAssembly
+        m_MethodName: UIButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2164,6 +2206,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, MainAssembly
+        m_MethodName: UIButtonPressed
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5877725290029067047
 GameObject:
   m_ObjectHideFlags: 0
@@ -2288,6 +2342,18 @@ MonoBehaviour:
       - m_Target: {fileID: 7898404408154444423}
         m_TargetAssemblyTypeName: UIController, Assembly-CSharp
         m_MethodName: RestartLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7898404408154444423}
+        m_TargetAssemblyTypeName: UIController, MainAssembly
+        m_MethodName: UIButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

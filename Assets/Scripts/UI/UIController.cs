@@ -7,6 +7,7 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] private GameEvent OnUIButtonPressed;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
     [SerializeField] private IntRef levelScore;
@@ -78,5 +79,9 @@ public class UIController : MonoBehaviour
 
     public void RestartLevel() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void UIButtonPressed () {
+        OnUIButtonPressed.Invoke();
     }
 }

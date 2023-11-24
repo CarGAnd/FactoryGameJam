@@ -2,9 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public interface ITravelAssemblyLine<T>
 {
+    public UnityEvent<bool> OnTraveling { get; }
     public IAssemblyTravelMethod AssemblyTravelMethod {
         get;
     }

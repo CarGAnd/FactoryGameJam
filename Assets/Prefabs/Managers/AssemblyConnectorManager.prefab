@@ -44,5 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d9971c1493265d4b892153321230df8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnAssemblyChangeRef:
+    name: OnModuleConnection
+    scriptableObject: {fileID: 11400000, guid: 5cf923acd018ae448b70d258add4bdca, type: 2}
+    useLocalConstant: 1
+    localConstantValue: 0
   bezierLineRendererPrefab: {fileID: 1058654249710364083, guid: 11e956f018ccfb446a95d1426437c1b7,
     type: 3}
