@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 3192852504948729495}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 48.650528, y: 1.659521, z: 5.0805764}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 9.550529, y: 1.659521, z: -0.72942334}
+  m_LocalScale: {x: 8, y: 0.4, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 556831167441213713}
@@ -61,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 0}
+  - {fileID: 2100000, guid: 876b519667112b049b604c8de2c24f00, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -162,10 +162,10 @@ MonoBehaviour:
     m_Bits: 128
   visualGridObject: {fileID: 3192852504948729495}
   <BuildGrid>k__BackingField:
-    <Width>k__BackingField: 0
-    <Height>k__BackingField: 0
-    <CellSize>k__BackingField: 0
-    <Origin>k__BackingField: {x: 0, y: 0, z: 0}
+    <Width>k__BackingField: 20
+    <Height>k__BackingField: 20
+    <CellSize>k__BackingField: 4
+    <Origin>k__BackingField: {x: -40, y: 0, z: -40}
 --- !u!114 &3068769445280135437
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -24,7 +24,10 @@ public class Grid<T> {
         if (!CoordinatesAreValid(x, y)) {
             return true;
         }
-        return gridCells[x, y] != null;
+        //Since T can be a primitive, we cant test for null
+        //It is apparently not possible to do gridCells[x, y] != default(T)
+        //This seems to be the "elegant" solution that catches both primitives and objects
+        return !EqualityComparer<T>.Default.Equals(gridCells[x, y], default(T));
     }
 
     public bool PositionIsOccupied(Vector3 positon) {
