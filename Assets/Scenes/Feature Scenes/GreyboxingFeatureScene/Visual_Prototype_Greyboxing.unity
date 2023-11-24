@@ -56542,6 +56542,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1043416180}
+    - target: {fileID: 7714211160141905262, guid: 45446b150064cb246a3371d5cae0a82d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -6396098458971428934, guid: 72f7a32ac9c7676409eb438757bc6b4a,
+        type: 3}
     - target: {fileID: 8447424163734941196, guid: 45446b150064cb246a3371d5cae0a82d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -57038,6 +57044,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1178149903}
+    - target: {fileID: 7714211160141905262, guid: 45446b150064cb246a3371d5cae0a82d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -6396098458971428934, guid: 72f7a32ac9c7676409eb438757bc6b4a,
+        type: 3}
     - target: {fileID: 8447424163734941196, guid: 45446b150064cb246a3371d5cae0a82d,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -305150,6 +305162,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 964012339}
+    - target: {fileID: 7714211160141905262, guid: 45446b150064cb246a3371d5cae0a82d,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -6396098458971428934, guid: 72f7a32ac9c7676409eb438757bc6b4a,
+        type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
