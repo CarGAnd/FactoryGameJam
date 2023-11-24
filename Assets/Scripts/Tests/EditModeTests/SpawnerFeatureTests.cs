@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 public class SpawnerFeatureTests
 {
-    /*[Test]
+    [Test]
     public void SpawnerSetsCorrectProperties() {
         GameObject g = new GameObject();
         g.AddComponent<AssemblyObject>();
@@ -17,8 +17,8 @@ public class SpawnerFeatureTests
         Spawner spawner = new Spawner(waves, g);
 
         AssemblyObject spawnedObject = spawner.GetNextObject();
-
-        Assert.True(spawnedObject.Properties.CompareProperties(wave1.CreateProperties()));
+        
+        Assert.True(spawnedObject.Properties.CompareProperties(wave1.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties)));
     }
 
     [Test]
@@ -50,5 +50,5 @@ public class SpawnerFeatureTests
             }
         }
         Assert.True(spawner.IsFinished);  
-    }*/
+    }
 }

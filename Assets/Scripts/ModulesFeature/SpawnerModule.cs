@@ -163,7 +163,7 @@ public class Spawner {
         currentWaveNumber = number;
         spawnLeftThisWave = currentWave.TotalNumSpawns;
     }
-
+    
     protected AssemblyObject CreateObject() {
         AssemblyObject assemblyLineObject = MonoBehaviour.Instantiate(spawnPrefab).GetComponent<AssemblyObject>();
         Properties props = currentWave.CreateProperties();

@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class ContainerModule : ModuleBase
 {
     //True if the objects properties matches the containers properties, otherwise false
-    public UnityEvent<bool> ObjectArrivedAtContainer;
+    public UnityEvent<bool> ObjectArrivedAtContainer = new UnityEvent<bool>();
 
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;

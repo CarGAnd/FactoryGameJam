@@ -4,8 +4,6 @@ using UnityEngine;
 using NUnit.Framework;
 using System.Reflection;
 using System;
-using UnityEngine.TestTools;
-using SOS;
 
 public class ContainerFeatureTests
 {
@@ -63,7 +61,6 @@ public class ContainerFeatureTests
         AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(rot, col);
         MethodInfo collectMethod = typeof(ContainerModule).GetMethod("CollectObject", BindingFlags.NonPublic | BindingFlags.Instance);
         bool eventWasInvoked = false;
-        cModule.ObjectArrivedAtContainer = new UnityEngine.Events.UnityEvent<bool>();
         cModule.ObjectArrivedAtContainer.AddListener((bool b) => eventWasInvoked = true);
 
         Assert.True(cModule.NumItemsCollected == 0);
