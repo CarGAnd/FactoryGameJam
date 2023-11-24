@@ -14,7 +14,7 @@ namespace SOS {
         private bool subscribeOnPlay = true;
 
         // Scriptable Object of ScriptableGameEvent type.
-        protected override ScriptableGameEvent variable {
+        internal override ScriptableGameEvent variable {
             get { return scriptableObject; }
             set { scriptableObject = value; }
         }

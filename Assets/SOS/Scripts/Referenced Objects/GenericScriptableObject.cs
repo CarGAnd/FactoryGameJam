@@ -6,6 +6,7 @@ namespace SOS {
     {
         // Event for when value changed with new value and reference type.
         public Action<T, ReferenceType> ValueChanged;
+        public Action<T, T, ReferenceType> ValueChangedToFrom;
         // Dynamic value of object, is always global. 
         public T DynamicValue;
 

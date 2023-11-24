@@ -11,7 +11,7 @@ namespace SOS {
         [DrawWithUnity]
         [HideLabel]
         [Required]
-        protected override A variable {
+        internal override A variable {
             get {return scriptableObject;}
             set {
                 scriptableObject = value;
