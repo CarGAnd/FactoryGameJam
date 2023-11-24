@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9053626a40559428b052526ec0070d, type: 3}
   m_Name: SOSSettings_01
   m_EditorClassIdentifier: 
-  sosDynamicParentPath: Assets/SOS
+  sosDynamicParentPath: Assets/Plugins/SOS
   boolRefPath: ScriptableObjects/Bools
   floatRefPath: ScriptableObjects/Floats
   intRefPath: ScriptableObjects/Ints

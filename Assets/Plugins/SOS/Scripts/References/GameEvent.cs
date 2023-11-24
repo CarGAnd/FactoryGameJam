@@ -14,7 +14,7 @@ namespace SOS {
         private bool subscribeOnPlay = true;
 
         // Scriptable Object of ScriptableGameEvent type.
-        protected override ScriptableGameEvent variable {
+        internal override ScriptableGameEvent variable {
             get { return scriptableObject; }
             set { scriptableObject = value; }
         }
@@ -52,7 +52,7 @@ namespace SOS {
         [Tooltip("Invoke the current ScriptableGameEvent.")]
         public void Invoke() {
             if (variable != null && allowInvoking)
-                variable.DynamicInvoked?.Invoke();
+                variable.OnInvoked?.Invoke();
         }
 
         // Updates text and colors of the allow Invocation toggle button.
@@ -82,16 +82,16 @@ namespace SOS {
 
         // Event to subscribe to, scripts only.
         [HideInInspector]
-        public Action EventInvoked {
+        public Action OnInvoked {
             get {
                 if (variable != null && subscribeOnPlay)
-                    return variable.DynamicInvoked;
+                    return variable.OnInvoked;
 
                 return null;
             }
             set {
                 if (variable != null && subscribeOnPlay)
-                    variable.DynamicInvoked = value;
+                    variable.OnInvoked = value;
             }
         }
 

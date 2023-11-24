@@ -23,18 +23,18 @@ public class UIController : MonoBehaviour
     }
 
     private void OnEnable() {
-        winGameEvent.EventInvoked += ShowWinUI;
-        loseGameEvent.EventInvoked += ShowLoseUI;
-        levelScore.ValueChanged += UpdateScore;
+        winGameEvent.OnInvoked += ShowWinUI;
+        loseGameEvent.OnInvoked += ShowLoseUI;
+        levelScore.OnValueChanged += UpdateScore;
     }
 
     private void OnDisable() {
-        winGameEvent.EventInvoked -= ShowWinUI;
-        loseGameEvent.EventInvoked -= ShowLoseUI;
-        levelScore.ValueChanged -= UpdateScore;
+        winGameEvent.OnInvoked -= ShowWinUI;
+        loseGameEvent.OnInvoked -= ShowLoseUI;
+        levelScore.OnValueChanged -= UpdateScore;
     }
 
-    private void UpdateScore(int newScore, ReferenceType refType) {
+    private void UpdateScore(int newScore) {
         scoreText.text = "Score: " + newScore;
     }
 

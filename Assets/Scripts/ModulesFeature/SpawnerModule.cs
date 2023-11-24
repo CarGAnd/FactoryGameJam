@@ -36,15 +36,15 @@ public class SpawnerModule : ModuleBase
     }
 
     private void OnEnable() {
-        spawnPhaseStartedEvent.EventInvoked += StartSpawning;
-        buildPhaseStartedEvent.EventInvoked += StartSpawningGhosts;
+        spawnPhaseStartedEvent.OnInvoked += StartSpawning;
+        buildPhaseStartedEvent.OnInvoked += StartSpawningGhosts;
         factoryTracker.OnObjectDestroyed += OnObjectDestroyed;
         factoryTracker.RegisterSpawner(this);
     }
 
     private void OnDisable() {
-        spawnPhaseStartedEvent.EventInvoked -= StartSpawning;
-        buildPhaseStartedEvent.EventInvoked -= StartSpawningGhosts;
+        spawnPhaseStartedEvent.OnInvoked -= StartSpawning;
+        buildPhaseStartedEvent.OnInvoked -= StartSpawningGhosts;
         factoryTracker.OnObjectDestroyed -= OnObjectDestroyed;
         factoryTracker.DeregisterSpawner(this);
     }

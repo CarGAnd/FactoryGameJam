@@ -9,6 +9,7 @@ namespace SOS {
     public class SOSWindow : OdinMenuEditorWindow
     {
         private SOSSettings settings;
+        private SOSOverview overview;
 
         [MenuItem("SOS/Settings")]
         private static void OpenWindow()
@@ -18,11 +19,13 @@ namespace SOS {
 
         protected override OdinMenuTree BuildMenuTree()
         {
-            settings = AssetDatabase.LoadAssetAtPath<SOSSettings>("Assets/SOS/ScriptableObjects/Settings/SOSSettings_01.asset");
+            settings = AssetDatabase.LoadAssetAtPath<SOSSettings>("Assets/Plugins/SOS/ScriptableObjects/Settings/SOSSettings_01.asset");
+            overview = AssetDatabase.LoadAssetAtPath<SOSOverview>("Assets/Plugins/SOS/ScriptableObjects/Settings/SOSOverview.asset");
 
             OdinMenuTree tree = new OdinMenuTree(true, GetTreeConfig()) {
-                    { "SOS Settings",                             settings,                                                   EditorIcons.SettingsCog },
-                };
+                { "SOS Settings",                             settings,                                                   EditorIcons.SettingsCog },
+                { "Overview",                                 overview,                                                   EditorIcons.Checkmark },
+            };
 
             return tree;
         }
