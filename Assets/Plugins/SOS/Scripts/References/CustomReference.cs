@@ -53,7 +53,7 @@ namespace SOS {
                     variable.GlobalConstantValue = value;
                     SetDirty();
                 }
-                variable.ValueChanged?.Invoke(value, referenceType);
+                variable.OnValueChangedRef?.Invoke(value, referenceType);
             }
         }
 

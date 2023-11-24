@@ -1186,6 +1186,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d933f41e00e59324f9c02d126a73970b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UIButtonPressed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   cost: 5
   LevelCost:
     name: 

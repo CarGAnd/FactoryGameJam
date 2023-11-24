@@ -2,11 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using SOS;
 using UnityEngine;
 
 public class ConnectorController : MonoBehaviour
 {
     public Action DragStarted, DragStopped, DragSuccessful, DragFailure;
+
+    [SerializeField]
+    private ReturnValueRef OnAssemblyChangeRef;
+
+    [SerializeField]
+    private GameEvent OnAssemblyDisconnected;
 
     [SerializeField]
     private GameObject bezierLineRendererPrefab;
@@ -21,11 +28,15 @@ public class ConnectorController : MonoBehaviour
         set {
             if (value && !isDragging) {
                 DragStarted?.Invoke();
+                OnAssemblyChangeRef.Value = ReturnValue.WasStarted;
                 // Debug.Log("Drag started.");
             }
 
             if (!value && isDragging) {
                 DragStopped?.Invoke();
+
+                if (OnAssemblyChangeRef.Value == ReturnValue.WasStarted)
+                    OnAssemblyChangeRef.Value = ReturnValue.WasStopped;
                 // Debug.Log("Drag ended.");
             }
 
@@ -63,6 +74,7 @@ public class ConnectorController : MonoBehaviour
             return;
         }
 
+        OnAssemblyDisconnected.Invoke();
         assemblyToRemove.Disconnect();
         SpawnScreenText.SpawnDebugText("Assembly removed.");
     }
@@ -100,6 +112,7 @@ public class ConnectorController : MonoBehaviour
 
     private void DragFailed() {
         DragFailure?.Invoke();
+        OnAssemblyChangeRef.Value = ReturnValue.Failed;
         //SpawnScreenText.SpawnDebugText("Drag Failed."); :C
         Debug.Log("Drag failed.");
         ResetParameters();
@@ -117,6 +130,7 @@ public class ConnectorController : MonoBehaviour
         PreparePositionArray();
         CreateAndSetLineRenderer();
         DragSuccessful?.Invoke();
+        OnAssemblyChangeRef.Value = ReturnValue.Succeeded;
         SpawnScreenText.SpawnDebugText("Drag succeeded.");
         Debug.Log("Drag succeeded.");
         ResetParameters();

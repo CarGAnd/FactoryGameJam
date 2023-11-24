@@ -39,7 +39,7 @@ namespace SOS {
         [DrawWithUnity]
         [HideLabel]
         [Required]
-        protected virtual A variable {
+        internal virtual A variable {
             get {return scriptableObject;}
             set {scriptableObject = value;}
         }

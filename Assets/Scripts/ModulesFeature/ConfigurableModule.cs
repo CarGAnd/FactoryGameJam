@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public abstract class ConfigurableModule : ModuleBase
 {
     private UnityEvent<GameObject> onRemovedModule;
+    [SerializeField] private GameEvent UIButtonPressed;
     [SerializeField] private int cost = 5;
     [SerializeField] private IntRef LevelCost;
     [Required] [SerializeField] protected Canvas UICanvas;
@@ -47,6 +48,7 @@ public abstract class ConfigurableModule : ModuleBase
     }
 
     public virtual void ApplySettings() {
+        UIButtonPressed.Invoke();
         ModulesManager.Instance.DeselectModule();
         if(UI != null)
         {
@@ -81,6 +83,7 @@ public abstract class ConfigurableModule : ModuleBase
             return;
         }
 
+        UIButtonPressed.Invoke();
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
         onRemovedModule?.Invoke(gameObject);

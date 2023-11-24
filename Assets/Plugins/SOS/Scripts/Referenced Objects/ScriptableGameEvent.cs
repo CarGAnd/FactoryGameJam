@@ -6,11 +6,11 @@ namespace SOS {
     [CreateAssetMenu (fileName = "GameEvent", menuName = "SOS/Game Event")]
     public class ScriptableGameEvent : ScriptableObject
     {
-        public Action DynamicInvoked;
+        public Action OnInvoked;
 
         [Button(ButtonSizes.Gigantic), GUIColor(0, 1, 0.5058824f)]
         private void Invoke() {
-            DynamicInvoked?.Invoke();
+            OnInvoked?.Invoke();
         }
     }
 }

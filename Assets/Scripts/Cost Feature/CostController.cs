@@ -31,14 +31,14 @@ public class CostController : MonoBehaviour
     }
 
     private void SubscribeToRunningCost() {
-        runningCost.ValueChanged += UpdateCost;
+        runningCost.OnValueChanged += UpdateCost;
     }
 
     private void UnsubscribeToRunningCost() {
-        runningCost.ValueChanged -= UpdateCost;
+        runningCost.OnValueChanged -= UpdateCost;
     }
 
-    private void UpdateCost(int arg1, ReferenceType type)
+    private void UpdateCost(int arg1)
     {
         costText.text = $"Cost: {arg1}";
     }

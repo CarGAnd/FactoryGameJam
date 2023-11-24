@@ -35,12 +35,12 @@ public class ContainerModule : ModuleBase
     }
 
     private void OnEnable() {
-        runPhaseStartedEvent.EventInvoked += ResetCollectedCounts;
+        runPhaseStartedEvent.OnInvoked += ResetCollectedCounts;
         factoryTracker.RegisterContainer(this);
     }
 
     private void OnDisable() {
-        runPhaseStartedEvent.EventInvoked -= ResetCollectedCounts;
+        runPhaseStartedEvent.OnInvoked -= ResetCollectedCounts;
         factoryTracker.DeregisterContainer(this);
     }
 

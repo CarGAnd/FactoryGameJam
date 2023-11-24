@@ -7,6 +7,7 @@ using TMPro;
 
 public class UIController : MonoBehaviour
 {
+    [SerializeField] private GameEvent OnUIButtonPressed;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
     [SerializeField] private IntRef levelScore;
@@ -23,18 +24,18 @@ public class UIController : MonoBehaviour
     }
 
     private void OnEnable() {
-        winGameEvent.EventInvoked += ShowWinUI;
-        loseGameEvent.EventInvoked += ShowLoseUI;
-        levelScore.ValueChanged += UpdateScore;
+        winGameEvent.OnInvoked += ShowWinUI;
+        loseGameEvent.OnInvoked += ShowLoseUI;
+        levelScore.OnValueChanged += UpdateScore;
     }
 
     private void OnDisable() {
-        winGameEvent.EventInvoked -= ShowWinUI;
-        loseGameEvent.EventInvoked -= ShowLoseUI;
-        levelScore.ValueChanged -= UpdateScore;
+        winGameEvent.OnInvoked -= ShowWinUI;
+        loseGameEvent.OnInvoked -= ShowLoseUI;
+        levelScore.OnValueChanged -= UpdateScore;
     }
 
-    private void UpdateScore(int newScore, ReferenceType refType) {
+    private void UpdateScore(int newScore) {
         scoreText.text = "Score: " + newScore;
     }
 
@@ -78,5 +79,9 @@ public class UIController : MonoBehaviour
 
     public void RestartLevel() {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void UIButtonPressed () {
+        OnUIButtonPressed.Invoke();
     }
 }

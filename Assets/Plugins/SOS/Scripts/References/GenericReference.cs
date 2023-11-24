@@ -11,7 +11,7 @@ namespace SOS {
         [DrawWithUnity]
         [HideLabel]
         [Required]
-        protected override A variable {
+        internal override A variable {
             get {return scriptableObject;}
             set {
                 scriptableObject = value;
@@ -119,13 +119,20 @@ namespace SOS {
                 return localConstantValue;
             }
             set {
-                if (useLocalConstant)
+                if (useLocalConstant) {
+                    OnValueChangedRefFromTo?.Invoke(localConstantValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(localConstantValue, value);
                     localConstantValue = value;
+                }
                 else if (variable != null && referenceType == ReferenceType.GlobalConstant){
+                    OnValueChangedRefFromTo?.Invoke(variable.GlobalConstantValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.GlobalConstantValue, value);
                     variable.GlobalConstantValue = value;
                     SetDirty();
                 }
-                variable.ValueChanged?.Invoke(value, referenceType);
+
+                variable.OnValueChangedRef?.Invoke(value, referenceType);
+                variable.OnValueChanged?.Invoke(value);
             }
         }
 
@@ -134,9 +141,12 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
+                    OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
 
-                    variable.ValueChanged?.Invoke(value, ReferenceType.Dynamic);
+                    variable.OnValueChangedRef?.Invoke(value, ReferenceType.Dynamic);
+                    variable.OnValueChanged?.Invoke(value);
                 }
             }
         }
@@ -146,25 +156,70 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
+                    OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
+                    OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
                     EditorUtility.SetDirty(variable);
 
-                    variable.ValueChanged?.Invoke(value, ReferenceType.Dynamic);
+                    variable.OnValueChangedRef?.Invoke(value, ReferenceType.Dynamic);
+                    variable.OnValueChanged?.Invoke(value);
                 }
             }
         }
 
         // Event to subscribe to, includes new value and referencetype, scripts only.
-        public Action<B, ReferenceType> ValueChanged {
+        public Action<B, ReferenceType> OnValueChangedRef {
             get {
                 if (variable == null)
                     return null;
 
-                return variable.ValueChanged;
+                return variable.OnValueChangedRef;
             }
             set {
                 if (variable != null)
-                    variable.ValueChanged = value;
+                    variable.OnValueChangedRef = value;
+            }
+        }
+
+        // Event to subscribe to, includes old and new value, and referencetype, scripts only.
+        public Action<B, B, ReferenceType> OnValueChangedRefFromTo {
+            get {
+                if (variable == null)
+                    return null;
+
+                return variable.OnValueChangedRefFromTo;
+            }
+            set {
+                if (variable != null)
+                    variable.OnValueChangedRefFromTo = value;
+            }
+        }
+
+        // Event to subscribe to, includes new value, scripts only.
+        public Action<B> OnValueChanged {
+            get {
+                if (variable == null)
+                    return null;
+
+                return variable.OnValueChanged;
+            }
+            set {
+                if (variable != null)
+                    variable.OnValueChanged = value;
+            }
+        }
+
+        // Event to subscribe to, includes old and new value, scripts only.
+        public Action<B, B> OnValueChangedFromTo {
+            get {
+                if (variable == null)
+                    return null;
+
+                return variable.OnValueChangedFromTo;
+            }
+            set {
+                if (variable != null)
+                    variable.OnValueChangedFromTo = value;
             }
         }
 
