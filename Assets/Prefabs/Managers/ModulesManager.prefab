@@ -28,7 +28,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 48.650528, y: 1.659521, z: 5.0805764}
-  m_LocalScale: {x: 8, y: 0.4, z: 8}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 556831167441213713}
@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 556831167441213713}
   - component: {fileID: 7881028356187771791}
+  - component: {fileID: 3068769445280135437}
   m_Layer: 0
   m_Name: ModulesManager
   m_TagString: Untagged
@@ -128,6 +129,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a622e29d2777941a3fff1d1a4eec8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MouseOverGridSpace:
+    m_PersistentCalls:
+      m_Calls: []
+  BuildModeToggled:
+    m_PersistentCalls:
+      m_Calls: []
   moduleSelectedEvent:
     name: 
     scriptableObject: {fileID: 0}
@@ -146,8 +153,6 @@ MonoBehaviour:
   mergeModulePrefab: {fileID: 5819931380753502364, guid: 7329d2c2380fbeb4a8f784b58bae98fe,
     type: 3}
   cam: {fileID: 0}
-  rangeIndicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
-    type: 3}
   checkRadius: 0.65
   groundLayer:
     serializedVersion: 2
@@ -155,9 +160,25 @@ MonoBehaviour:
   moduleLayer:
     serializedVersion: 2
     m_Bits: 128
-  buildGrid:
-    <Width>k__BackingField: 20
-    <Height>k__BackingField: 20
-    <CellSize>k__BackingField: 4
-    <Origin>k__BackingField: {x: -40, y: 0, z: -40}
   visualGridObject: {fileID: 3192852504948729495}
+  <BuildGrid>k__BackingField:
+    <Width>k__BackingField: 0
+    <Height>k__BackingField: 0
+    <CellSize>k__BackingField: 0
+    <Origin>k__BackingField: {x: 0, y: 0, z: 0}
+--- !u!114 &3068769445280135437
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8822866073735789776}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c7de8e335d8e1240abe02b859a061a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moduleManager: {fileID: 7881028356187771791}
+  indicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
+    type: 3}
+  gridObject: {fileID: 3192852504948729495}

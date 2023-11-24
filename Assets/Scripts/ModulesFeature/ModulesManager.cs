@@ -20,6 +20,8 @@ using UnityEngine.Events;
 */
 public class ModulesManager : MonoBehaviour
 {
+    public UnityEvent<Vector3> MouseOverGridSpace;
+    public UnityEvent<bool> BuildModeToggled;
     private UnityEvent<GameObject> onPlacedModule;
     [SerializeField] private GameEvent moduleSelectedEvent;
     [SerializeField] private LevelStateRef currentLevelStateRef;
@@ -27,20 +29,19 @@ public class ModulesManager : MonoBehaviour
     [SerializeField] private GameObject elseGateModulePrefab;
     [SerializeField] private GameObject mergeModulePrefab;
     [SerializeField] private Camera cam;
-    [SerializeField] private GameObject rangeIndicatorPrefab;
     [SerializeField] private float checkRadius = 0.65f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask moduleLayer;
-    [SerializeField] private Grid<GameObject> buildGrid;
     [SerializeField] private GameObject visualGridObject;
+    [field: SerializeField] public Grid<GameObject> BuildGrid { get; private set; }
     private bool isModuleSelected = false;
     public static ModulesManager Instance { get; private set; }
     public bool ShowGizmos {get; private set;}
     public Vector3 LastHitPoint { get; private set; }
     public bool CanPlaceModule { get; private set; }
 
-    private GameObject rangeIndicatorObject;
     private Material gridMaterial;
+    private Vector2Int lastMouseGridPos;
     
     
     void Awake()
@@ -54,11 +55,7 @@ public class ModulesManager : MonoBehaviour
             Destroy(gameObject);
         }
         cam = Camera.main;
-        //This should be removed
-        if(rangeIndicatorPrefab != null){
-            SetRangeIndicatorPrefab(rangeIndicatorPrefab);
-        }
-        buildGrid = new Grid<GameObject>(buildGrid.Width, buildGrid.Height, buildGrid.Origin, buildGrid.CellSize);
+        BuildGrid = new Grid<GameObject>(BuildGrid.Width, BuildGrid.Height, BuildGrid.Origin, BuildGrid.CellSize);
     }
 
     void Update()
@@ -67,7 +64,6 @@ public class ModulesManager : MonoBehaviour
         if (ShowGizmos)
         {
             UpdatePlacementInfo();
-            UpdateSpherePosition();
         }
     }
 
@@ -89,8 +85,7 @@ public class ModulesManager : MonoBehaviour
             return;
         }
         ShowGizmos = show;
-        rangeIndicatorObject.SetActive(show);
-        visualGridObject.SetActive(show);
+        BuildModeToggled?.Invoke(show);
     }
     
     // If possible, place a module at the mouse Position.
@@ -99,10 +94,10 @@ public class ModulesManager : MonoBehaviour
         GameObject modulePrefab = GetModulePrefab(moduleType);
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
-            Vector2Int gridPos = buildGrid.WorldToGrid(position);
-            Vector3 gridAdjustedPosition = buildGrid.GridCellCenterWorldPos(gridPos.x, gridPos.y);
+            Vector2Int gridPos = BuildGrid.WorldToGrid(position);
+            Vector3 gridAdjustedPosition = BuildGrid.GridCellCenterWorldPos(gridPos.x, gridPos.y);
             GameObject module = Instantiate(modulePrefab, gridAdjustedPosition, Quaternion.identity);
-            buildGrid.SetObjectAtCoordinates(gridPos.x, gridPos.y, module);
+            BuildGrid.SetObjectAtCoordinates(gridPos.x, gridPos.y, module);
             onPlacedModule?.Invoke(modulePrefab);
         }
     }
@@ -136,13 +131,16 @@ public class ModulesManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
             Vector3 position = hit.point;
-            Vector3 cellCenterPos = buildGrid.CellCenterFromWorldPos(position);
+            Vector3 cellCenterPos = BuildGrid.CellCenterFromWorldPos(position);
             LastHitPoint = position;
             float checkRadius = 0.65f;
 
             Collider[] colliders = Physics.OverlapSphere(cellCenterPos, checkRadius);
-            CanPlaceModule = AllCollidersAreGroundLayer(colliders);
-            gridMaterial.SetVector("_CenterPos", new Vector4(position.x, position.y, position.z));
+            CanPlaceModule = AllCollidersAreGroundLayer(colliders) && !BuildGrid.PositionIsOccupied(position);
+            if(BuildGrid.WorldToGrid(position) != lastMouseGridPos) {
+                lastMouseGridPos = BuildGrid.WorldToGrid(position);
+                MouseOverGridSpace?.Invoke(cellCenterPos);
+            }
             
         }
     }
@@ -158,22 +156,6 @@ public class ModulesManager : MonoBehaviour
         }
         return true;
     }
-
-    // Should be updated to provide a transparent version of the module attempted placement.
-    private void UpdateSpherePosition(){
-        Vector3 gridAdjustedPosition = buildGrid.CellCenterFromWorldPos(LastHitPoint);
-        rangeIndicatorObject.transform.position = gridAdjustedPosition;
-        Color color = CanPlaceModule ? Color.green : Color.red;
-        color = new Vector4(color.r, color.g, color.b, 0.6f);
-        rangeIndicatorObject.GetComponent<MeshRenderer>().material.color = color;
-    }
-
-    private void SetRangeIndicatorPrefab(GameObject prefab)
-    {
-        rangeIndicatorObject = Instantiate(prefab);
-        rangeIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
-        rangeIndicatorObject.SetActive(false);
-    }
     
     void OnDrawGizmos()
     {
@@ -185,7 +167,7 @@ public class ModulesManager : MonoBehaviour
             Gizmos.DrawWireSphere(LastHitPoint, checkRadius);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(buildGrid.Origin, buildGrid.CellSize * new Vector3(buildGrid.Width, 1, buildGrid.Height) );
+            Gizmos.DrawWireCube(BuildGrid.Origin, BuildGrid.CellSize * new Vector3(BuildGrid.Width, 1, BuildGrid.Height) );
         }
     }
 
@@ -209,10 +191,10 @@ public class ModulesManager : MonoBehaviour
         if(gridMaterial == null) {
             return;
         }
-        gridMaterial.SetVector("_TileSize", Vector4.one * buildGrid.CellSize);
-        gridMaterial.SetVector("_GridOffset", new Vector4(buildGrid.Origin.x, buildGrid.Origin.y, buildGrid.Origin.z, 0));
-        visualGridObject.transform.position = Vector3.up * 0.01f + new Vector3(buildGrid.Width, 0, buildGrid.Height) / 2 * buildGrid.CellSize + buildGrid.Origin;
-        visualGridObject.transform.localScale = new Vector3(buildGrid.Width, 1, buildGrid.Height) * buildGrid.CellSize / 10f;
+        gridMaterial.SetVector("_TileSize", Vector4.one * BuildGrid.CellSize);
+        gridMaterial.SetVector("_GridOffset", new Vector4(BuildGrid.Origin.x, BuildGrid.Origin.y, BuildGrid.Origin.z, 0));
+        visualGridObject.transform.position = Vector3.up * 0.01f + new Vector3(BuildGrid.Width, 0, BuildGrid.Height) / 2 * BuildGrid.CellSize + BuildGrid.Origin;
+        visualGridObject.transform.localScale = new Vector3(BuildGrid.Width, 1, BuildGrid.Height) * BuildGrid.CellSize / 10f;
     }
 
     private void OnValidate() {

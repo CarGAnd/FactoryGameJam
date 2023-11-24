@@ -22,10 +22,14 @@ public class Grid<T> {
 
     public bool PositionIsOccupied(int x, int y) {
         if (!CoordinatesAreValid(x, y)) {
-            Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
             return true;
         }
         return gridCells[x, y] != null;
+    }
+
+    public bool PositionIsOccupied(Vector3 positon) {
+        Vector2Int gridCoords = WorldToGrid(positon);
+        return PositionIsOccupied(gridCoords.x, gridCoords.y);
     }
 
     public T GetObjectAtCoordinates(int x, int y) {
