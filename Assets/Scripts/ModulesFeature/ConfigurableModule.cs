@@ -7,13 +7,16 @@ using UnityEngine.UI;
 public abstract class ConfigurableModule : ModuleBase
 {
     private UnityEvent<GameObject> onRemovedModule;
-    [SerializeField] private GameEvent UIButtonPressed;
+    [SerializeField] private ModuleTypeRef onModuleMenuOpen;
+    [SerializeField] private ModuleTypeRef onModuleMenuClose;
+    [SerializeField] private GameEvent onUIButtonPressed;
     [SerializeField] private int cost = 5;
     [SerializeField] private IntRef LevelCost;
     [Required] [SerializeField] protected Canvas UICanvas;
     [Required] [SerializeField] protected GameObject UI;
     protected Button deleteButton;
     protected Button saveButton;
+    public abstract ModuleType ModuleType {get;}
 
     protected override void Awake() {
         base.Awake();
@@ -48,7 +51,8 @@ public abstract class ConfigurableModule : ModuleBase
     }
 
     public virtual void ApplySettings() {
-        UIButtonPressed.Invoke();
+        onUIButtonPressed.Invoke();
+        onModuleMenuClose.Value = ModuleType;
         ModulesManager.Instance.DeselectModule();
         if(UI != null)
         {
@@ -58,6 +62,7 @@ public abstract class ConfigurableModule : ModuleBase
 
     public override void SelectModule()
     {
+        onModuleMenuOpen.Value = ModuleType;
         UI.transform.position = GetUIPositionByMouse();
         UI.SetActive(true);
     }
@@ -83,7 +88,7 @@ public abstract class ConfigurableModule : ModuleBase
             return;
         }
 
-        UIButtonPressed.Invoke();
+        onUIButtonPressed.Invoke();
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
         onRemovedModule?.Invoke(gameObject);

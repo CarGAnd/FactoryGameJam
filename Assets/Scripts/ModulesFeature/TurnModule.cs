@@ -12,6 +12,7 @@ public class TurnModule : ConfigurableModule
     [SerializeField] private Vector3 rotationToApply;
 
     private TMP_Dropdown valueDropdown;
+    public override ModuleType ModuleType => ModuleType.TurnModule;
 
     private void Start() {
         ApplySettings();

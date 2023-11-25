@@ -13322,6 +13322,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691cde241a1cde34f8d841b2a140defc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnModuleMenuOpen:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 12d5d0ec0b1e8ee46a44386e9316587d, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+  OnModuleMenuClose:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: c366a8e330c1dfa4ab2a4397a474a1cb, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
   UIButtonPressed:
     name: UIButtonPressed
     scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
