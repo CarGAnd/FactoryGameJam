@@ -10,12 +10,22 @@ namespace SOS {
         public Action<T> OnValueChanged;
         public Action<T, T> OnValueChangedFromTo;
         // Dynamic value of object, is always global. 
-        public T DynamicValue;
-
+        private T dynamicValue;
         // Global constant value.
-        public T GlobalConstantValue;
-
+        private T globalConstantValue;
         // Global referenceType.
         public ReferenceType referenceType;
+
+        public bool debugRef = false;
+
+        public T DynamicValue { get => dynamicValue; set { DebugRefLog(dynamicValue, value); dynamicValue = value; } }
+        public T GlobalConstantValue { get => globalConstantValue; set { DebugRefLog(globalConstantValue, value); globalConstantValue = value; } }
+
+        internal virtual void DebugRefLog(T oldValue, T newValue) {
+            if (!debugRef)
+                return;
+
+            Debug.Log($"{name} was changed from {oldValue} to {newValue}.");
+        }
     }
 }

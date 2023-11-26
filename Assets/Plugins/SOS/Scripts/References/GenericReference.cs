@@ -25,14 +25,14 @@ namespace SOS {
         #endregion
         #region Protected Fields
 
+        [SerializeReference]
+        [HideInInspector]
+        private bool debugRef;
+
         // Local constant Value, only exists for this reference.
         [SerializeReference]
         [HideInInspector]
         protected B localConstantValue;
-
-        [SerializeField]
-        [HideInInspector]
-        protected bool debugRef = false;
 
         #pragma warning disable 0414
         protected Color typeColor = new Color(0.4f, 0.8f, 1);
@@ -138,6 +138,7 @@ namespace SOS {
             }
             set {
                 if (useLocalConstant) {
+                    DebugRefLog(localConstantValue, value);
                     OnValueChangedRefFromTo?.Invoke(localConstantValue, value, ReferenceType.Dynamic);
                     OnValueChangedFromTo?.Invoke(localConstantValue, value);
                     localConstantValue = value;
@@ -159,7 +160,6 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
-                    DebugRef(variable.DynamicValue, value);
                     OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
                     OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
@@ -175,7 +175,6 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
-                    DebugRef(variable.DynamicValue, value);
                     OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
                     OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
@@ -184,6 +183,25 @@ namespace SOS {
                     variable.OnValueChangedRef?.Invoke(value, ReferenceType.Dynamic);
                     variable.OnValueChanged?.Invoke(value);
                 }
+            }
+        }
+
+        protected bool DebugRef {
+            get {
+                if (variable != null) {
+                    if (useLocalConstant)
+                        return debugRef;
+                    else
+                        return variable.debugRef;
+                }
+
+                return debugRef;
+            }
+            set {
+                if (variable != null)
+                    variable.debugRef = value;
+
+                debugRef = value;
             }
         }
         #endregion Values
@@ -250,13 +268,16 @@ namespace SOS {
         [Button("@debugRefName"), GUIColor("$debugRefColor")]
         [ShowIf("@variable")]
         protected void ToggleDebugRef () {
-            debugRef =! debugRef;
+            DebugRef =! DebugRef;
             UpdateInvokingButton();
         }
 
         private void UpdateInvokingButton() {
-            ToggleColor(ref debugRefColor, debugRef);
-            if (debugRef)
+            if (variable == null)
+                return;
+
+            ToggleColor(ref debugRefColor, DebugRef);
+            if (DebugRef)
                 debugRefName = "Debugging";
             else
                 debugRefName = "Not Debugging";
@@ -294,12 +315,12 @@ namespace SOS {
             }
         }
         #endregion
-        #region Debug
-        protected virtual void DebugRef(B oldValue, B newValue) {
+        #region Local Debug
+        internal virtual void DebugRefLog(B oldValue, B newValue) {
             if (!debugRef)
                 return;
 
-            Debug.Log($"{variable.name} was changed from {oldValue} to {newValue}.");
+            Debug.Log($"{name} was changed from {oldValue} to {newValue}.");
         }
         #endregion
     }
