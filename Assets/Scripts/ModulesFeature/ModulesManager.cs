@@ -67,6 +67,12 @@ public class ModulesManager : MonoBehaviour
         }
     }
 
+    public void DeleteModule(ModuleBase module) {
+        Vector3 modulePosition = module.transform.position;
+        Vector2Int gridPos = BuildGrid.WorldToGrid(modulePosition);
+        BuildGrid.RemoveObjectAt(gridPos.x, gridPos.y);
+    }
+
 
     public void SubscribeToOnPlacedModule(UnityAction<GameObject> action)
     {
@@ -94,10 +100,10 @@ public class ModulesManager : MonoBehaviour
         GameObject modulePrefab = GetModulePrefab(moduleType);
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
-            Vector2Int gridPos = BuildGrid.WorldToGrid(position);
-            Vector3 gridAdjustedPosition = BuildGrid.GridCellCenterWorldPos(gridPos.x, gridPos.y);
-            GameObject module = Instantiate(modulePrefab, gridAdjustedPosition, Quaternion.identity);
-            BuildGrid.SetObjectAtCoordinates(gridPos.x, gridPos.y, module);
+            Vector2Int gridCell = BuildGrid.WorldToGrid(position);
+            Vector3 gridCellCenter = BuildGrid.GridCellCenterWorldPos(gridCell.x, gridCell.y);
+            GameObject module = Instantiate(modulePrefab, gridCellCenter, Quaternion.identity);
+            BuildGrid.SetObjectAt(gridCell.x, gridCell.y, module);
             onPlacedModule?.Invoke(modulePrefab);
         }
     }

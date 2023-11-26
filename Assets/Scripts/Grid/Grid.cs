@@ -10,13 +10,16 @@ public class Grid<T> {
     [field: SerializeField] public float CellSize { get; private set; }
     [field: SerializeField] public Vector3 Origin { get; private set; }
 
+    public float YPosition { get; private set; }
+
     private T[,] gridCells;
 
-    public Grid(int width, int height, Vector3 origin, float cellSize = 1) {
+    public Grid(int width, int height, Vector3 origin, float cellSize = 1, float yPosition = 0) {
         this.Width = width;
         this.Height = height;
         this.CellSize = cellSize;
         this.Origin = origin;
+        this.YPosition = yPosition;
         gridCells = new T[width, height];
     }
 
@@ -35,7 +38,7 @@ public class Grid<T> {
         return PositionIsOccupied(gridCoords.x, gridCoords.y);
     }
 
-    public T GetObjectAtCoordinates(int x, int y) {
+    public T GetObjectAt(int x, int y) {
         if (!CoordinatesAreValid(x, y)) {
             Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
             return default(T);
@@ -43,12 +46,18 @@ public class Grid<T> {
         return gridCells[x, y];
     }
 
-    public void SetObjectAtCoordinates(int x, int y, T newObject) {
+    public void SetObjectAt(int x, int y, T newObject) {
         if (!CoordinatesAreValid(x,y)) {
             Debug.Log(string.Format("[{0},{1}] is outside the bounds of the grid", x, y));
             return;
         }
         gridCells[x, y] = newObject;
+    }
+
+    public T RemoveObjectAt(int x, int y) {
+        T obj = gridCells[x, y];
+        gridCells[x, y] = default(T);
+        return obj;
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos) {
@@ -60,7 +69,7 @@ public class Grid<T> {
     }
 
     public Vector3 GridToWorld(int x, int y) {
-        return new Vector3(x, 0, y) * CellSize + Origin;
+        return new Vector3(x, 0, y) * CellSize + Origin + Vector3.up * YPosition;
     }
 
     public Vector3 GridCellCenterWorldPos(int x, int y) {

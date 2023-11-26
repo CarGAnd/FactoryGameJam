@@ -11,9 +11,9 @@ public class GridFeatureTests
         int x = 2;
         int y = 3;
         int value = 17;
-        g.SetObjectAtCoordinates(x, y, value);
+        g.SetObjectAt(x, y, value);
 
-        Assert.True(g.GetObjectAtCoordinates(x, y) == value);
+        Assert.True(g.GetObjectAt(x, y) == value);
         Assert.True(g.PositionIsOccupied(x, y));
     }
 
@@ -21,11 +21,11 @@ public class GridFeatureTests
     public void EmptyCellsAreNotOccupied() {
         Grid<int> intGrid = new Grid<int>(5, 4, Vector3.zero, 3);
 
-        Assert.True(intGrid.GetObjectAtCoordinates(1, 1) == 0);
+        Assert.True(intGrid.GetObjectAt(1, 1) == 0);
         Assert.False(intGrid.PositionIsOccupied(1, 1));
 
         Grid<GameObject> goGrid = new Grid<GameObject>(5, 4, Vector3.zero, 3);
-        Assert.True(goGrid.GetObjectAtCoordinates(1, 1) == null);
+        Assert.True(goGrid.GetObjectAt(1, 1) == null);
         Assert.False(goGrid.PositionIsOccupied(1, 1));
     }
 

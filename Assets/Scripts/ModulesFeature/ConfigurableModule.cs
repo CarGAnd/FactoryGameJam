@@ -87,8 +87,9 @@ public abstract class ConfigurableModule : ModuleBase
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
         onRemovedModule?.Invoke(gameObject);
-        Destroy(gameObject);
+        ModulesManager.Instance.DeleteModule(this);
         ModulesManager.Instance.DeselectModule();
+        Destroy(gameObject);
 
     }
 
