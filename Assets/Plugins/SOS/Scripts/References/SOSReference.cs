@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.IO;
 using Sirenix.OdinInspector;
 using UnityEditor;
@@ -6,21 +7,21 @@ using UnityEngine;
 
 namespace SOS {
     [InlineProperty]
-    [LabelWidth(100)]
+    [LabelWidth(150)]
     [Serializable]
     public abstract class SOSReference<A> where A : ScriptableObject
     {
         // Name of scriptable object.
         [SerializeField]
         [LabelWidth(40)]
-        [HorizontalGroup("row", Width = 0.45f)]
+        [HorizontalGroup("row2", Order = 0)]
         [HideIf("variable")]
         [Tooltip("Please provide a unique name.")]
         protected string name;
 
         // Small denotion of type, only for inspector. 
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.06f)]
+        [HorizontalGroup("row1", Width = 0.06f)]
         [PropertyOrder(-1)]
         [GUIColor("$denotionColor")]
         [HideLabel]
@@ -34,7 +35,7 @@ namespace SOS {
 
         // Scriptable Object of specific type.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.14f)]
+        [HorizontalGroup("row1", Width = 0.14f, Order = 1)]
         [PropertyOrder(100)]
         [DrawWithUnity]
         [HideLabel]
@@ -52,9 +53,9 @@ namespace SOS {
         protected abstract Color32 denotionColor { get; }
 
         // Creation of Object.
-        [HorizontalGroup("row", Width = 0.35f)]
+        [HorizontalGroup("row1", Width = 0.54f)]
         [LabelWidth(150)]
-        [Button("Create"), GUIColor(0, 0.9f, 0)]
+        [Button("Create", 50), GUIColor(0, 0.9f, 0)]
         [DisableIf("@string.IsNullOrEmpty(name)")]
         [HideIf("@variable")]
         protected virtual void CreateScriptableObject () {

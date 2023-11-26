@@ -5,8 +5,9 @@ using UnityEngine;
 
 namespace SOS {
     public abstract class GenericReference<A, B> : SOSReference<A> where A : GenericScriptableObject<B>  {
+        #region Internal Fields
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.14f)]
+        [HorizontalGroup("row1", Width = 0.38f)]
         [PropertyOrder(100)]
         [DrawWithUnity]
         [HideLabel]
@@ -21,16 +22,30 @@ namespace SOS {
                     OnToggleType(variable.referenceType);
             }
         }
+        #endregion
+        #region Protected Fields
 
         // Local constant Value, only exists for this reference.
         [SerializeReference]
         [HideInInspector]
         protected B localConstantValue;
 
+        [SerializeField]
+        [HideInInspector]
+        protected bool debugRef = false;
+
+        #pragma warning disable 0414
+        protected Color typeColor = new Color(0.4f, 0.8f, 1);
+        protected string debugRefName = "Not Debugging";
+        protected Color debugRefColor = new Color32(243, 109, 134, 255);
+        #pragma warning restore 0414
+
+        #endregion
+        #region ReferenceType
         // Whether to use local, global or dynamic values, only for inspector.
         // Toggles colour change on get/set.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.35f)]
+        [HorizontalGroup("row1", Width = 0.54f)]
         [ShowIf("@variable && !useLocalConstant")]
         [PropertyOrder(50)]
         [EnumPaging]
@@ -62,7 +77,7 @@ namespace SOS {
         // Only shown when local value is chosen, only for inspector.
         // Toggles colour change on get/set.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.35f)]
+        [HorizontalGroup("row1", Width = 0.54f)]
         [ShowIf("@variable && useLocalConstant")]
         [PropertyOrder(50)]
         [EnumPaging]
@@ -87,9 +102,10 @@ namespace SOS {
 
         // Dynamic value, only for inspector.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.45f)]
+        [HorizontalGroup("row2", Width = 0.6f)]
         [ShowIf("@variable && referenceType == ReferenceType.Dynamic && !useLocalConstant")]
         [HideLabel]
+        [OnInspectorInit("UpdateInvokingButton")]
         protected virtual B dynamicValue {
             get {
                 if (variable != null && referenceType == ReferenceType.Dynamic) {
@@ -99,12 +115,14 @@ namespace SOS {
                 return localConstantValue;
             }
         }
-
+        #endregion
+        #region Values
         // Local or Global value of object, only for inspector.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.45f)]
+        [HorizontalGroup("row2", Width = 0.6f)]
         [ShowIf("@variable && (referenceType != ReferenceType.Dynamic || useLocalConstant)")]
         [HideLabel]
+        [OnInspectorInit("UpdateInvokingButton")]
         protected virtual B value {
             get {
                 if (variable != null) {
@@ -141,6 +159,7 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
+                    DebugRef(variable.DynamicValue, value);
                     OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
                     OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
@@ -156,6 +175,7 @@ namespace SOS {
             get { return value; }
             set {
                 if (variable != null) {
+                    DebugRef(variable.DynamicValue, value);
                     OnValueChangedRefFromTo?.Invoke(variable.DynamicValue, value, ReferenceType.Dynamic);
                     OnValueChangedFromTo?.Invoke(variable.DynamicValue, value);
                     variable.DynamicValue = value;
@@ -166,7 +186,8 @@ namespace SOS {
                 }
             }
         }
-
+        #endregion Values
+        #region Events
         // Event to subscribe to, includes new value and referencetype, scripts only.
         public Action<B, ReferenceType> OnValueChangedRef {
             get {
@@ -222,6 +243,31 @@ namespace SOS {
                     variable.OnValueChangedFromTo = value;
             }
         }
+        #endregion Events
+        #region Toggles
+        [HorizontalGroup("row2", Width = 0.38f)]
+        [LabelWidth(150)]
+        [Button("@debugRefName"), GUIColor("$debugRefColor")]
+        [ShowIf("@variable")]
+        protected void ToggleDebugRef () {
+            debugRef =! debugRef;
+            UpdateInvokingButton();
+        }
+
+        private void UpdateInvokingButton() {
+            ToggleColor(ref debugRefColor, debugRef);
+            if (debugRef)
+                debugRefName = "Debugging";
+            else
+                debugRefName = "Not Debugging";
+        }
+
+        private void ToggleColor(ref Color colorToToggle, bool state) {
+            if (state)
+                colorToToggle = new Color(0, 0.8f, 0);
+            else
+                colorToToggle = new Color32(243, 109, 134, 255);
+        }
 
         // Toggle colors.
         protected virtual void OnToggleType(ReferenceType _referenceType) {
@@ -233,7 +279,8 @@ namespace SOS {
                 typeColor = new Color(0, 0.8f, 0);
             }
         }
-
+        #endregion Toggles
+        #region Creation
         protected override void CreateScriptableObject () {
             base.CreateScriptableObject();
             SetVariableStartMode(variable, SettingsHelperSOS.GetSettings().StartReferenceIn);
@@ -246,14 +293,14 @@ namespace SOS {
                 _var.referenceType = _referenceType;
             }
         }
+        #endregion
+        #region Debug
+        protected virtual void DebugRef(B oldValue, B newValue) {
+            if (!debugRef)
+                return;
 
-        // Fields used for odin inspector visuals
-        #region Private Fields
-
-        #pragma warning disable 0414
-        protected Color typeColor = new Color(0.4f, 0.8f, 1);
-        #pragma warning restore 0414
-
+            Debug.Log($"{variable.name} was changed from {oldValue} to {newValue}.");
+        }
         #endregion
     }
 }
