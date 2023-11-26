@@ -175,6 +175,33 @@ namespace SOS
             SirenixEditorGUI.BeginBox(overViewVector3s[index].variable.name);
         }
 
+        [SerializeField]
+        [VerticalGroup("DefaultRefs/Row1/Right")]
+        [OnInspectorInit("GetAllGameEvents")]
+        [ReadOnly]
+        [ListDrawerSettings(OnBeginListElementGUI = "BeginDrawListElementGameEvent", OnEndListElementGUI = "EndDrawListElement", HideRemoveButton = true, DraggableItems = true, DefaultExpandedState = true, HideAddButton = true)]
+        List<GameEvent> gameEvents;
+
+        private void GetAllGameEvents() {
+            List<ScriptableGameEvent> scriptableObjects = AssetUtilities.GetAllAssetsOfType<ScriptableGameEvent>().ToList();
+            List<GameEvent> objectRefs = new List<GameEvent>();
+
+            foreach (ScriptableGameEvent scriptableObject in scriptableObjects) {
+                if (scriptableObject == null)
+                    return;
+
+                GameEvent objectRef = new GameEvent();
+                objectRef.variable = scriptableObject;
+                objectRefs.Add(objectRef);
+            }
+            gameEvents = objectRefs;
+        }
+
+        private void BeginDrawListElementGameEvent(int index)
+        {
+            SirenixEditorGUI.BeginBox(gameEvents[index].variable.name);
+        }
+
         private void EndDrawListElement(int index)
         {
             SirenixEditorGUI.EndBox();
