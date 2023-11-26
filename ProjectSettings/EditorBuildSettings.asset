@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScenes/ModuleFeatureTests.unity
     guid: 6fcd8961772800845b2a316ca5f7ef18
+  - enabled: 1
+    path: Assets/Scenes/Feature Scenes/LeaderBoard/Leaderboard_01.unity
+    guid: 43988fe8e9363754cb86853531983659
   m_configObjects: {}

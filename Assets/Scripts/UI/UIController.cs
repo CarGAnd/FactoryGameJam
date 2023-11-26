@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
     [SerializeField] private IntRef levelScore;
+    [SerializeField] private LevelStateRef currentLevelState;
 
     [SerializeField] private TextMeshProUGUI scoreText;
 
@@ -55,6 +56,11 @@ public class UIController : MonoBehaviour
         winUI.SetActive(true);
         loseUI.SetActive(false); 
         gameplayUI.SetActive(false);
+    }
+
+    public void ShowLeaderboard() {
+        winUI.SetActive(false);
+        currentLevelState.Value = LevelState.Leaderboard;
     }
 
     public void StartSpawnPhase() {

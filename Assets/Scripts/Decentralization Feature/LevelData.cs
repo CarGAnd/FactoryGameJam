@@ -14,7 +14,11 @@ public struct LevelData {
     [SerializeField]
     private string sceneName;
     [SerializeField]
+    [Required]
     private LevelProperties levelProperties;
+    [SerializeField]
+    [Required]
+    private string leaderboardID;
 
     private Scene scene;
     private string savedSceneName;
@@ -22,6 +26,7 @@ public struct LevelData {
     public string SceneName { get => sceneName; private set => sceneName = value; }
     public Scene Scene { get => scene; private set => scene = value; }
     public LevelProperties LevelProperties { get => levelProperties; private set => levelProperties = value; }
+    public string LeaderboardID { get => leaderboardID; private set => leaderboardID = value; }
 
     public void GetSceneNameByIndex() {
         if (sceneIndex >= SceneManager.sceneCountInBuildSettings) {

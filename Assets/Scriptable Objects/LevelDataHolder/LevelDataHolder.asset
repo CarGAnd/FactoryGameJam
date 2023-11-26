@@ -16,12 +16,20 @@ MonoBehaviour:
   - sceneIndex: 0
     sceneName: Level1_C
     levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
+    leaderboardID: Leaderboard_01_Level
   - sceneIndex: 1
     sceneName: Level1_A
     levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
+    leaderboardID: Factory_Level1_A
   - sceneIndex: 2
     sceneName: Level2_C
     levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
+    leaderboardID: Factory_Level2_C
   - sceneIndex: 3
     sceneName: Level3_C
     levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
+    leaderboardID: Factory_Level3_C
+  - sceneIndex: 5
+    sceneName: Leaderboard_01
+    levelProperties: {fileID: 11400000, guid: d92466beb285eb64582cb3a3a327e2f9, type: 2}
+    leaderboardID: Leaderboard_01_Level

@@ -24,12 +24,6 @@ public class LevelManager : MonoBehaviour
 
     private void Start() {
         CurrentLevelStateRef.Value = LevelState.LevelLoaded;
-        StartCoroutine(StartBuildPhase());
-    }
-
-    private IEnumerator StartBuildPhase() {
-        yield return new WaitForSeconds(0.2f);
-        GoToBuildPhase();
     }
 
     public void GoToBuildPhase() {
@@ -75,8 +69,9 @@ public class LevelManager : MonoBehaviour
 }
 
 public enum LevelState {
-    LevelLoaded,
-    BuildPhase,
-    RunPhase,
-    LevelOver
+    LevelLoaded = 0,
+    BuildPhase = 10,
+    RunPhase = 20,
+    LevelOver = 30,
+    Leaderboard = 40
 }
