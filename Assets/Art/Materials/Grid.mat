@@ -59,6 +59,7 @@ Material:
     - _LineSize: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
+    - _Rotation: 45
     - _VisibleRadius: 29.53
     m_Colors:
     - _CenterPos: {r: 0, g: 0, b: 0, a: 0}

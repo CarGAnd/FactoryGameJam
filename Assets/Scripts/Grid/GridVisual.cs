@@ -53,5 +53,7 @@ public class GridVisual : MonoBehaviour
         indicatorObject = Instantiate(indicatorPrefab);
         indicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
         indicatorObject.SetActive(false);
+        Vector3 oldRot = indicatorObject.transform.rotation.eulerAngles;
+        indicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation, oldRot.z);
     }
 }

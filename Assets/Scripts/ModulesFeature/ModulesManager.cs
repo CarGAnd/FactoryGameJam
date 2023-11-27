@@ -43,7 +43,6 @@ public class ModulesManager : MonoBehaviour
     private Material gridMaterial;
     private Vector2Int lastMouseGridPos;
     
-    
     void Awake()
     {
         if(Instance == null)
@@ -55,7 +54,7 @@ public class ModulesManager : MonoBehaviour
             Destroy(gameObject);
         }
         cam = Camera.main;
-        BuildGrid = new Grid<GameObject>(BuildGrid.Width, BuildGrid.Height, BuildGrid.Origin, BuildGrid.CellSize);
+        BuildGrid = new Grid<GameObject>(BuildGrid.Width, BuildGrid.Height, BuildGrid.Origin, BuildGrid.CellSize, rotation: BuildGrid.Rotation);
     }
 
     void Update()
@@ -199,6 +198,7 @@ public class ModulesManager : MonoBehaviour
         }
         gridMaterial.SetVector("_TileSize", Vector4.one * BuildGrid.CellSize);
         gridMaterial.SetVector("_GridOffset", new Vector4(BuildGrid.Origin.x, BuildGrid.Origin.y, BuildGrid.Origin.z, 0));
+        gridMaterial.SetFloat("_Rotation", BuildGrid.Rotation);
         visualGridObject.transform.position = Vector3.up * 0.01f + new Vector3(BuildGrid.Width, 0, BuildGrid.Height) / 2 * BuildGrid.CellSize + BuildGrid.Origin;
         visualGridObject.transform.localScale = new Vector3(BuildGrid.Width, 1, BuildGrid.Height) * BuildGrid.CellSize / 10f;
     }

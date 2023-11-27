@@ -9,17 +9,22 @@ public class Grid<T> {
     [field: SerializeField] public int Height { get; private set; }
     [field: SerializeField] public float CellSize { get; private set; }
     [field: SerializeField] public Vector3 Origin { get; private set; }
+    [field: SerializeField] public float Rotation { get; private set; }
 
     public float YPosition { get; private set; }
 
     private T[,] gridCells;
+    private Quaternion gridRotation;
 
-    public Grid(int width, int height, Vector3 origin, float cellSize = 1, float yPosition = 0) {
+    public Grid(int width, int height, Vector3 origin, float cellSize = 1, float yPosition = 0, float rotation = 0) {
         this.Width = width;
         this.Height = height;
         this.CellSize = cellSize;
         this.Origin = origin;
         this.YPosition = yPosition;
+        this.Rotation = rotation;
+        
+        gridRotation = Quaternion.Euler(0, rotation, 0);
         gridCells = new T[width, height];
     }
 
@@ -61,7 +66,7 @@ public class Grid<T> {
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos) {
-        Vector3 adjusted = worldPos - Origin;
+        Vector3 adjusted = Quaternion.Inverse(gridRotation) * (worldPos) - Origin;
         int gridX = (int)(adjusted.x / CellSize);
         int gridY = (int)(adjusted.z / CellSize);
 
@@ -69,11 +74,11 @@ public class Grid<T> {
     }
 
     public Vector3 GridToWorld(int x, int y) {
-        return new Vector3(x, 0, y) * CellSize + Origin + Vector3.up * YPosition;
+        return gridRotation *  (new Vector3(x, 0, y) * CellSize + Origin + Vector3.up * YPosition);
     }
 
     public Vector3 GridCellCenterWorldPos(int x, int y) {
-        return GridToWorld(x, y) + new Vector3(CellSize, 0, CellSize) / 2;
+        return GridToWorld(x, y) + gridRotation * (new Vector3(CellSize, 0, CellSize) / 2);
     }
 
     public Vector3 CellCenterFromWorldPos(Vector3 position) {
