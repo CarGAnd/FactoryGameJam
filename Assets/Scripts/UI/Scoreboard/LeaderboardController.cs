@@ -9,6 +9,7 @@ using Unity.Services.Core;
 using Unity.Services.Leaderboards;
 using SOS;
 using Unity.Services.Leaderboards.Models;
+using System.Linq;
 
 public class LeaderboardController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class LeaderboardController : MonoBehaviour
     [SerializeField] private int scoreRangeLimit = 5;
 
     private double oldScore;
-    private SortedList<double, LeaderboardScore> scoreInstances;
+    private List<LeaderboardScore> scoreInstances;
     private List<LeaderboardScoreInstanceVisual> instantiatedVisuals;
 
     async void Awake()
@@ -104,18 +105,24 @@ public class LeaderboardController : MonoBehaviour
     private void FillSortedEnties(List<LeaderboardEntry> entries) {
         ConstructSortedScoreList();
         foreach(LeaderboardEntry leaderboardEntry in entries) {
-            scoreInstances.Add(leaderboardEntry.Score, new LeaderboardScore(leaderboardEntry, IsCurrentPlayer(leaderboardEntry.PlayerId), IsHighscore(leaderboardEntry.Score)));
+            scoreInstances.Add(new LeaderboardScore(leaderboardEntry, IsCurrentPlayer(leaderboardEntry.PlayerId), IsHighscore(leaderboardEntry.Score)));
         }
     }
 
-    public void UpdateScoreVisuals(SortedList<double, LeaderboardScore> _scoreInstances) {
+    public void UpdateScoreVisuals(List<LeaderboardScore> _scoreInstances) {
         ConstructInstantiatedList();
         CleanInstantiatedVisuals();
-        foreach (KeyValuePair<double, LeaderboardScore> entry in _scoreInstances) {
+        SortScoreList();
+        foreach (LeaderboardScore entry in _scoreInstances) {
             LeaderboardScoreInstanceVisual visual = Instantiate(scoreInstanceVisualPrefab, scoreInstanceParent).GetComponent<LeaderboardScoreInstanceVisual>();
-            visual.InitializeScoreVisual(entry.Value);
+            visual.InitializeScoreVisual(entry);
             instantiatedVisuals.Add(visual);
         }
+    }
+
+    private void SortScoreList()
+    {
+        scoreInstances.OrderBy(entry => entry.Score);
     }
 
     private bool IsHighscore(double score)
@@ -136,7 +143,7 @@ public class LeaderboardController : MonoBehaviour
     }
 
     private void ConstructSortedScoreList() {
-        scoreInstances = new SortedList<double, LeaderboardScore>();
+        scoreInstances = new List<LeaderboardScore>();
     }
 
     private void CleanInstantiatedVisuals() {

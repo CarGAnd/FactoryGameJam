@@ -24,6 +24,7 @@ public struct LeaderboardScore {
     public bool HighScore { get => highScore; private set => highScore = value; }
     public bool PlayerScore { get => playerScore; private set => playerScore = value; }
     public bool SpecialText { get => specialText; private set => specialText = value; }
+    public double Score { get => score; private set => score = value; }
 
     private void CleanName() {
         int index = name.LastIndexOf('#');
@@ -35,7 +36,7 @@ public struct LeaderboardScore {
     }
 
     public string GetEntryScore() {
-        return score.ToString();
+        return Score.ToString();
     }
 
     public string GetEntryDate() {
