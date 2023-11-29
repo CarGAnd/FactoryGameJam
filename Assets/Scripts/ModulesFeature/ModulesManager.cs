@@ -197,9 +197,11 @@ public class ModulesManager : MonoBehaviour
             return;
         }
         gridMaterial.SetVector("_TileSize", Vector4.one * BuildGrid.CellSize);
-        gridMaterial.SetVector("_GridOffset", new Vector4(BuildGrid.Origin.x, BuildGrid.Origin.y, BuildGrid.Origin.z, 0));
+        gridMaterial.SetVector("_GridOffset", -new Vector4(BuildGrid.Origin.x, BuildGrid.Origin.z, 0, 0) / BuildGrid.CellSize);
         gridMaterial.SetFloat("_Rotation", BuildGrid.Rotation);
+        
         visualGridObject.transform.position = Vector3.up * 0.01f + new Vector3(BuildGrid.Width, 0, BuildGrid.Height) / 2 * BuildGrid.CellSize + BuildGrid.Origin;
+        visualGridObject.transform.rotation = Quaternion.Euler(0, BuildGrid.Rotation, 0);
         visualGridObject.transform.localScale = new Vector3(BuildGrid.Width, 1, BuildGrid.Height) * BuildGrid.CellSize / 10f;
     }
 

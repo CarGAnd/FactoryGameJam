@@ -66,7 +66,7 @@ public class Grid<T> {
     }
 
     public Vector2Int WorldToGrid(Vector3 worldPos) {
-        Vector3 adjusted = Quaternion.Inverse(gridRotation) * (worldPos) - Origin;
+        Vector3 adjusted = Quaternion.Inverse(gridRotation) * worldPos - Origin;
         int gridX = (int)(adjusted.x / CellSize);
         int gridY = (int)(adjusted.z / CellSize);
 
