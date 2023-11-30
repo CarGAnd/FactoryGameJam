@@ -1,0 +1,64 @@
+@startuml GridSystem
+
+class Grid {
+    - rows : int
+    - columns : int
+    - cellWidth : float
+    - cellHeight : float
+    - origin : Vector3
+    - rotation : Quaternion
+    - cells : Cell[,]
+    - pathfindingAlgorithm : PathfindingAlgorithm
+
+    + CreateGrid(rows, columns, cellWidth, cellHeight, origin, rotation) : void
+    + ResizeGrid(newRows, newColumns) : void
+    + MoveGrid(newOrigin) : void
+    + SaveToFile(filePath) : void
+    + LoadFromFile(filePath) : void
+    + FindPath(startPosition, endPosition) : List<Cell>
+    + GetCell(row, column) : Cell
+    + SetCell(row, column, cell) : void
+    + CombineGrids(otherGrids) : void
+    + OnDrawGizmos() : void
+}
+
+class Cell {
+    - row : int
+    - column : int
+    - state : CellState
+    - occupant : IGridPlaceable
+    - groundPrefab : GameObject
+
+    + Cell(row, column)
+    + GetState() : CellState
+    + SetState(state) : void
+    + GetOccupant() : IGridPlaceable
+    + SetOccupant(occupant) : void
+    + IsOccupied() : bool
+    + GetNeighbors(grid) : List<Cell>
+    + SaveCell() : void
+    + LoadCell() : void
+}
+
+enum CellState {
+    EMPTY
+    OCCUPIED
+}
+
+interface IGridInteractable {
+    - isSelected : bool
+    - isPlaced : bool
+
+    + PlaceOnGrid(grid, occupiedCells) : void
+    + RemoveFromGrid() : void
+    + GetOccupiedCells(grid) : List<Cell>
+    + OnSelected() : void
+    + IsSelected() : bool
+    + IsPlaced() : bool
+}
+
+Cell --> CellState : uses
+Grid "1" -- "0..*" Cell : contains
+Cell "0..*" -- "0..1" IGridInteractable : occupied by
+
+@enduml
