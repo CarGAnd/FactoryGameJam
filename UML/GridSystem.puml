@@ -1,6 +1,6 @@
 @startuml GridSystem
 
-class Grid {
+class Grid{
     - rows : int
     - columns : int
     - cellWidth : float
@@ -12,20 +12,23 @@ class Grid {
 
     + CreateGrid(rows, columns, cellWidth, cellHeight, origin, rotation) : void
     + ResizeGrid (newRows, newColumns) : void
+    + AdjustCellSize(newCellWidth, newCellHeight) : void
     + MoveGrid(newOrigin) : void
     + SaveToFile(filePath) : void
     + LoadFromFile(filePath) : void
     + FindPath(startPosition, endPosition) : List<Cell>
     + GetCell(row, column) : Cell
-    + GetCellAtMousePosition(mousePos) : Cell
+    + GetCell(mousePos) : Cell
     + SetCell(row, column, cell) : void
     + CombineGrids(otherGrids) : void
-    + OnDrawGizmos() : void
-    + OnGridSaved() : void
-    + OnGridLoaded() : void
+    - OnDrawGizmos() : void
+    - OnGridSaved() : void
+    - OnGridLoaded() : void
+    - IsWithinBounds(row, column) : bool
 }
 
 class Cell {
+    - grid : Grid
     - row : int
     - column : int
     - state : CellState
@@ -38,7 +41,7 @@ class Cell {
     + GetOccupant() : IGridObject
     + SetOccupant(occupant) : void
     + IsOccupied() : bool
-    + GetNeighbors(grid) : List<Cell>
+    + GetNeighbors(grid, neighborConfiguration) : List<Cell>
     + SaveCell() : void
     + LoadCell() : void
 }
@@ -48,14 +51,21 @@ enum CellState {
     OCCUPIED
 }
 
+enum NeighborConfiguration{
+    FOUR_WAY
+    EIGHT_WAY
+}
+
 interface IGridObject {
     - isPlaced : bool
+    - occupiedCells : List<Cell>
 
     + OnPlacedGridElement() : void
     + OnRemovedGridElement() : void
     + GetOccupiedCells(grid, startingCell) : List<Cell>
     + PlaceOnGrid(grid, startingCell) : void
     + RemoveFromGrid() : void
+    + GetOccupant<T>() : T
 }
 
 interface IGridInteractable extends IGridObject {
@@ -64,10 +74,11 @@ interface IGridInteractable extends IGridObject {
     + OnSelected() : void
     + IsSelected() : bool
     + IsPlaced() : bool
-    + GetOccupantType<T>() : T
+
 }
 
 Cell --> CellState : uses
+Cell --> NeighborConfiguration : uses
 Grid "1" -- "0..*" Cell : contains
 Cell "0..*" -- "0..1" IGridObject : occupied by
 
