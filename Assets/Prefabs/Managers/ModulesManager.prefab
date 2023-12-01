@@ -44,10 +44,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a622e29d2777941a3fff1d1a4eec8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moduleSelectedEvent:
+    name: OnSelectedModule
+    scriptableObject: {fileID: 11400000, guid: d9689c583b4d89a4c9783af3e06e3c60, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   currentLevelStateRef:
     name: 
     scriptableObject: {fileID: 11400000, guid: fb4c6e10bc51e01418ff4c293fa9157a, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   turnModulePrefab: {fileID: 4645770682384099664, guid: ea23e06de9874a349a9b21cfae403fc5,
     type: 3}
@@ -56,12 +63,12 @@ MonoBehaviour:
   mergeModulePrefab: {fileID: 5819931380753502364, guid: 7329d2c2380fbeb4a8f784b58bae98fe,
     type: 3}
   cam: {fileID: 0}
+  rangeIndicatorPrefab: {fileID: 1040146368720312782, guid: 66b592e07bb652b4e9077f5c04b6ef4b,
+    type: 3}
+  checkRadius: 0.65
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   moduleLayer:
     serializedVersion: 2
     m_Bits: 128
-  rangeIndicatorPrefab: {fileID: 1040146368720312782, guid: 66b592e07bb652b4e9077f5c04b6ef4b,
-    type: 3}
-  checkRadius: 0.65

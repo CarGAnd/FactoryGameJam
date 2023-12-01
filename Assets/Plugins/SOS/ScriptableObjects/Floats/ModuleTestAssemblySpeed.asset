@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a3cdeac049a4db5450823b33c6d0, type: 3}
   m_Name: ModuleTestAssemblySpeed
   m_EditorClassIdentifier: 
-  DynamicValue: 0
-  GlobalConstantValue: 5
+  dynamicValue: 0
+  globalConstantValue: 5
   referenceType: 10
+  debugRef: 0

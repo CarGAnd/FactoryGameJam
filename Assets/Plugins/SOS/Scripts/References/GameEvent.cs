@@ -26,7 +26,7 @@ namespace SOS {
 
         // Toggle between allowing and disallowing invocation of the ScriptableGameEvent Action from this reference.
         [Button("$toggleNameInvoking"), GUIColor("$toggleColorInvoking")]
-        [HorizontalGroup("row", Width = 0.266f)]
+        [HorizontalGroup("row1", Width = 0.26f)]
         [ShowIf("@variable")]
         [Tooltip("Toggle between allowing event invocations from this reference.")]
         private void ToggleAllowInvoking () {
@@ -37,7 +37,7 @@ namespace SOS {
         // Toggle between allowing and disallowing listening to the ScriptableGameEvent Action from this reference.
         [Button("$toggleNameListening")]
         [GUIColor("$toggleColorListening")]
-        [HorizontalGroup("row", Width = 0.266f)]
+        [HorizontalGroup("row1", Width = 0.26f)]
         [Tooltip("Toggle between allowing this reference to listen to its event invocations.")]
         [ShowIf("@variable")]
         private void ToggleAllowListening () {
@@ -47,7 +47,7 @@ namespace SOS {
 
         // Button and method for invoking the ScriptableGameEvent Action.
         [Button, GUIColor(0, 1, 0.5058824f)]
-        [HorizontalGroup("row", Width = 0.266f)]
+        [HorizontalGroup("row1", Width = 0.24f)]
         [ShowIf("@variable")]
         [Tooltip("Invoke the current ScriptableGameEvent.")]
         public void Invoke() {
@@ -97,7 +97,7 @@ namespace SOS {
 
         // Small denotion of type, only for inspector.
         [ShowInInspector]
-        [HorizontalGroup("row", Width = 0.06f)]
+        [HorizontalGroup("row1", Width = 0.06f)]
         [PropertyOrder(-1)]
         [GUIColor("$denotionColor")]
         [HideLabel]

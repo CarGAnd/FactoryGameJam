@@ -2431,6 +2431,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: AssemblyConnectorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2325961730484127915, guid: 91564aef91b96c447ac662336cbe536f,
+        type: 3}
+      propertyPath: OnAssemblyDisconnected.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 093b884901a570046833d7c3c5f84132,
+        type: 2}
     - target: {fileID: 8630901555885849190, guid: 91564aef91b96c447ac662336cbe536f,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2744,6 +2750,12 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1542739460}
+    - target: {fileID: 1882935980702737041, guid: 11fe3f59990230048a4232e7892a4bda,
+        type: 3}
+      propertyPath: timeBetweenSpawns.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 0edca1a91934ac04481e5664e9903461,
+        type: 2}
     - target: {fileID: 1917728075818426250, guid: 11fe3f59990230048a4232e7892a4bda,
         type: 3}
       propertyPath: m_Mesh

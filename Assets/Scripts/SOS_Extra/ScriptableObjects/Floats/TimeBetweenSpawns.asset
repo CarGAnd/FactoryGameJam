@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44b7a3cdeac049a4db5450823b33c6d0, type: 3}
   m_Name: TimeBetweenSpawns
   m_EditorClassIdentifier: 
-  DynamicValue: 15
-  GlobalConstantValue: 1
+  dynamicValue: 0
+  globalConstantValue: 1
   referenceType: 10
+  debugRef: 0
