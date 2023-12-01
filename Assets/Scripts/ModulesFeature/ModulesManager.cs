@@ -206,7 +206,11 @@ public class ModulesManager : MonoBehaviour
     }
 
     private void OnValidate() {
-        gridMaterial = visualGridObject.GetComponent<Renderer>().sharedMaterial;
+        Renderer rend = visualGridObject.GetComponent<Renderer>();
+        if(rend == null) {
+            return;
+        }
+        gridMaterial = rend.sharedMaterial;
         SetGridParameters();
     }
 }
