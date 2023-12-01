@@ -11,17 +11,14 @@ public class Grid<T> {
     [field: SerializeField] public Vector3 Origin { get; private set; }
     [field: SerializeField] public float Rotation { get; private set; }
 
-    public float YPosition { get; private set; }
-
     private T[,] gridCells;
     private Quaternion gridRotation;
 
-    public Grid(int width, int height, Vector3 origin, float cellSize = 1, float yPosition = 0, float rotation = 0) {
+    public Grid(int width, int height, Vector3 origin, float cellSize = 1, float rotation = 0) {
         this.Width = width;
         this.Height = height;
         this.CellSize = cellSize;
         this.Origin = origin;
-        this.YPosition = yPosition;
         this.Rotation = rotation;
         
         gridRotation = Quaternion.Euler(0, rotation, 0);
@@ -74,7 +71,7 @@ public class Grid<T> {
     }
 
     public Vector3 GridToWorld(int x, int y) {
-        return gridRotation *  (new Vector3(x, 0, y) * CellSize + Origin + Vector3.up * YPosition);
+        return gridRotation *  (new Vector3(x, 0, y) * CellSize + Origin);
     }
 
     public Vector3 GridCellCenterWorldPos(int x, int y) {
