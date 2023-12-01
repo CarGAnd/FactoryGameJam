@@ -21,19 +21,21 @@ class Grid {
     + SetCell(row, column, cell) : void
     + CombineGrids(otherGrids) : void
     + OnDrawGizmos() : void
+    + OnGridSaved() : void
+    + OnGridLoaded() : void
 }
 
 class Cell {
     - row : int
     - column : int
     - state : CellState
-    - occupant : IGridInteractable<T>
+    - occupant : IGridObject
     - groundPrefab : GameObject
 
     + Cell(row, column)
     + GetState() : CellState
     + SetState(state) : void
-    + GetOccupant() : IGridInteractable<T>
+    + GetOccupant() : IGridObject
     + SetOccupant(occupant) : void
     + IsOccupied() : bool
     + GetNeighbors(grid) : List<Cell>
@@ -46,23 +48,27 @@ enum CellState {
     OCCUPIED
 }
 
-interface IGridInteractable<T> {
-    - isSelected : bool
+interface IGridObject {
     - isPlaced : bool
 
     + OnPlacedGridElement() : void
     + OnRemovedGridElement() : void
-    + OnSelected() : void
+    + GetOccupiedCells(grid, startingCell) : List<Cell>
     + PlaceOnGrid(grid, startingCell) : void
     + RemoveFromGrid() : void
-    + GetOccupiedCells(grid, startingCell) : List<Cell>
+}
+
+interface IGridInteractable extends IGridObject {
+    - isSelected : bool
+
+    + OnSelected() : void
     + IsSelected() : bool
     + IsPlaced() : bool
-    + GetOccupantType() : T
+    + GetOccupantType<T>() : T
 }
 
 Cell --> CellState : uses
 Grid "1" -- "0..*" Cell : contains
-Cell "0..*" -- "0..1" IGridInteractable : occupied by
+Cell "0..*" -- "0..1" IGridObject : occupied by
 
 @enduml
