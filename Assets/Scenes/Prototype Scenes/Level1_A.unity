@@ -812,26 +812,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
-    - target: {fileID: 2502456890313095453, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2502456890313095453, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2502456890313095453, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2502456890313095453, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3482405847096939391, guid: c1b0df35812930d4ab465fc0d7443d47,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -845,31 +825,6 @@ PrefabInstance:
     - target: {fileID: 3482405847096939391, guid: c1b0df35812930d4ab465fc0d7443d47,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3957282553856584228, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 19.999939
-      objectReference: {fileID: 0}
-    - target: {fileID: 4586619390383722290, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4586619390383722290, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4586619390383722290, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4586619390383722290, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6545671679450394508, guid: c1b0df35812930d4ab465fc0d7443d47,
@@ -887,11 +842,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7898404408154444423, guid: c1b0df35812930d4ab465fc0d7443d47,
-        type: 3}
-      propertyPath: levelManager
-      value: 
-      objectReference: {fileID: 1469315413612464609}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2567,18 +2517,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0deb54aa21ef9874691e8ce0610dcc0e, type: 3}
---- !u!114 &1469315413612464609 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 384249353508455965, guid: 0deb54aa21ef9874691e8ce0610dcc0e,
-    type: 3}
-  m_PrefabInstance: {fileID: 1469315413612464608}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 29c10ec3c32492d448b4adc7bfb89118, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1494406733819949913
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2592,6 +2530,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: AssemblyConnectorManager
       objectReference: {fileID: 0}
+    - target: {fileID: 2325961730484127915, guid: 91564aef91b96c447ac662336cbe536f,
+        type: 3}
+      propertyPath: OnAssemblyDisconnected.name
+      value: OnAssemblyDisconnected
+      objectReference: {fileID: 0}
+    - target: {fileID: 2325961730484127915, guid: 91564aef91b96c447ac662336cbe536f,
+        type: 3}
+      propertyPath: OnAssemblyDisconnected.scriptableObject
+      value: 
+      objectReference: {fileID: 11400000, guid: 093b884901a570046833d7c3c5f84132,
+        type: 2}
     - target: {fileID: 8630901555885849190, guid: 91564aef91b96c447ac662336cbe536f,
         type: 3}
       propertyPath: m_LocalPosition.x

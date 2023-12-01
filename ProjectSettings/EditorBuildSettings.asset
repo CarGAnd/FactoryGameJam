@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Prototype Scenes/Level3_C.unity
     guid: 68e13b06dbcb077469ea570da67282c9
+  - enabled: 1
+    path: Assets/Scenes/TestScenes/ModuleFeatureTests.unity
+    guid: 6fcd8961772800845b2a316ca5f7ef18
   m_configObjects: {}

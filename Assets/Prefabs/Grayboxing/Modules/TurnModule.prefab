@@ -1112,11 +1112,13 @@ MonoBehaviour:
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
+    debugRef: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
+    debugRef: 0
   isOutConnection: 0
 --- !u!1 &4645770682384099664
 GameObject:
@@ -1186,12 +1188,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d933f41e00e59324f9c02d126a73970b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onModuleMenuOpen:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 12d5d0ec0b1e8ee46a44386e9316587d, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+    debugRef: 0
+  onModuleMenuClose:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: c366a8e330c1dfa4ab2a4397a474a1cb, type: 2}
+    useLocalConstant: 0
+    localConstantValue: 0
+    debugRef: 0
+  onUIButtonPressed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   cost: 5
   LevelCost:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
+    debugRef: 0
   UICanvas: {fileID: 4283858890504133015}
   UI: {fileID: 2213850035002690018}
   rotationToApply: {x: 0, y: 0, z: 0}
@@ -2067,11 +2088,13 @@ MonoBehaviour:
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
+    debugRef: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
     localConstantValue: 0
+    debugRef: 0
   isOutConnection: 1
 --- !u!1 &8402056506127100645
 GameObject:

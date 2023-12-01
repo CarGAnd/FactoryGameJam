@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,10 +6,10 @@ using UnityEngine.Events;
 
 public class AssemblyObject : MonoBehaviour
 {
-    [SerializeField]
-    ObjectProperties objectProperties;
-    [SerializeField]
-    Renderer lollipopRenderer;
+    [SerializeField] private UnityEvent<bool> OnMovingOnAssemblyLine = new UnityEvent<bool>();
+    [SerializeField] private FactoryTracker factoryTracker;
+    [SerializeField] private ObjectProperties objectProperties;
+    [SerializeField] private Renderer lollipopRenderer;
     
     private Properties properties = null;
     public Properties Properties 
@@ -17,13 +18,23 @@ public class AssemblyObject : MonoBehaviour
         set 
         {
             properties = value; 
-            ApplyProperties();
+            ApplyAllProperties();
         } 
     }
+
+    public bool IsGhost { get; set; }
+
     private void Awake(){
         if (objectProperties != null && properties == null)
             Properties = objectProperties.CreateProperties();
         
+    }
+
+    //Call an event before the object is destroyed
+    public void DestroyObject() {
+        factoryTracker.OnObjectDestroyed?.Invoke(gameObject);
+        TravelAssemblyLine.OnTraveling.RemoveListener(OnTravelingInvokeOnMovingOnAssemblyLine);
+        Destroy(gameObject);
     }
 
     ITravelAssemblyLine<AssemblyObject> travelAssemblyLine;
@@ -39,8 +50,14 @@ public class AssemblyObject : MonoBehaviour
             return;
             
         TravelAssemblyLine = new ObjectTravelAssemblyLine<AssemblyObject>(this);
+        TravelAssemblyLine.OnTraveling.AddListener(OnTravelingInvokeOnMovingOnAssemblyLine);
     }
- 
+
+    private void OnTravelingInvokeOnMovingOnAssemblyLine(bool isMoving)
+    {
+        OnMovingOnAssemblyLine?.Invoke(isMoving);
+    }
+
     void Update()
     {
         if (travelAssemblyLine == null)
@@ -49,22 +66,33 @@ public class AssemblyObject : MonoBehaviour
         TravelAssemblyLine.UpdateTravel();
     }
 
-    public void ApplyProperties()
+    public void ApplyAllProperties()
     {
-        //Update rotation
-        Quaternion rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
+        foreach(PropertyType propertyType in System.Enum.GetValues(typeof(PropertyType)))
+        {
+            ApplyProperty(propertyType);
+        }
+    }
 
-        transform.rotation = rotation;
+    public void ApplyProperty(PropertyType propertyType)
+    {
+        switch (propertyType)
+        {
+            case PropertyType.Rotation:
+                transform.rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
+                break;
+            case PropertyType.Color:
+                if(lollipopRenderer == null)
+                    return;
+                Color color = properties.GetProperty<Color>(PropertyType.Color);
+                MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
+                lollipopRenderer.GetPropertyBlock(propBlock, 0);
 
+                propBlock.SetColor("_BaseColor", color);
 
-        Color color = properties.GetProperty<Color>(PropertyType.Color);
-        
-        MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
-        lollipopRenderer.GetPropertyBlock(propBlock, 0);
-
-        propBlock.SetColor("_BaseColor", color);
-
-        lollipopRenderer.SetPropertyBlock(propBlock, 0);
+                lollipopRenderer.SetPropertyBlock(propBlock, 0);
+                break;
+        }
     }
     
 }

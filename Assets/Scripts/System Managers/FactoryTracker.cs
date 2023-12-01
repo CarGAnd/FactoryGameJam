@@ -7,47 +7,45 @@ using System;
 public class FactoryTracker : ScriptableObject
 {
     public Action OnObjectCollected;
+    public Action<GameObject> OnObjectDestroyed;
 
-    public List<SpawnerModule> Spawners { get { return spawners; } }
-    public List<ContainerModule> Containers { get { return containers; } }
-
-    private List<SpawnerModule> spawners;
-    private List<ContainerModule> containers;
+    public List<SpawnerModule> Spawners { get; private set; }
+    public List<ContainerModule> Containers { get; private set; }
 
     private void Awake() {
         Reset();
     }
 
     private void Reset() {
-        spawners = new List<SpawnerModule>();
-        containers = new List<ContainerModule>();
+        Spawners = new List<SpawnerModule>();
+        Containers = new List<ContainerModule>();
     }
 
     public void RegisterSpawner(SpawnerModule spawner) {
-        spawners.Add(spawner);
+        Spawners.Add(spawner);
     }
 
     public void DeregisterSpawner(SpawnerModule spawner) {
-        spawners.Remove(spawner);
+        Spawners.Remove(spawner);
     }
 
     public void RegisterContainer(ContainerModule container) {
-        containers.Add(container);
-        container.OnItemCollected += ObjectCollected;
+        Containers.Add(container);
+        container.ObjectArrivedAtContainer.AddListener(ObjectCollected);
     }
 
     public void DeregisterContainer(ContainerModule container) {
-        containers.Remove(container);
-        container.OnItemCollected -= ObjectCollected;
+        Containers.Remove(container);
+        container.ObjectArrivedAtContainer.RemoveListener(ObjectCollected);
     }
 
-    private void ObjectCollected() {
+    private void ObjectCollected(bool isCorrect) {
         OnObjectCollected?.Invoke();
     }
 
     public int GetNumObjectsInLevel() {
         int total = 0;
-        foreach(SpawnerModule sm in spawners) {
+        foreach(SpawnerModule sm in Spawners) {
             total += sm.GetTotalNumSpawns();
         }
         return total;
@@ -55,7 +53,7 @@ public class FactoryTracker : ScriptableObject
 
     public int GetNumCorrectItemsCollected() {
         int total = 0;
-        foreach (ContainerModule cm in containers) {
+        foreach (ContainerModule cm in Containers) {
             total += cm.NumCorrectItemsCollected;
         }
         return total;
@@ -63,7 +61,7 @@ public class FactoryTracker : ScriptableObject
 
     public int GetNumWrongItemsCollected() {
         int total = 0;
-        foreach (ContainerModule cm in containers) {
+        foreach (ContainerModule cm in Containers) {
             total += cm.NumWrongItemsCollected;
         }
         return total;

@@ -11,11 +11,11 @@ public class WinLoseDecider : MonoBehaviour
     [SerializeField] private GameEvent loseGameEvent;
 
     private void OnEnable() {
-        runPhaseEndedEvent.EventInvoked += CheckWinLose;
+        runPhaseEndedEvent.OnInvoked += CheckWinLose;
     }
 
     private void OnDisable() {
-        runPhaseEndedEvent.EventInvoked -= CheckWinLose;
+        runPhaseEndedEvent.OnInvoked -= CheckWinLose;
     }
 
     private void CheckWinLose() {

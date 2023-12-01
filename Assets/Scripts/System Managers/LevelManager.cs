@@ -28,7 +28,7 @@ public class LevelManager : MonoBehaviour
     }
 
     private IEnumerator StartBuildPhase() {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.2f);
         GoToBuildPhase();
     }
 
@@ -39,13 +39,30 @@ public class LevelManager : MonoBehaviour
     }
 
     public void GoToRunPhase() {
-        if(CurrentLevelStateRef.Value == LevelState.BuildPhase) {
+        if(IsReadyToRun()) {
             CurrentLevelStateRef.Value = LevelState.RunPhase;
             runPhaseStartedEvent.Invoke();
             ObjectTracker objectTracker = new ObjectTracker();
             objectTracker.StartTracking(factoryTracker, this);
             Debug.Log("Run phase");
         }  
+    }
+
+    private bool IsReadyToRun() {
+        if (!ASpawnerIsConnected()) {
+            Debug.Log("Cannot start until at least one spawner has its output connected");
+        }
+
+        return ASpawnerIsConnected() && CurrentLevelStateRef.Value == LevelState.BuildPhase;
+    }
+
+    private bool ASpawnerIsConnected() {
+        int totalOutputs = 0;
+        List<SpawnerModule> spawners = factoryTracker.Spawners;
+        foreach (SpawnerModule sm in spawners) {
+            totalOutputs += sm.GetNumberOfConnectedOutputs();
+        }
+        return totalOutputs > 0;
     }
 
     public void GoToLevelCompletedPhase() {

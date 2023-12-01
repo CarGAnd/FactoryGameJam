@@ -6,7 +6,7 @@ using System;
 public class ObjectTracker
 {
     private int numSpawnedObjects;
-    private int numCollectedObjects;
+    private int numDestroyedObjects;
 
     private FactoryTracker factoryTracker;
     private LevelManager levelManager;
@@ -15,15 +15,22 @@ public class ObjectTracker
         this.factoryTracker = factoryTracker;
         this.levelManager = levelManager;
         numSpawnedObjects = factoryTracker.GetNumObjectsInLevel();
-        factoryTracker.OnObjectCollected += OnObjectCollected;
-        numCollectedObjects = 0;
+        factoryTracker.OnObjectDestroyed += OnObjectDestroyed;
     }
 
-    private void OnObjectCollected() {
-        numCollectedObjects += 1;
-        if(numCollectedObjects >= numSpawnedObjects) {
-            levelManager.GoToLevelCompletedPhase();
-            factoryTracker.OnObjectCollected -= OnObjectCollected;
+    private void OnObjectDestroyed(GameObject obj) {
+        numDestroyedObjects += 1;
+        if (AllObjectsDoneMoving()) {
+            FinishLevel();
         }
+    }
+
+    private void FinishLevel() {
+        levelManager.GoToLevelCompletedPhase();
+        factoryTracker.OnObjectDestroyed -= OnObjectDestroyed;
+    }
+
+    private bool AllObjectsDoneMoving() {
+        return numDestroyedObjects >= numSpawnedObjects;
     }
 }

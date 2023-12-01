@@ -1,46 +1,26 @@
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using SOS;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public abstract class ConfigurableModule : ModuleBase
 {
-    [SerializeField]
-    private int cost = 5;
-    [SerializeField]
-    private IntRef LevelCost;
-    [Required]
-    [SerializeField]
-    protected Canvas UICanvas;
-    [Required]
-    [SerializeField]
-    protected GameObject UI;
+    private UnityEvent<GameObject> onRemovedModule;
+    [SerializeField] private ModuleTypeRef onModuleMenuOpen;
+    [SerializeField] private ModuleTypeRef onModuleMenuClose;
+    [SerializeField] private GameEvent onUIButtonPressed;
+    [SerializeField] private int cost = 5;
+    [SerializeField] private IntRef LevelCost;
+    [Required] [SerializeField] protected Canvas UICanvas;
+    [Required] [SerializeField] protected GameObject UI;
     protected Button deleteButton;
     protected Button saveButton;
+    public abstract ModuleType ModuleType {get;}
 
     protected override void Awake() {
         base.Awake();
         Initialize();
-    }
-
-    protected virtual void Initialize() {
-        LevelCost.Value += cost;
-        SetUIElements();
-        UICanvas.gameObject.SetActive(true);
-    }
-
-    public virtual void ApplySettings() {
-        ModulesManager.Instance.DeselectModule();
-        UI.SetActive(false);
-    }
-
-    public override void SelectModule()
-    {
-        UI.transform.position = GetUIPositionByMouse();
-        UI.SetActive(true);
     }
 
     void OnEnable () {
@@ -56,6 +36,37 @@ public abstract class ConfigurableModule : ModuleBase
         UI.SetActive(true);
     }
 
+    public void SubscribeToRemoveModule(UnityAction<GameObject> action) {
+        onRemovedModule.AddListener(action);
+    }
+
+    public void UnsubscribeFromRemoveModule(UnityAction<GameObject> action) {
+        onRemovedModule.RemoveListener(action);
+    }
+
+    protected virtual void Initialize() {
+        LevelCost.Value += cost;
+        SetUIElements();
+        UICanvas.gameObject.SetActive(true);
+    }
+
+    public virtual void ApplySettings() {
+        onUIButtonPressed.Invoke();
+        onModuleMenuClose.Value = ModuleType;
+        ModulesManager.Instance.DeselectModule();
+        if(UI != null)
+        {
+            UI.SetActive(false);
+        }
+    }
+
+    public override void SelectModule()
+    {
+        onModuleMenuOpen.Value = ModuleType;
+        UI.transform.position = GetUIPositionByMouse();
+        UI.SetActive(true);
+    }
+   
     protected virtual void SetUIElements() {
         Button[] buttons = UI.GetComponentsInChildren<Button>();
         deleteButton = buttons[0];
@@ -77,10 +88,13 @@ public abstract class ConfigurableModule : ModuleBase
             return;
         }
 
+        onUIButtonPressed.Invoke();
         LevelCost.Value -= cost;
         moduleAssemblyController.DisconnectAllAssemblies();
+        onRemovedModule?.Invoke(gameObject);
         Destroy(gameObject);
         ModulesManager.Instance.DeselectModule();
+
     }
 
     protected Vector2 GetUIPositionByMouse() {
@@ -90,4 +104,6 @@ public abstract class ConfigurableModule : ModuleBase
         out Vector2 uiPos);
         return UICanvas.transform.TransformPoint(uiPos);
     }
+
+    
 }

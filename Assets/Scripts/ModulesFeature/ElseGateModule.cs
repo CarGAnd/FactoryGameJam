@@ -27,6 +27,8 @@ public class ElseGateModule : ConfigurableModule
     [SerializeField]
     private TMP_Text comparisonText;
 
+    public override ModuleType ModuleType => ModuleType.ElseModule;
+
     void Start(){
         if(propertyToCompare == PropertyType.Rotation){
             rotationToCompareQuat = Quaternion.Euler(rotationToCompare);

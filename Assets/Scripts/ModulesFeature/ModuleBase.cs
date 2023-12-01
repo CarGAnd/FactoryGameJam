@@ -16,16 +16,30 @@ public abstract class ModuleBase : MonoBehaviour
 
     protected abstract void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject);
 
-    protected void SendObject(ITravelAssemblyLine<AssemblyObject> AssemblyObject, int outputIndex = 0)
+    protected void SendObject(ITravelAssemblyLine<AssemblyObject> assemblyObject, int outputIndex = 0)
     {
         IAssembly assembly = moduleAssemblyController.GetOutputAssemblies()[outputIndex];
 
-        if (assembly.ConnectedTo == null)
+        if (assembly.ConnectedTo == null) {
+            assemblyObject.Value.DestroyObject();
             return;
+        }
+            
 
         // Debug.Log($"Assembly at {gameObject.name} was not null.");
-        AssemblyObject.InitializeAtAssemblyLine(assembly, AssemblyObject.Value.transform);
+        assemblyObject.InitializeAtAssemblyLine(assembly, assemblyObject.Value.transform);
     }
 
     public abstract void SelectModule();
+
+    public int GetNumberOfConnectedOutputs() {
+        int total = 0;
+        List<IAssembly> outputs = moduleAssemblyController.GetOutputAssemblies();
+        foreach(IAssembly ia in outputs) {
+            if (ia.IsConnected) {
+                total += 1;
+            }
+        }
+        return total;
+    }
 }

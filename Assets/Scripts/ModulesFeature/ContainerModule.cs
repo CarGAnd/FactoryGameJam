@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using SOS;
 using System;
+using UnityEngine.Events;
 
 public class ContainerModule : ModuleBase
 {
-    public Action OnItemCollected;
+    //True if the objects properties matches the containers properties, otherwise false
+    public UnityEvent<bool> ObjectArrivedAtContainer = new UnityEvent<bool>();
 
     [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private IntRef scoreRef;
@@ -33,12 +35,12 @@ public class ContainerModule : ModuleBase
     }
 
     private void OnEnable() {
-        runPhaseStartedEvent.EventInvoked += ResetCollectedCounts;
+        runPhaseStartedEvent.OnInvoked += ResetCollectedCounts;
         factoryTracker.RegisterContainer(this);
     }
 
     private void OnDisable() {
-        runPhaseStartedEvent.EventInvoked -= ResetCollectedCounts;
+        runPhaseStartedEvent.OnInvoked -= ResetCollectedCounts;
         factoryTracker.DeregisterContainer(this);
     }
 
@@ -50,30 +52,44 @@ public class ContainerModule : ModuleBase
     private void Start() {
         expectedProperties = Properties.CreateProperties(LevelDataGetter.GetCurrent().LevelProperties, colorName, rotationName); 
     }
-    
-    protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
-        AssemblyObject aObject = assemblyObject.Value;
-        
+
+    private void CollectObject(AssemblyObject aObject) {
+        if (aObject.IsGhost) {
+            return;
+        }
+
         bool fitsContainer = aObject.Properties.CompareProperties(expectedProperties);
 
         if (fitsContainer) {
-            CorrectObjectReceived(aObject);
+            CorrectObjectReceived();
         }
         else {
-            WrongObjectReceived(aObject);
+            WrongObjectReceived();
         }
     }
+    
+    protected override void OnReceivedObject(ITravelAssemblyLine<AssemblyObject> assemblyObject) {
+        AssemblyObject aObject = assemblyObject.Value;
 
-    private void CorrectObjectReceived(AssemblyObject aObject) {
-        scoreRef.Value += 1;
-        NumCorrectItemsCollected += 1;
-        OnItemCollected?.Invoke();
+        CollectObject(aObject);
+
+        //TODO: For now we destroy the object. Later we might want a more fancy animation
+        aObject.DestroyObject();
     }
 
-    private void WrongObjectReceived(AssemblyObject aObject) {
+    private void CorrectObjectReceived() {
+        //This check is only here because this object is null when running tests
+        //TODO: have the score counting done somewhere else, likely using the onItemCollectedEvent
+        if(scoreRef != null) {
+            scoreRef.Value += 1;
+        }
+        NumCorrectItemsCollected += 1;
+        ObjectArrivedAtContainer?.Invoke(true);
+    }
+
+    private void WrongObjectReceived() {
         NumWrongItemsCollected += 1;
-        OnItemCollected?.Invoke();
-        Debug.Log("Wrong object received: " + aObject.name);
+        ObjectArrivedAtContainer?.Invoke(false);
     }
 
     public override void SelectModule() {

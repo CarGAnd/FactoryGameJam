@@ -333,11 +333,13 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   isOutConnection: 0
 --- !u!1 &2548253812537380681
@@ -12796,11 +12798,13 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   isOutConnection: 1
 --- !u!1 &4381492415477421321
@@ -13247,11 +13251,13 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   isOutConnection: 1
 --- !u!1 &5819931380753502364
@@ -13322,11 +13328,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 691cde241a1cde34f8d841b2a140defc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onModuleMenuOpen:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 12d5d0ec0b1e8ee46a44386e9316587d, type: 2}
+    useLocalConstant: 0
+    debugRef: 0
+    localConstantValue: 0
+  onModuleMenuClose:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: c366a8e330c1dfa4ab2a4397a474a1cb, type: 2}
+    useLocalConstant: 0
+    debugRef: 0
+    localConstantValue: 0
+  onUIButtonPressed:
+    name: 
+    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
+    useLocalConstant: 0
+    allowInvoking: 1
+    subscribeOnPlay: 1
   cost: 10
   LevelCost:
     name: 
     scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
     useLocalConstant: 0
+    debugRef: 0
     localConstantValue: 0
   UICanvas: {fileID: 5718944169615127241}
   UI: {fileID: 8752724425265803844}
