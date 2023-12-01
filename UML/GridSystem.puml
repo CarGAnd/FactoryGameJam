@@ -11,12 +11,13 @@ class Grid {
     - pathfindingAlgorithm : PathfindingAlgorithm
 
     + CreateGrid(rows, columns, cellWidth, cellHeight, origin, rotation) : void
-    + ResizeGrid(newRows, newColumns) : void
+    + ResizeGrid (newRows, newColumns) : void
     + MoveGrid(newOrigin) : void
     + SaveToFile(filePath) : void
     + LoadFromFile(filePath) : void
     + FindPath(startPosition, endPosition) : List<Cell>
     + GetCell(row, column) : Cell
+    + GetCellAtMousePosition(mousePos) : Cell
     + SetCell(row, column, cell) : void
     + CombineGrids(otherGrids) : void
     + OnDrawGizmos() : void
@@ -26,13 +27,13 @@ class Cell {
     - row : int
     - column : int
     - state : CellState
-    - occupant : IGridPlaceable
+    - occupant : IGridInteractable<T>
     - groundPrefab : GameObject
 
     + Cell(row, column)
     + GetState() : CellState
     + SetState(state) : void
-    + GetOccupant() : IGridPlaceable
+    + GetOccupant() : IGridInteractable<T>
     + SetOccupant(occupant) : void
     + IsOccupied() : bool
     + GetNeighbors(grid) : List<Cell>
@@ -45,16 +46,19 @@ enum CellState {
     OCCUPIED
 }
 
-interface IGridInteractable {
+interface IGridInteractable<T> {
     - isSelected : bool
     - isPlaced : bool
 
-    + PlaceOnGrid(grid, occupiedCells) : void
-    + RemoveFromGrid() : void
-    + GetOccupiedCells(grid) : List<Cell>
+    + OnPlacedGridElement() : void
+    + OnRemovedGridElement() : void
     + OnSelected() : void
+    + PlaceOnGrid(grid, startingCell) : void
+    + RemoveFromGrid() : void
+    + GetOccupiedCells(grid, startingCell) : List<Cell>
     + IsSelected() : bool
     + IsPlaced() : bool
+    + GetOccupantType() : T
 }
 
 Cell --> CellState : uses
