@@ -15,7 +15,6 @@ public class ModulePlacementTests
     public void TurnModuleTest()
     {
         //Setup
-        ModulesManager modulesManager = TestHelper.SetupModulesManagerEditMode();
         TurnModule turnModule = TestHelper.SetupTurnModuleWithRotation(true);
         AssemblyObject assemblyTest = TestHelper.CreateAssemblyObjectWithProperties(new Vector3(0,0,0), Color.red);
 
@@ -29,7 +28,6 @@ public class ModulePlacementTests
         Assert.AreEqual(Quaternion.Angle(expectedQuaternion, actualQuaternion), 0);
 
         //Cleanup
-        Object.DestroyImmediate(modulesManager.gameObject);
         Object.DestroyImmediate(turnModule.gameObject);
         Object.DestroyImmediate(assemblyTest.gameObject);
     }
