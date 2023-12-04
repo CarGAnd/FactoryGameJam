@@ -9,6 +9,9 @@ class Grid{
     - rotation : Quaternion
     - cells : Cell[,]
     - pathfindingAlgorithm : PathfindingAlgorithm
+    + GridSaved : UnityEvent
+    + GridLoaded : UnityEvent
+
 
     + CreateGrid(rows, columns, cellWidth, cellHeight, origin, rotation) : void
     + ResizeGrid (newRows, newColumns) : void
@@ -21,6 +24,7 @@ class Grid{
     + GetCell(mousePos) : Cell
     + SetCell(row, column, cell) : void
     + CombineGrids(otherGrids) : void
+    + PlaceOnGrid(startingCell, gridObject) : void
     - OnDrawGizmos() : void
     - OnGridSaved() : void
     - OnGridLoaded() : void
@@ -35,13 +39,14 @@ class Cell {
     - occupant : IGridObject
     - groundPrefab : GameObject
 
-    + Cell(row, column)
+    + Cell(row, column, grid) : Cell
     + GetState() : CellState
     + SetState(state) : void
     + GetOccupant() : IGridObject
     + SetOccupant(occupant) : void
+    + GetCoordinnates() : Vector2Int
     + IsOccupied() : bool
-    + GetNeighbors(grid, neighborConfiguration) : List<Cell>
+    + GetNeighbors(neighborConfiguration) : List<Cell>
     + SaveCell() : void
     + LoadCell() : void
 }
@@ -57,11 +62,6 @@ enum NeighborConfiguration{
 }
 
 interface IGridObject {
-    - isPlaced : bool
-    - occupiedCells : List<Cell>
-
-    + OnPlacedGridElement() : void
-    + OnRemovedGridElement() : void
     + GetOccupiedCells(grid, startingCell) : List<Cell>
     + PlaceOnGrid(grid, startingCell) : void
     + RemoveFromGrid() : void
@@ -69,12 +69,19 @@ interface IGridObject {
 }
 
 interface IGridInteractable extends IGridObject {
-    - isSelected : bool
-
     + OnSelected() : void
     + IsSelected() : bool
     + IsPlaced() : bool
 
+}
+
+class GridInteractableObject implements IGridInteractable {
+    - isSelected : bool
+    - isPlaced : bool
+    - occupiedCells : List<Cell>
+    + Selected : UnityEvent
+    + PlacedGridElement : UnityEvent
+    + RemovedGridElement : UnityEvent	
 }
 
 Cell --> CellState : uses
