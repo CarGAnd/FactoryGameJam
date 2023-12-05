@@ -106,7 +106,7 @@ public class ModulesManager : MonoBehaviour
             onPlacedModule?.Invoke(modulePrefab);
         }
     }
-    
+
     // Select a module if the cursor is over it.
     public void SelectModule(Vector2 mousePosition)
     {

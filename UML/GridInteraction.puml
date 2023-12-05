@@ -1,0 +1,15 @@
+@startuml GridInteraction
+
+class GridInteraction {
+    {static} - grids : Dictionary<String, Grid>
+
+    {static} + RegisterGrid(grid : Grid) : void
+    {static} + UnregisterGrid(grid : Grid) : void
+    {static} + GetGridById(gridId : String) : Grid
+}
+
+GridInteraction "1" -- "0..*" Grid : interacts with
+
+@enduml
+
+

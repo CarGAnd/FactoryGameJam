@@ -11,24 +11,27 @@ class Grid{
     - pathfindingAlgorithm : PathfindingAlgorithm
     + GridSaved : UnityEvent
     + GridLoaded : UnityEvent
+    - gridId : String
 
-
-    + CreateGrid(rows, columns, cellWidth, cellHeight, origin, rotation) : void
-    + ResizeGrid (newRows, newColumns) : void
-    + AdjustCellSize(newCellWidth, newCellHeight) : void
-    + MoveGrid(newOrigin) : void
-    + SaveToFile(filePath) : void
-    + LoadFromFile(filePath) : void
-    + FindPath(startPosition, endPosition) : List<Cell>
-    + GetCell(row, column) : Cell
-    + GetCell(mousePos) : Cell
-    + SetCell(row, column, cell) : void
-    + CombineGrids(otherGrids) : void
-    + PlaceOnGrid(startingCell, gridObject) : void
+    + CreateGrid(rows : int, columns : int, cellWidth : float, cellHeight : float, origin : Vector3, rotation : Quaternion) : void
+    + ResizeGrid (newRows : int, newColumns : int) : void
+    + AdjustCellSize(newCellWidth : float, newCellHeight : float) : void
+    + MoveGrid(newOrigin : Vector3) : void
+    + SaveToFile(filePath : String) : void
+    + LoadFromFile(filePath : String) : void
+    + FindPath(startPosition : Cell, endPosition : Cell) : List<Cell>
+    + GetCell(row : int, column : int) : Cell
+    + GetCellSize() : Vector2
+    + GetCell(mousePos : Vector2) : Cell
+    + SetCell(row : int, column : int, cell : Cell) : void
+    + CombineGrids(otherGrids : List<Grid>) : void
+    + GetGridID() : String
+    + PlaceOnGrid(startingCell : Cell, gridObject : GameObject) : void
+    + GetCellWorldPosition(row : int, column : int) : Vector3
+    - IsWithinBounds(row : int, column : int) : bool
     - OnDrawGizmos() : void
     - OnGridSaved() : void
     - OnGridLoaded() : void
-    - IsWithinBounds(row, column) : bool
 }
 
 class Cell {
@@ -39,16 +42,26 @@ class Cell {
     - occupant : IGridObject
     - groundPrefab : GameObject
 
-    + Cell(row, column, grid) : Cell
+    + Cell(row : int, column : int, grid : Grid) : Cell
     + GetState() : CellState
-    + SetState(state) : void
     + GetOccupant() : IGridObject
-    + SetOccupant(occupant) : void
+    + SetOccupant(occupant : IGridObject) : void
+    + GetGroundPrefab() : GameObject
     + GetCoordinnates() : Vector2Int
+    + AttachCellGround(groundObject : GameObject) : void
     + IsOccupied() : bool
-    + GetNeighbors(neighborConfiguration) : List<Cell>
+    + GetNeighbors(neighborConfiguration : NeighborConfiguration) : List<Cell>
     + SaveCell() : void
     + LoadCell() : void
+    + GetCenter() : Vector3
+    + GetGridId() : String
+}
+
+class CellGround <<MonoBehaviour>> {
+    - cell : Cell
+    
+    + OnMouseDown() : void
+    + SetCellReference(cell : Cell) : void
 }
 
 enum CellState {
@@ -62,8 +75,8 @@ enum NeighborConfiguration{
 }
 
 interface IGridObject {
-    + GetOccupiedCells(grid, startingCell) : List<Cell>
-    + PlaceOnGrid(grid, startingCell) : void
+    + GetOccupiedCells(grid : Grid, startingCell : Cell) : List<Cell>
+    + PlaceOnGrid(grid : Grid, startingCell : Cell) : void
     + RemoveFromGrid() : void
     + GetOccupant<T>() : T
 }
@@ -86,7 +99,8 @@ class GridInteractableObject implements IGridInteractable {
 
 Cell --> CellState : uses
 Cell --> NeighborConfiguration : uses
-Grid "1" -- "0..*" Cell : contains
+Cell "1" -- "1" CellGround : has
 Cell "0..*" -- "0..1" IGridObject : occupied by
+Grid "1" -- "0..*" Cell : contains
 
 @enduml

@@ -4,119 +4,193 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [System.Serializable]
-public class NewGrid {
-
+public class NewGrid
+{
     public UnityEvent GridSaved;
     public UnityEvent GridLoaded;
 
-    private int columns;
     private int rows;
+    private int columns;
     private float cellWidth;
     private float cellHeight;
     private Vector3 origin;
     private Quaternion rotation;
-
     private Cell[,] cells;
-    
-    public void CreateGrid(int rows, int columns, float cellWidth, float cellHeight, Vector3 origin, Quaternion rotation) {
-        this.columns = columns;
+
+    private string gridId;
+
+    public Vector2 GetCellSize => new Vector2(cellWidth, cellHeight);
+
+    // Creates the grid with specified dimensions and properties
+    public void CreateGrid(int rows, int columns, float cellWidth, float cellHeight, Vector3 origin, Quaternion rotation)
+    {
+        // Initialization logic...
+        // Should Register with GridInteraction
+
         this.rows = rows;
+        this.columns = columns;
         this.cellWidth = cellWidth;
         this.cellHeight = cellHeight;
         this.origin = origin;
         this.rotation = rotation;
+        this.cells = new Cell[rows, columns];
 
-        cells = new Cell[rows, columns];
-    }
-
-    public void PlaceOnGrid(IGridObject gridObject, Vector2Int startingCell) {
-        List<Cell> cells = gridObject.GetOccupiedCells(this, startingCell);
-        foreach(Cell c in cells) {
-            c.SetOccupant(gridObject);
-        }
-    }
-
-    public void ResizeGrid(int newRows, int newColumns) {
-        Cell[,] newGrid = new Cell[newRows, newColumns];
-
-        int minRows = Mathf.Min(newRows, rows);
-        int minColumns = Mathf.Min(newColumns, columns);
-
-        for(int y = 0; y < minRows; y++) {
-            for (int x = 0; x < minColumns; x++) {
-                Cell newCell = new Cell(y, x, this);
-                newCell.SetOccupant(cells[y, x].GetOccupant());
-                newGrid[y, x] = newCell;
+        //populate cells array
+        for (int i = 0; i < rows; i++)
+        {
+            for (int j = 0; j < columns; i++)
+            {
+                cells[i, j] = new Cell(i, j, this);
             }
         }
 
-        cells = newGrid;
+        gridId = System.Guid.NewGuid().ToString();
+
+        GridInteraction.RegisterGrid(this);
+    }
+
+    // Places a grid object on the grid
+    public void PlaceOnGrid(GameObject placedObject, Cell startingCell)
+    {
+        IGridObject gridObject = placedObject.GetComponent<IGridObject>();
+        List<Cell> occupiedCells = gridObject.GetOccupiedCells(this, startingCell);
+
+        foreach (Cell cell in occupiedCells)
+        {
+            if (cell == null || cell.IsOccupied())
+            {
+                return;
+            }
+        }
+
+        GameObject newObject = MonoBehaviour.Instantiate(gridObject.GetOccupant<GameObject>(), startingCell.GetCenter(), Quaternion.identity);
+        foreach (Cell cell in occupiedCells)
+        {
+            cell.SetOccupant(newObject.GetComponent<IGridObject>());
+        }
+    }
+
+    // Resizes the grid to new dimensions
+    public void ResizeGrid(int newRows, int newColumns)
+    {
+        // Resizing logic, ensure to preserve existing cells' data
+        //Update cells array, but preserve already created cells. create new cells if needed
+        Cell[,] newCells = new Cell[newRows, newColumns];
+
+        for (int i = 0; i < newRows; i++)
+        {
+            for (int j = 0; j < newColumns; j++)
+            {
+                if (i < rows && j < columns)
+                {
+                    newCells[i, j] = cells[i, j];
+                }
+                else
+                {
+                    newCells[i, j] = new Cell(i, j, this);
+                }
+            }
+        }
+
+        cells = newCells;
         rows = newRows;
         columns = newColumns;
     }
 
-    public void AdjustCellSize(float newCellWidth, float newCellHeight) {
+    // Adjusts the size of each cell in the grid
+    public void AdjustCellSize(float newCellWidth, float newCellHeight)
+    {
+        // Adjust cell dimensions and possibly reposition objects within the grid
         cellWidth = newCellWidth;
         cellHeight = newCellHeight;
+
+        foreach (Cell cell in cells)
+        {
+            cell.GetGroundPrefab().transform.localScale = new Vector3(cellWidth, 1, cellHeight);
+        }
     }
 
-    public void MoveGrid(Vector3 newOrigin) {
+    // Moves the grid to a new origin point
+    public void MoveGrid(Vector3 newOrigin)
+    {
         origin = newOrigin;
     }
 
-    public Cell GetCell(int row, int column) {
-        if (!IsWithingBounds(row, column)) {
+    // Gets a specific cell based on row and column index
+    public Cell GetCell(int row, int column)
+    {
+        if (IsWithingBounds(row, column))
+        {
+            return cells[row, column];
+        }
+        else
+        {
             return null;
         }
-        return cells[row, column];
     }
 
-    public Cell GetCell(Vector3 worldPos) {
-        Vector3 adjusted = Quaternion.Inverse(rotation) * worldPos - origin;
-        int gridX = (int)(adjusted.x / cellWidth);
-        int gridY = (int)(adjusted.z / cellHeight);
+    // Gets a cell based on mousePosition position
+    public Cell GetCell(Vector2 mousePos)
+    {
+        // Convert mouse position to world position, then return the cell
 
-        return cells[gridY, gridX];
+        return null;
+    }
+    
+    public Vector3 GetCellWorldPosition(int row, int column)
+    {
+        return new Vector3(origin.x + column * cellWidth, origin.y, origin.z + row * cellHeight);
     }
 
-    public void SetCell(int row, int column, Cell newObject) {
-        if (!IsWithingBounds(row, column)) {
-            return;
+    // Sets a new cell object at a specific grid location
+    public void SetCell(int row, int column, Cell newObject)
+    {        
+        if(IsWithingBounds(row, column))
+        {
+            cells[row, column] = newObject;
         }
-        cells[row, column] = newObject;
+    }
+    private bool IsWithingBounds(int row, int column)
+    {
+        return row >= 0 && row < rows && column >= 0 && column < columns;
     }
 
-    private bool IsWithingBounds(int row, int column) {
-        return column >= 0 && column < columns && row >= 0 && row < rows;
+    public string GetGridID()
+    {
+        return gridId;
     }
-
-    #region TODO
-
-    public void SaveToFile(string filePath) {
+    // TODO: Methods to be implemented or further defined
+    public void SaveToFile(string filePath)
+    {
+        // Logic to save grid state to a file
         GridSaved?.Invoke();
     }
 
-    public void LoadFromFile(string filePath) {
+    public void LoadFromFile(string filePath)
+    {
+        // Logic to load grid state from a file
         GridLoaded?.Invoke();
     }
 
-    public List<Cell> FindPath(Vector2Int startPosition, Vector2Int endPosition) {
+    public List<Cell> FindPath(Vector2Int startPosition, Vector2Int endPosition)
+    {
+        // Implement pathfinding logic, possibly using the pathfindingAlgorithm
         return null;
     }
 
-    public void CombineGrids(List<NewGrid> otherGrid) {
-
+    public void CombineGrids(List<NewGrid> otherGrids)
+    {
+        // Logic to combine multiple grids into one, adjusting cells and dimensions as needed
     }
 
-    private void OnDrawGizmos() {
-
+    private void OnDrawGizmos()
+    {
     }
-
-    #endregion
 }
 
+
 public interface IGridObject {
-    List<Cell> GetOccupiedCells(NewGrid grid, Vector2Int startingCell);
+    List<Cell> GetOccupiedCells(NewGrid grid, Cell startingCell);
     void PlaceOnGrid(NewGrid grid, Vector2Int startingCell);
     void RemoveFromGrid();
     T GetOccupant<T>();
