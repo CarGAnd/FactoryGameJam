@@ -3,11 +3,10 @@
 class CameraSystem {
     - virtualCamera: CinemachineVirtualCamera
     - confiner: CinemachineConfiner
-    - inputManager: InputManager
     - zoomSettings: ZoomSettings
     - movementSettings: MovementSettings
-    + UpdateCameraPosition(): void
-    + UpdateCameraZoom(): void
+    + UpdateCameraPosition(delta : float): void
+    + UpdateCameraZoom(delta : float): void
     + ApplyCameraBounds(): void
 }
 
@@ -18,6 +17,7 @@ class ZoomSettings {
 }
 
 class MovementSettings {
+    - moveSpeed
     - dampeningCurve: AnimationCurve
     - isometricMovement: bool
 }
