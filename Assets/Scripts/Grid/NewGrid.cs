@@ -50,25 +50,6 @@ public class NewGrid
     }
 
     // Places a grid object on the grid
-    public void PlaceOnGrid(GameObject placedObject, Cell startingCell)
-    {
-        IGridObject gridObject = placedObject.GetComponent<IGridObject>();
-        List<Cell> occupiedCells = gridObject.GetOccupiedCells(this, startingCell);
-
-        foreach (Cell cell in occupiedCells)
-        {
-            if (cell == null || cell.IsOccupied())
-            {
-                return;
-            }
-        }
-
-        GameObject newObject = MonoBehaviour.Instantiate(gridObject.GetOccupant<GameObject>(), startingCell.GetCenter(), Quaternion.identity);
-        foreach (Cell cell in occupiedCells)
-        {
-            cell.SetOccupant(newObject.GetComponent<IGridObject>());
-        }
-    }
 
     // Resizes the grid to new dimensions
     public void ResizeGrid(int newRows, int newColumns)
@@ -186,18 +167,4 @@ public class NewGrid
     private void OnDrawGizmos()
     {
     }
-}
-
-
-public interface IGridObject {
-    List<Cell> GetOccupiedCells(NewGrid grid, Cell startingCell);
-    void PlaceOnGrid(NewGrid grid, Vector2Int startingCell);
-    void RemoveFromGrid();
-    T GetOccupant<T>();
-}
-
-public interface IGridInteractable {
-    void OnSelected();
-    bool IsSelected();
-    bool IsPlaced();
 }
