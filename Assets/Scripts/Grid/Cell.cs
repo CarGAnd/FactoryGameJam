@@ -136,17 +136,3 @@ public class Cell
         return grid.GetGridID();
     }
 }
-
-public enum NeighborConfiguration
-{
-    FOUR_WAY,
-    EIGHT_WAY
-}
-
-public enum CellState
-{
-    EMPTY,
-    OCCUPIED
-}
-
-
