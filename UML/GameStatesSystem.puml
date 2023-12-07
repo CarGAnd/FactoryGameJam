@@ -1,4 +1,4 @@
-@startuml GameStates
+@startuml GameStatesManager
 
 enum GameplayPhases {
   BuildPhase
@@ -21,7 +21,7 @@ enum MenuStates {
   LevelSelectMenu
 }
 
-class GameData {
+class GameStatesManager {
   - {static} currentGameplayPhase : GameplayPhases
   - {static} currentGameState : GameStates
   - {static} currentMenuState : MenuStates
@@ -37,8 +37,8 @@ class GameData {
   + {static} GetCurrentMenuState() : MenuStates
 }
 
-GameData --> GameplayPhases : has
-GameData --> GameStates : has
-GameData --> MenuStates : has
+GameStatesManager --> GameplayPhases : has
+GameStatesManager --> GameStates : has
+GameStatesManager --> MenuStates : has
 
 @enduml
