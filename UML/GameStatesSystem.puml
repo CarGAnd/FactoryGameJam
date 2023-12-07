@@ -1,0 +1,44 @@
+@startuml GameStates
+
+enum GameplayPhases {
+  BuildPhase
+  RunPhase
+}
+
+enum GameStates {
+  GameStarted
+  LevelLoaded
+  GameRunning
+  GamePaused
+  LevelFinished
+}
+
+enum MenuStates {
+  PauseMenu
+  MainMenu
+  LeaderboardMenu
+  SettingsMenu
+  LevelSelectMenu
+}
+
+class GameData {
+  - {static} currentGameplayPhase : GameplayPhases
+  - {static} currentGameState : GameStates
+  - {static} currentMenuState : MenuStates
+  + GameplayPhaseChanged : UnityEvent<GameplayPhases>
+  + GameStateChanged : UnityEvent<GameStates>
+  + MenuStateChanged : UnityEvent<MenuStates>
+  
+  + {static} SetCurrentGameplayPhase(GameplayPhases) : void
+  + {static} GetCurrentGameplayPhase() : GameplayPhases
+  + {static} SetCurrentGameState(GameStates) : void
+  + {static} GetCurrentGameState() : GameStates
+  + {static} SetCurrentMenuState(MenuStates) : void
+  + {static} GetCurrentMenuState() : MenuStates
+}
+
+GameData --> GameplayPhases : has
+GameData --> GameStates : has
+GameData --> MenuStates : has
+
+@enduml
