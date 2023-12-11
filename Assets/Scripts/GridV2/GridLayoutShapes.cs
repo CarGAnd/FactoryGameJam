@@ -14,16 +14,24 @@ public interface IGridLayout {
 }
 
 public class SquareGridLayout : IGridLayout {
+
+    private Quaternion rotation;
+    private Vector2 cellSize;
+    private Vector3 origin;
+
     public Vector3 CalculateCellPosition(int row, int column) 
     {
-        throw new System.NotImplementedException();
+        return rotation * (new Vector3(column * cellSize.x, 0, row * cellSize.y)) + origin;
     }
 
     // Implementation for constructing a square grid
     public void ConstructGrid(int rows, int columns, Vector2 cellSize, Vector3 origin, Quaternion rotation, CellV2[,] cells) 
     {
-
+        this.rotation = rotation;
+        this.cellSize = cellSize;
+        this.origin = origin;
     }
+
     // Implementation for adjusting cell size in a square grid
     // Length and Width are the two side lengths in a square cell.
     public void AdjustCellSize(float length, float width) 

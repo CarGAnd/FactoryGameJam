@@ -71,7 +71,7 @@ public class Grid<T> {
     }
 
     public Vector3 GridToWorld(int x, int y) {
-        return gridRotation *  (new Vector3(x, 0, y) * CellSize + Origin);
+        return gridRotation * (new Vector3(x, 0, y) * CellSize) + Origin;
     }
 
     public Vector3 GridCellCenterWorldPos(int x, int y) {

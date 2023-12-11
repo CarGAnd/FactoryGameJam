@@ -52,15 +52,18 @@ public class CellV2 {
         occupyingObject = null;
         state = CellState.EMPTY;
     }
+
     //This refers to the coordinates within the grid, More or less just the row and column.
     public Vector2Int GetCellCoordinates()
     {
-        throw new System.NotImplementedException();
+        return new Vector2Int(column, row);
     }
+
     public bool IsOccupied() 
     {
         return occupyingObject != null;
     }
+
     //This method will be called from CellInteractor, which should be placed on the groundPrefab.
     public void SelectCell() 
     {
@@ -75,9 +78,7 @@ public class CellV2 {
     public void LoadCell() 
     {
         // Implementation to load cell state
-    }
-
-    
+    }  
 }
 
 public enum CellState 

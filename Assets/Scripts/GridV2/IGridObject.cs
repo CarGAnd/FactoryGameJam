@@ -4,7 +4,7 @@ using UnityEngine;
 
 public interface IGridObject {
     // Returns a list of cells occupied by the object starting from a given cell.
-    List<Cell> GetOccupyingCells(CellV2 startCell, GridV2 grid);
+    List<CellV2> GetOccupyingCells(CellV2 startCell, GridV2 grid);
 
     // Retrieves the object's data as a specific type.
     T GetObject<T>();

@@ -22,7 +22,7 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
     }
     
     // Implementing IGridObject
-    public List<Cell> GetOccupyingCells(CellV2 startCell, GridV2 grid) {
+    public List<CellV2> GetOccupyingCells(CellV2 startCell, GridV2 grid) {
         throw new System.NotImplementedException();
     }
 
