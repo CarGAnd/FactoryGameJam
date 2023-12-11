@@ -3,40 +3,64 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IGridLayout {
+
+    Vector2Int GetCellCoordinate(Vector3 worldPosition);
+
     // Calculates the world position of a cell based on its row and column.
     Vector3 CalculateCellPosition(int row, int column);
 
-    // Constructs the grid with the specified dimensions.
-    void ConstructGrid(int rows, int columns, Vector2 cellSize, Vector3 origin, Quaternion rotation, CellV2[,] cells);
-
-    // Adjusts the size of cells in the grid.
-    void AdjustCellSize(float length, float width);
+    //Get all neighbors of a cell
+    //The specific types in this function will likely be changed
+    List<CellV2> GetCellNeighbors(CellV2 cell);
 }
 
 public class SquareGridLayout : IGridLayout {
 
-    private Quaternion rotation;
-    private Vector2 cellSize;
-    private Vector3 origin;
+    private static Vector2Int[] fourWayNeighbors = new Vector2Int[]
+    {
+        new Vector2Int(1, 0),
+        new Vector2Int(0, 1),
+        new Vector2Int(-1, 0),
+        new Vector2Int(0, -1)
+    };
 
+    private static Vector2Int[] eightWayNeighbors = new Vector2Int[]
+    {
+        new Vector2Int(1, 0),
+        new Vector2Int(0, 1),
+        new Vector2Int(-1, 0),
+        new Vector2Int(0, -1),
+        new Vector2Int(1, 1),
+        new Vector2Int(1, -1),
+        new Vector2Int(-1, 1),
+        new Vector2Int(-1, -1)
+    };
+
+    //Return the worldPosition of the given row and column in a grid with 1x1 cells, no offset, and no rotation
     public Vector3 CalculateCellPosition(int row, int column) 
     {
-        return rotation * (new Vector3(column * cellSize.x, 0, row * cellSize.y)) + origin;
+        return new Vector3(column, 0, row);
     }
 
-    // Implementation for constructing a square grid
-    public void ConstructGrid(int rows, int columns, Vector2 cellSize, Vector3 origin, Quaternion rotation, CellV2[,] cells) 
-    {
-        this.rotation = rotation;
-        this.cellSize = cellSize;
-        this.origin = origin;
+    //Return the cell coordinates of the given position in a grid with 1x1 cells, no offset, and no rotation
+    public Vector2Int GetCellCoordinate(Vector3 normalizedPosition) {
+        int gridX = (int) normalizedPosition.x;
+        int gridY = (int) normalizedPosition.z;
+
+        return new Vector2Int(gridX, gridY);
     }
 
-    // Implementation for adjusting cell size in a square grid
-    // Length and Width are the two side lengths in a square cell.
-    public void AdjustCellSize(float length, float width) 
-    {
+    // Moved to grid because a Cell doesn't need to know its neighbors
+    public List<CellV2> GetCellNeighbors(CellV2 cell) {
+        List<CellV2> neighbors = new List<CellV2>();
+        
+        return neighbors;
+    }
 
+    // Moved to Grid as cells didn't need to know their neighbors.
+    public enum NeighborConfiguration {
+        FOUR_WAY,
+        EIGHT_WAY
     }
 }
 
@@ -47,17 +71,11 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 
-    // Implementation for constructing a hexagonal grid
-    public void ConstructGrid(int rows, int columns, Vector2 cellSize, Vector3 origin, Quaternion rotation, CellV2[,] cells) 
-    {
-
+    public Vector2Int GetCellCoordinate(Vector3 worldPosition) {
+        throw new System.NotImplementedException();
     }
 
-    // Implementation for adjusting cell size in a Hex grid
-    // Length represents distance between two parallel sides 
-    // width represents distance between two vertices on the opposite sides of the parallel sides.
-    public void AdjustCellSize(float length, float width) 
-    {
-
+    public List<CellV2> GetCellNeighbors(CellV2 cell) {
+        throw new System.NotImplementedException();
     }
 }

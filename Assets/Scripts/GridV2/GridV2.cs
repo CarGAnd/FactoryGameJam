@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridV2 {
+public class GridV2 : MonoBehaviour {
     private int columns;
     private int rows;
     private IGridLayout layout;
@@ -11,27 +11,7 @@ public class GridV2 {
     private string id;
     private CellV2[,] cells;
     //private PathfindingAlgorithm pathfindingAlgorithm;
-
-    private static Vector2Int[] fourWayNeighbors = new Vector2Int[]
-    {
-        new Vector2Int(1, 0),
-        new Vector2Int(0, 1),
-        new Vector2Int(-1, 0),
-        new Vector2Int(0, -1)
-    };
-
-    private static Vector2Int[] eightWayNeighbors = new Vector2Int[]
-    {
-        new Vector2Int(1, 0),
-        new Vector2Int(0, 1),
-        new Vector2Int(-1, 0),
-        new Vector2Int(0, -1),
-        new Vector2Int(1, 1),
-        new Vector2Int(1, -1),
-        new Vector2Int(-1, 1),
-        new Vector2Int(-1, -1)
-    };
-
+    
     public GridV2(IGridLayout layout, int rows, int columns, Vector3 origin, Quaternion rotation) 
     {
         this.layout = layout;
@@ -40,8 +20,6 @@ public class GridV2 {
         this.origin = origin;
         this.rotation = rotation;
         cells = new CellV2[rows, columns];
-        // Construct the grid using the layout. The idea is each layout will construct a grid differently.
-        layout.ConstructGrid(rows, columns, cellSize, origin, rotation, cells);
     }
 
     public string GetID() 
@@ -49,20 +27,23 @@ public class GridV2 {
         return id;
     }
 
+    // A IGridObject has a place on grid method, which calls this one.
+    // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
+    public void PlaceObject(IGridObject gridObject, CellV2 startCell, List<Vector2Int> shapeLayout) {
+        startCell.SetOccupyingObject(gridObject);
+        foreach (Vector2Int deltaCoord in shapeLayout) {
+            Vector2Int coord = startCell.GetCellCoordinates() + deltaCoord;
+            if (CellWithinBounds(coord.y, coord.x)) {
+                CellV2 cell = cells[coord.y, coord.x];
+                cell.SetOccupyingObject(gridObject);
+            }
+        }
+    }
+
     public void ResizeGrid(int newRows, int newColumns) 
     {
         // Implementation to resize the grid.
         // Remember to preserve existing cells' data
-    }
-
-    public void MoveGrid(Vector3 newOrigin) 
-    {
-        origin = newOrigin;
-    }
-
-    public void RotateGrid(Quaternion newRotation) 
-    {
-        rotation = newRotation;
     }
 
     // Cell via coordinates
@@ -80,59 +61,33 @@ public class GridV2 {
     public CellV2 GetCell(Vector3 worldPosition) 
     {
         Vector3 adjusted = Quaternion.Inverse(rotation) * worldPosition - origin;
-        int gridX = (int)(adjusted.x / cellSize.x);
-        int gridY = (int)(adjusted.z / cellSize.y);
+        Vector2Int cellCoordinates = layout.GetCellCoordinate(adjusted);
 
-        return GetCell(gridY, gridX);
+        return GetCell(cellCoordinates.y, cellCoordinates.x);
     }
 
-    // Cell via mouse position
-    public CellV2 GetCell(Vector2 mousePosition) 
-    {
-        throw new System.NotImplementedException();
+    // World position via cell
+    public Vector3 CalculateCellPosition(int row, int column) {
+        Vector3 normalizedPosition = layout.CalculateCellPosition(row, column);
+        Vector3 worldPosition = rotation * new Vector3(normalizedPosition.x * cellSize.x, 0, normalizedPosition.z * cellSize.y) + origin;
+        return worldPosition;
     }
 
-    public void AdjustCellSize(float length, float width) 
-    {
-        // Again this will depend on the type of layout.
-        layout.AdjustCellSize(length, width);
-        // Additional implementation to adjust cell sizes in the grid
+    public void MoveGrid(Vector3 newOrigin) {
+        origin = newOrigin;
     }
 
-    // Moved to grid because a Cell doesn't need to know its neighbors
-    public List<CellV2> GetCellNeighbors(CellV2 cell, NeighborConfiguration configuration) 
-    {
-        List<CellV2> neighbors = new List<CellV2>();
-        Vector2Int[] neighborDeltas = configuration == NeighborConfiguration.FOUR_WAY ? fourWayNeighbors : eightWayNeighbors;
-        Vector2Int coord = cell.GetCellCoordinates();
+    public void RotateGrid(Quaternion newRotation) {
+        rotation = newRotation;
+    }
 
-        foreach (Vector2Int delta in neighborDeltas) {
-            Vector2Int cellCoord = coord + delta;
-            if(CellWithinBounds(cellCoord.y, cellCoord.x)) {
-                CellV2 gridCell = cells[cellCoord.y, cellCoord.x];
-                neighbors.Add(gridCell);
-            }
-        }
-        return neighbors;
+    public void AdjustCellSize(float length, float width) {
+        cellSize = new Vector2(width, length);
     }
 
     private bool CellWithinBounds(int row, int column) 
     {
         return row >= 0 && row < rows && column >= 0 && column < columns;
-    }
-
-    // A IGridObject has a place on grid method, which calls this one.
-    // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-    public void PlaceObject(IGridObject gridObject, CellV2 startCell, List<Vector2Int> shapeLayout) 
-    {
-        startCell.SetOccupyingObject(gridObject);
-        foreach(Vector2Int deltaCoord in shapeLayout) {
-            Vector2Int coord = startCell.GetCellCoordinates() + deltaCoord;
-            if(CellWithinBounds(coord.y, coord.x)) {
-                CellV2 cell = cells[coord.y, coord.x];
-                cell.SetOccupyingObject(gridObject);
-            }        
-        }
     }
 
     public List<CellV2> FindPathAsCells(CellV2 startCell, CellV2 endCell) {
@@ -160,10 +115,4 @@ public class GridV2 {
         // Implementation for grid visualization
         // might be a different class, might be gizmos, not sure.
     }
-}
-// Moved to Grid as cells didn't need to know their neighbors.
-public enum NeighborConfiguration 
-{
-    FOUR_WAY,
-    EIGHT_WAY
 }

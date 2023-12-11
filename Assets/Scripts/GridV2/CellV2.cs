@@ -61,7 +61,7 @@ public class CellV2 {
 
     public bool IsOccupied() 
     {
-        return occupyingObject != null;
+        return state == CellState.OCCUPIED;
     }
 
     //This method will be called from CellInteractor, which should be placed on the groundPrefab.
