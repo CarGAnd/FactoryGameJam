@@ -32,7 +32,6 @@ public class ModulesManager : MonoBehaviour
     [SerializeField] private float checkRadius = 0.65f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask moduleLayer;
-    [SerializeField] private GameObject visualGridObject;
     [field: SerializeField] public Grid<GameObject> BuildGrid { get; private set; }
     private bool isModuleSelected = false;
     public static ModulesManager Instance { get; private set; }
@@ -192,7 +191,7 @@ public class ModulesManager : MonoBehaviour
         }
     }
 
-    private void SetGridParameters() {
+   /* private void SetGridParameters() {
         if(gridMaterial == null) {
             return;
         }
@@ -212,5 +211,5 @@ public class ModulesManager : MonoBehaviour
         }
         gridMaterial = rend.sharedMaterial;
         SetGridParameters();
-    }
+    }*/
 }

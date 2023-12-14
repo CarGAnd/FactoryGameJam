@@ -1,25 +1,26 @@
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GridV2 : MonoBehaviour {
-    private int columns;
-    private int rows;
+
+    [field: SerializeField] public int Columns { get; private set; }
+    [field: SerializeField] public int Rows { get; private set; }
+    [field: SerializeField] public Vector3 Origin { get; private set; }
+    [field: SerializeField] public Quaternion Rotation { get; private set; }
+    [field: SerializeField] public Vector2 CellSize { get; private set; }
+
+    [SerializeField] private GameObject cellPrefab;
+
     private IGridLayout layout;
-    private Vector3 origin;
-    private Quaternion rotation;
-    private Vector2 cellSize;
     private string id;
     private CellV2[,] cells;
     //private PathfindingAlgorithm pathfindingAlgorithm;
-    
-    public GridV2(IGridLayout layout, int rows, int columns, Vector3 origin, Quaternion rotation) 
-    {
-        this.layout = layout;
-        this.rows = rows;
-        this.columns = columns;
-        this.origin = origin;
-        this.rotation = rotation;
-        cells = new CellV2[rows, columns];
+
+    private Transform gridParent;
+
+    private void Awake() {
+        CreateGrid();
     }
 
     public string GetID() 
@@ -60,7 +61,7 @@ public class GridV2 : MonoBehaviour {
     // Cell via world position
     public CellV2 GetCell(Vector3 worldPosition) 
     {
-        Vector3 adjusted = Quaternion.Inverse(rotation) * worldPosition - origin;
+        Vector3 adjusted = Quaternion.Inverse(Rotation) * worldPosition - Origin;
         Vector2Int cellCoordinates = layout.GetCellCoordinate(adjusted);
 
         return GetCell(cellCoordinates.y, cellCoordinates.x);
@@ -69,25 +70,25 @@ public class GridV2 : MonoBehaviour {
     // World position via cell
     public Vector3 CalculateCellPosition(int row, int column) {
         Vector3 normalizedPosition = layout.CalculateCellPosition(row, column);
-        Vector3 worldPosition = rotation * new Vector3(normalizedPosition.x * cellSize.x, 0, normalizedPosition.z * cellSize.y) + origin;
+        Vector3 worldPosition = Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
         return worldPosition;
     }
 
     public void MoveGrid(Vector3 newOrigin) {
-        origin = newOrigin;
+        Origin = newOrigin;
     }
 
     public void RotateGrid(Quaternion newRotation) {
-        rotation = newRotation;
+        Rotation = newRotation;
     }
 
     public void AdjustCellSize(float length, float width) {
-        cellSize = new Vector2(width, length);
+        CellSize = new Vector2(width, length);
     }
 
     private bool CellWithinBounds(int row, int column) 
     {
-        return row >= 0 && row < rows && column >= 0 && column < columns;
+        return row >= 0 && row < Rows && column >= 0 && column < Columns;
     }
 
     public List<CellV2> FindPathAsCells(CellV2 startCell, CellV2 endCell) {
@@ -114,5 +115,29 @@ public class GridV2 : MonoBehaviour {
     {
         // Implementation for grid visualization
         // might be a different class, might be gizmos, not sure.
+    }
+
+
+    [Button("Destroy Grid")]
+    private void DestroyGrid() {
+        gridParent = transform;
+        for (int i = gridParent.childCount - 1; i >= 0; i--) {
+            DestroyImmediate(gridParent.GetChild(i).gameObject);
+        }
+        cells = null;
+    }
+
+
+    [Button("Create Grid")]
+    private void CreateGrid() {
+        DestroyGrid();
+        layout = new SquareGridLayout();
+        gridParent = transform;
+        cells = new CellV2[Rows, Columns];
+        for(int y = 0; y < cells.GetLength(0); y++) {
+            for(int x = 0; x < cells.GetLength(1); x++) {
+                cells[y, x] = new CellV2(y, x, this, cellPrefab, gridParent);
+            }
+        }
     }
 }

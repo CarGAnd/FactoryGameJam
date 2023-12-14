@@ -7,21 +7,33 @@ public class CellV2 {
     private int column;
     private CellState state;
     private IGridObject occupyingObject;
-    [SerializeField] private GameObject groundPrefab;
+    private GameObject groundObject;
 
-    // These Cells will be created in GridLayout I think. in ConstructGrid()
-    public CellV2(int row, int column, CellState state, GridV2 grid)
+    public CellV2(int row, int column, GridV2 grid, GameObject prefab, Transform parent, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;
         this.state = state;
         this.grid = grid;
 
+        groundObject = MonoBehaviour.Instantiate(prefab);
+        groundObject.transform.parent = parent;
+        UpdatePosition();
+
         // Ensure CellInteractor is attached to groundPrefab.
-        CellInteractor cellInteractor = groundPrefab.GetComponent<CellInteractor>();
+        CellInteractor cellInteractor = groundObject.GetComponent<CellInteractor>();
         if(cellInteractor != null) {
             cellInteractor.SetCellReference(this);
         }
+    }
+
+    public void UpdatePosition() {
+        Vector3 position = grid.CalculateCellPosition(row, column) + Vector3.down * 0.5f;
+        Quaternion rotation = grid.Rotation;
+        Vector3 scale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
+
+        groundObject.transform.SetPositionAndRotation(position, rotation);
+        groundObject.transform.localScale = scale;
     }
 
     public CellState GetState() 
