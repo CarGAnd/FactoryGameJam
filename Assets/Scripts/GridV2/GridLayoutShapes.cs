@@ -79,3 +79,22 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 }
+
+public class StairCaseLayout : IGridLayout {
+
+    public Vector3 CalculateCellPosition(int row, int column) {
+        return new Vector3(column + row, 0, row);
+    }
+
+    public Vector2Int GetCellCoordinate(Vector3 normalizedPosition) {
+        int gridX = (int)normalizedPosition.x;
+        int gridY = (int)normalizedPosition.z;
+
+        int column = gridX + gridY;
+        return new Vector2Int(column, gridY);
+    }
+
+    public List<CellV2> GetCellNeighbors(CellV2 cell) {
+        throw new System.NotImplementedException();
+    }
+}

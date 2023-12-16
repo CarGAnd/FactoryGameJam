@@ -131,7 +131,7 @@ public class GridV2 : MonoBehaviour {
     [Button("Create Grid")]
     private void CreateGrid() {
         DestroyGrid();
-        layout = new SquareGridLayout();
+        layout = new StairCaseLayout();
         gridParent = transform;
         cells = new CellV2[Rows, Columns];
         for(int y = 0; y < cells.GetLength(0); y++) {
