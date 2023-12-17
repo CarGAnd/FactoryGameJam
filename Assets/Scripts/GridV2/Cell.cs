@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellV2 {
-    private GridV2 grid;
+public class Cell {
+    private Grid grid;
     private int row;
     private int column;
     private CellState state;
     private IGridObject occupyingObject;
     private GameObject groundObject;
 
-    public CellV2(int row, int column, GridV2 grid, GameObject prefab, Transform parent, CellState state = CellState.EMPTY)
+    public Cell(int row, int column, Grid grid, GameObject prefab, Transform parent, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;

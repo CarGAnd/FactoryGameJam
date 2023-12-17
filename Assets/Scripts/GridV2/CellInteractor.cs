@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class CellInteractor : MonoBehaviour {
-    private CellV2 cell;
+    private Cell cell;
 
     // Calls SelectCell() in cell.
     void OnMouseDown() {
@@ -13,7 +13,7 @@ public class CellInteractor : MonoBehaviour {
         // Implementation for mouse enter interaction
     }
 
-    public void SetCellReference(CellV2 cell) {
+    public void SetCellReference(Cell cell) {
         this.cell = cell;
     }
 }

@@ -11,7 +11,7 @@ public interface IGridLayout {
 
     //Get all neighbors of a cell
     //The specific types in this function will likely be changed
-    List<CellV2> GetCellNeighbors(CellV2 cell);
+    List<Cell> GetCellNeighbors(Cell cell);
 }
 
 public class SquareGridLayout : IGridLayout {
@@ -51,8 +51,8 @@ public class SquareGridLayout : IGridLayout {
     }
 
     // Moved to grid because a Cell doesn't need to know its neighbors
-    public List<CellV2> GetCellNeighbors(CellV2 cell) {
-        List<CellV2> neighbors = new List<CellV2>();
+    public List<Cell> GetCellNeighbors(Cell cell) {
+        List<Cell> neighbors = new List<Cell>();
         
         return neighbors;
     }
@@ -75,7 +75,7 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 
-    public List<CellV2> GetCellNeighbors(CellV2 cell) {
+    public List<Cell> GetCellNeighbors(Cell cell) {
         throw new System.NotImplementedException();
     }
 }
@@ -94,7 +94,7 @@ public class StairCaseLayout : IGridLayout {
         return new Vector2Int(column, gridY);
     }
 
-    public List<CellV2> GetCellNeighbors(CellV2 cell) {
+    public List<Cell> GetCellNeighbors(Cell cell) {
         throw new System.NotImplementedException();
     }
 }

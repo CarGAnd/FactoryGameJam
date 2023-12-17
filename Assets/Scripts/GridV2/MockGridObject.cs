@@ -22,7 +22,7 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
     }
     
     // Implementing IGridObject
-    public List<CellV2> GetOccupyingCells(CellV2 startCell, GridV2 grid) {
+    public List<Cell> GetOccupyingCells(Cell startCell, Grid grid) {
         throw new System.NotImplementedException();
     }
 
@@ -30,7 +30,7 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
         throw new System.NotImplementedException();
     }
 
-    public void PlaceOnGrid(CellV2 startCell, GridV2 grid) {
+    public void PlaceOnGrid(Cell startCell, Grid grid) {
         throw new System.NotImplementedException();
         //grid.PlaceObject(this, startCell, shapeLayout);
     }

@@ -32,7 +32,7 @@ public class ModulesManager : MonoBehaviour
     [SerializeField] private float checkRadius = 0.65f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask moduleLayer;
-    [field: SerializeField] public Grid<GameObject> BuildGrid { get; private set; }
+    [field: SerializeField] public Grid BuildGrid { get; private set; }
     private bool isModuleSelected = false;
     public static ModulesManager Instance { get; private set; }
     public bool ShowGizmos {get; private set;}
@@ -53,7 +53,6 @@ public class ModulesManager : MonoBehaviour
             Destroy(gameObject);
         }
         cam = Camera.main;
-        BuildGrid = new Grid<GameObject>(BuildGrid.Width, BuildGrid.Height, BuildGrid.Origin, BuildGrid.CellSize, rotation: BuildGrid.Rotation);
     }
 
     void Update()
@@ -67,8 +66,9 @@ public class ModulesManager : MonoBehaviour
 
     public void DeleteModule(ModuleBase module) {
         Vector3 modulePosition = module.transform.position;
-        Vector2Int gridPos = BuildGrid.WorldToGrid(modulePosition);
-        BuildGrid.RemoveObjectAt(gridPos.x, gridPos.y);
+        Cell gridCell = BuildGrid.GetCell(modulePosition);
+        Vector2Int cellCoords = gridCell.GetCellCoordinates();
+        BuildGrid.RemoveObjectAt(cellCoords.x, cellCoords.y);
     }
 
 
@@ -98,7 +98,7 @@ public class ModulesManager : MonoBehaviour
         GameObject modulePrefab = GetModulePrefab(moduleType);
         if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
         {
-            Vector2Int gridCell = BuildGrid.WorldToGrid(position);
+            Vector2Int gridCell = BuildGrid.GetCell(position);
             Vector3 gridCellCenter = BuildGrid.GridCellCenterWorldPos(gridCell.x, gridCell.y);
             GameObject module = Instantiate(modulePrefab, gridCellCenter, Quaternion.identity);
             BuildGrid.SetObjectAt(gridCell.x, gridCell.y, module);

@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System;
 
 public class GridSystemManager : MonoBehaviour {
-    private Dictionary<string, GridV2> grids = new Dictionary<string, GridV2>();
+    private Dictionary<string, Grid> grids = new Dictionary<string, Grid>();
     private string filePath;
 
     // Creates a new grid based on the specified layout and parameters.
-    public GridV2 CreateGrid(GridLayout layout, int rows, int columns, Vector3 origin, Quaternion rotation) 
+    public Grid CreateGrid(GridLayout layout, int rows, int columns, Vector3 origin, Quaternion rotation) 
     {
         throw new NotImplementedException();
     }
 
     // Registers a grid into the system for easy access and management.
-    public void RegisterGrid(GridV2 grid) 
+    public void RegisterGrid(Grid grid) 
     {
 
     }
 
     // Unregisters a grid from the system.
-    public void UnregisterGrid(GridV2 grid) 
+    public void UnregisterGrid(Grid grid) 
     {
 
     }
 
     // Combines two grids into one.
-    public void CombineGrids(GridV2 grid1, GridV2 grid2) 
+    public void CombineGrids(Grid grid1, Grid grid2) 
     {
 
     }
 
     // Retrieves a grid by its ID.
-    public GridV2 GetGridByID(string id) 
+    public Grid GetGridByID(string id) 
     {
         throw new NotImplementedException();
     }
@@ -47,11 +47,11 @@ public class GridSystemManager : MonoBehaviour {
     {
 
     }
-    public void SaveGridToFile(GridV2 grid) 
+    public void SaveGridToFile(Grid grid) 
     { 
     
     }
-    public GridV2 LoadGridFromFile()
+    public Grid LoadGridFromFile()
     {
         throw new NotImplementedException();    
     }

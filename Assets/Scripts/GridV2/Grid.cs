@@ -2,7 +2,7 @@ using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridV2 : MonoBehaviour {
+public class Grid : MonoBehaviour {
 
     [field: SerializeField] public int Columns { get; private set; }
     [field: SerializeField] public int Rows { get; private set; }
@@ -14,7 +14,7 @@ public class GridV2 : MonoBehaviour {
 
     private IGridLayout layout;
     private string id;
-    private CellV2[,] cells;
+    private Cell[,] cells;
     //private PathfindingAlgorithm pathfindingAlgorithm;
 
     private Transform gridParent;
@@ -23,33 +23,30 @@ public class GridV2 : MonoBehaviour {
         CreateGrid();
     }
 
-    public string GetID() 
-    {
+    public string GetID() {
         return id;
     }
 
     // A IGridObject has a place on grid method, which calls this one.
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-    public void PlaceObject(IGridObject gridObject, CellV2 startCell, List<Vector2Int> shapeLayout) {
+    public void PlaceObject(IGridObject gridObject, Cell startCell, List<Vector2Int> shapeLayout) {
         startCell.SetOccupyingObject(gridObject);
         foreach (Vector2Int deltaCoord in shapeLayout) {
             Vector2Int coord = startCell.GetCellCoordinates() + deltaCoord;
             if (CellWithinBounds(coord.y, coord.x)) {
-                CellV2 cell = cells[coord.y, coord.x];
+                Cell cell = cells[coord.y, coord.x];
                 cell.SetOccupyingObject(gridObject);
             }
         }
     }
 
-    public void ResizeGrid(int newRows, int newColumns) 
-    {
+    public void ResizeGrid(int newRows, int newColumns) {
         // Implementation to resize the grid.
         // Remember to preserve existing cells' data
     }
 
     // Cell via coordinates
-    public CellV2 GetCell(int row, int column) 
-    {
+    public Cell GetCell(int row, int column) {
         if (CellWithinBounds(row, column)) {
             return cells[row, column];
         }
@@ -59,8 +56,7 @@ public class GridV2 : MonoBehaviour {
     }
 
     // Cell via world position
-    public CellV2 GetCell(Vector3 worldPosition) 
-    {
+    public Cell GetCell(Vector3 worldPosition) {
         Vector3 adjusted = Quaternion.Inverse(Rotation) * worldPosition - Origin;
         Vector2Int cellCoordinates = layout.GetCellCoordinate(adjusted);
 
@@ -86,33 +82,29 @@ public class GridV2 : MonoBehaviour {
         CellSize = new Vector2(width, length);
     }
 
-    private bool CellWithinBounds(int row, int column) 
-    {
+    private bool CellWithinBounds(int row, int column) {
         return row >= 0 && row < Rows && column >= 0 && column < Columns;
     }
 
-    public List<CellV2> FindPathAsCells(CellV2 startCell, CellV2 endCell) {
+    public List<Cell> FindPathAsCells(Cell startCell, Cell endCell) {
         throw new System.NotImplementedException();
     }
 
-    public List<Vector2Int> FindPathAsCoordinates(CellV2 startCell, CellV2 endCell) {
+    public List<Vector2Int> FindPathAsCoordinates(Cell startCell, Cell endCell) {
         throw new System.NotImplementedException();
     }
 
-    public void SaveGrid() 
-    {
+    public void SaveGrid() {
         // Implementation to save grid state
         // This is meant to save the grid data.
     }
 
-    public void LoadGrid() 
-    {
+    public void LoadGrid() {
         // Implementation to load grid state
         // This is meant to load the grid data.
     }
 
-    public void VisualizeGrid() 
-    {
+    public void VisualizeGrid() {
         // Implementation for grid visualization
         // might be a different class, might be gizmos, not sure.
     }
@@ -133,10 +125,10 @@ public class GridV2 : MonoBehaviour {
         DestroyGrid();
         layout = new StairCaseLayout();
         gridParent = transform;
-        cells = new CellV2[Rows, Columns];
-        for(int y = 0; y < cells.GetLength(0); y++) {
-            for(int x = 0; x < cells.GetLength(1); x++) {
-                cells[y, x] = new CellV2(y, x, this, cellPrefab, gridParent);
+        cells = new Cell[Rows, Columns];
+        for (int y = 0; y < cells.GetLength(0); y++) {
+            for (int x = 0; x < cells.GetLength(1); x++) {
+                cells[y, x] = new Cell(y, x, this, cellPrefab, gridParent);
             }
         }
     }
