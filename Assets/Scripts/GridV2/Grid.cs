@@ -17,8 +17,6 @@ public class Grid : MonoBehaviour {
     private Cell[,] cells;
     //private PathfindingAlgorithm pathfindingAlgorithm;
 
-    private Transform gridParent;
-
     private void Awake() {
         CreateGrid();
     }
@@ -29,8 +27,13 @@ public class Grid : MonoBehaviour {
 
     // A IGridObject has a place on grid method, which calls this one.
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-    public void PlaceObject(IGridObject gridObject, Cell startCell, List<Vector2Int> shapeLayout) {
+    public void PlaceObject(IGridObject gridObject, Cell startCell, List<Vector2Int> shapeLayout = null) {
         startCell.SetOccupyingObject(gridObject);
+
+        if(shapeLayout== null) {
+            return;
+        }
+
         foreach (Vector2Int deltaCoord in shapeLayout) {
             Vector2Int coord = startCell.GetCellCoordinates() + deltaCoord;
             if (CellWithinBounds(coord.y, coord.x)) {
@@ -38,6 +41,19 @@ public class Grid : MonoBehaviour {
                 cell.SetOccupyingObject(gridObject);
             }
         }
+    }
+
+    public bool PositionIsOccupied(int row, int column) {
+        return cells[row, column].GetOccupyingObject() != null;
+    }
+
+    public bool PositionIsOccupied(Vector3 worldPos) {
+        Vector2Int cellCoords = GetCell(worldPos).GetCellCoordinates();
+        return PositionIsOccupied(cellCoords.y, cellCoords.x);
+    }
+
+    public void RemoveObject(Cell cell) {
+        PlaceObject(null, cell, null);
     }
 
     public void ResizeGrid(int newRows, int newColumns) {
@@ -58,9 +74,13 @@ public class Grid : MonoBehaviour {
     // Cell via world position
     public Cell GetCell(Vector3 worldPosition) {
         Vector3 adjusted = Quaternion.Inverse(Rotation) * worldPosition - Origin;
-        Vector2Int cellCoordinates = layout.GetCellCoordinate(adjusted);
-
+        Vector2Int cellCoordinates = layout.GetCellCoordinate(Vector3.Scale(adjusted, new Vector3(1f /  CellSize.x, 1, 1f / CellSize.y)));
         return GetCell(cellCoordinates.y, cellCoordinates.x);
+    }
+
+    public Vector3 GetCellCenter(int row, int column) {
+        Vector3 normalizedPosition = layout.GetCellCenter(row, column);
+        return Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
     }
 
     // World position via cell
@@ -112,9 +132,8 @@ public class Grid : MonoBehaviour {
 
     [Button("Destroy Grid")]
     private void DestroyGrid() {
-        gridParent = transform;
-        for (int i = gridParent.childCount - 1; i >= 0; i--) {
-            DestroyImmediate(gridParent.GetChild(i).gameObject);
+        for (int i = transform.childCount - 1; i >= 0; i--) {
+            DestroyImmediate(transform.GetChild(i).gameObject);
         }
         cells = null;
     }
@@ -123,12 +142,11 @@ public class Grid : MonoBehaviour {
     [Button("Create Grid")]
     private void CreateGrid() {
         DestroyGrid();
-        layout = new StairCaseLayout();
-        gridParent = transform;
+        layout = new SquareGridLayout();
         cells = new Cell[Rows, Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
             for (int x = 0; x < cells.GetLength(1); x++) {
-                cells[y, x] = new Cell(y, x, this, cellPrefab, gridParent);
+                cells[y, x] = new Cell(y, x, this, cellPrefab);
             }
         }
     }

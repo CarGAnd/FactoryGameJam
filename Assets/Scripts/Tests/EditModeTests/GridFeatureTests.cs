@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class GridFeatureTests
 {
+    /*
     [Test]
     public void GridObjectsCanBeSet() {
         Grid<int> g = new Grid<int>(5, 4, Vector3.zero, 3);
@@ -39,5 +40,5 @@ public class GridFeatureTests
         Vector2Int gridCoords = g.WorldToGrid(worldPos);
 
         Assert.True(gridCoords.x == x && gridCoords.y == y);
-    }
+    }*/
 }

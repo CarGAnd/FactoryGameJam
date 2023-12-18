@@ -9,6 +9,8 @@ public interface IGridLayout {
     // Calculates the world position of a cell based on its row and column.
     Vector3 CalculateCellPosition(int row, int column);
 
+    Vector3 GetCellCenter(int row, int column);
+
     //Get all neighbors of a cell
     //The specific types in this function will likely be changed
     List<Cell> GetCellNeighbors(Cell cell);
@@ -42,6 +44,10 @@ public class SquareGridLayout : IGridLayout {
         return new Vector3(column, 0, row);
     }
 
+    public Vector3 GetCellCenter(int row, int column) {
+        return CalculateCellPosition(row, column) + new Vector3(0.5f, 0, 0.5f);
+    }
+
     //Return the cell coordinates of the given position in a grid with 1x1 cells, no offset, and no rotation
     public Vector2Int GetCellCoordinate(Vector3 normalizedPosition) {
         int gridX = (int) normalizedPosition.x;
@@ -71,6 +77,10 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 
+    public Vector3 GetCellCenter(int row, int column) {
+        throw new System.NotImplementedException();
+    }
+
     public Vector2Int GetCellCoordinate(Vector3 worldPosition) {
         throw new System.NotImplementedException();
     }
@@ -84,6 +94,10 @@ public class StairCaseLayout : IGridLayout {
 
     public Vector3 CalculateCellPosition(int row, int column) {
         return new Vector3(column + row, 0, row);
+    }
+
+    public Vector3 GetCellCenter(int row, int column) {
+        throw new System.NotImplementedException();
     }
 
     public Vector2Int GetCellCoordinate(Vector3 normalizedPosition) {

@@ -6,14 +6,11 @@ public class GridVisual : MonoBehaviour
 {
     [SerializeField] private ModulesManager moduleManager;
     [SerializeField] private GameObject indicatorPrefab;
-    [SerializeField] private GameObject gridObject;
 
-    private Material gridMaterial;
-    private Grid<GameObject> buildGrid;
+    private Grid buildGrid;
     private GameObject indicatorObject;
 
     private void Start() {
-        gridMaterial = gridObject.GetComponent<Renderer>().material;
         buildGrid = moduleManager.BuildGrid;
         CreateIndicatorObject();
     }
@@ -34,7 +31,6 @@ public class GridVisual : MonoBehaviour
 
     private void SetBuildMode(bool active) {
         indicatorObject.SetActive(active);
-        gridObject.SetActive(active);
     }
 
     private void UpdateIndicatorPosition(Vector3 newPos) {
@@ -46,7 +42,6 @@ public class GridVisual : MonoBehaviour
 
     private void UpdateGrid() {
         Vector3 mouseHitPos = moduleManager.LastHitPoint;
-        gridMaterial.SetVector("_CenterPos", new Vector4(mouseHitPos.x, mouseHitPos.y, mouseHitPos.z));
     }
 
     private void CreateIndicatorObject() {
@@ -54,6 +49,6 @@ public class GridVisual : MonoBehaviour
         indicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
         indicatorObject.SetActive(false);
         Vector3 oldRot = indicatorObject.transform.rotation.eulerAngles;
-        indicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation, oldRot.z);
+        indicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation.eulerAngles.y, oldRot.z);
     }
 }

@@ -39,7 +39,6 @@ public class ModulesManager : MonoBehaviour
     public Vector3 LastHitPoint { get; private set; }
     public bool CanPlaceModule { get; private set; }
 
-    private Material gridMaterial;
     private Vector2Int lastMouseGridPos;
     
     void Awake()
@@ -67,8 +66,7 @@ public class ModulesManager : MonoBehaviour
     public void DeleteModule(ModuleBase module) {
         Vector3 modulePosition = module.transform.position;
         Cell gridCell = BuildGrid.GetCell(modulePosition);
-        Vector2Int cellCoords = gridCell.GetCellCoordinates();
-        BuildGrid.RemoveObjectAt(cellCoords.x, cellCoords.y);
+        BuildGrid.RemoveObject(gridCell);
     }
 
 
@@ -84,10 +82,10 @@ public class ModulesManager : MonoBehaviour
     
     // Toggle gizmos on and off Accessible via player, should be moved to a SelectionManager
     public void ToggleGizmos(bool show){
-        if(currentLevelStateRef.Value != LevelState.BuildPhase)
+        /*if(currentLevelStateRef.Value != LevelState.BuildPhase)
         {
             return;
-        }
+        }*/
         ShowGizmos = show;
         BuildModeToggled?.Invoke(show);
     }
@@ -96,12 +94,13 @@ public class ModulesManager : MonoBehaviour
     public void PlaceModule(ModuleTypes moduleType, Vector3 position)
     {
         GameObject modulePrefab = GetModulePrefab(moduleType);
-        if (modulePrefab != null && CanPlaceModule && currentLevelStateRef.Value == LevelState.BuildPhase)
+        if (modulePrefab != null)
         {
-            Vector2Int gridCell = BuildGrid.GetCell(position);
-            Vector3 gridCellCenter = BuildGrid.GridCellCenterWorldPos(gridCell.x, gridCell.y);
+            Cell gridCell = BuildGrid.GetCell(position);
+            Vector3 gridCellCenter = gridCell.GetCellCenter();
             GameObject module = Instantiate(modulePrefab, gridCellCenter, Quaternion.identity);
-            BuildGrid.SetObjectAt(gridCell.x, gridCell.y, module);
+            IGridObject gridObject = module.GetComponent<IGridObject>();
+            BuildGrid.PlaceObject(gridObject, gridCell, null);
             onPlacedModule?.Invoke(modulePrefab);
         }
     }
@@ -135,15 +134,16 @@ public class ModulesManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
             Vector3 position = hit.point;
-            Vector3 cellCenterPos = BuildGrid.CellCenterFromWorldPos(position);
+            Cell gridCell = BuildGrid.GetCell(position);
+            Vector3 gridCellCenter = gridCell.GetCellCenter();
             LastHitPoint = position;
             float checkRadius = 0.65f;
 
-            Collider[] colliders = Physics.OverlapSphere(cellCenterPos, checkRadius);
+            Collider[] colliders = Physics.OverlapSphere(gridCellCenter, checkRadius);
             CanPlaceModule = AllCollidersAreGroundLayer(colliders) && !BuildGrid.PositionIsOccupied(position);
-            if(BuildGrid.WorldToGrid(position) != lastMouseGridPos) {
-                lastMouseGridPos = BuildGrid.WorldToGrid(position);
-                MouseOverGridSpace?.Invoke(cellCenterPos);
+            if(BuildGrid.GetCell(position).GetCellCoordinates() != lastMouseGridPos) {
+                lastMouseGridPos = BuildGrid.GetCell(position).GetCellCoordinates();
+                MouseOverGridSpace?.Invoke(gridCellCenter);
             }
             
         }
@@ -171,7 +171,7 @@ public class ModulesManager : MonoBehaviour
             Gizmos.DrawWireSphere(LastHitPoint, checkRadius);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(BuildGrid.Origin, BuildGrid.CellSize * new Vector3(BuildGrid.Width, 1, BuildGrid.Height) );
+            Gizmos.DrawWireCube(BuildGrid.Origin, BuildGrid.CellSize * new Vector3(BuildGrid.Columns, 1, BuildGrid.Rows) );
         }
     }
 

@@ -9,7 +9,7 @@ public class Cell {
     private IGridObject occupyingObject;
     private GameObject groundObject;
 
-    public Cell(int row, int column, Grid grid, GameObject prefab, Transform parent, CellState state = CellState.EMPTY)
+    public Cell(int row, int column, Grid grid, GameObject prefab, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;
@@ -17,7 +17,7 @@ public class Cell {
         this.grid = grid;
 
         groundObject = MonoBehaviour.Instantiate(prefab);
-        groundObject.transform.parent = parent;
+        groundObject.transform.parent = grid.transform;
         UpdatePosition();
 
         // Ensure CellInteractor is attached to groundPrefab.
@@ -28,12 +28,20 @@ public class Cell {
     }
 
     public void UpdatePosition() {
-        Vector3 position = grid.CalculateCellPosition(row, column) + Vector3.down * 0.5f;
+        Vector3 position = grid.GetCellCenter(row, column) + Vector3.down * 0.5f;
         Quaternion rotation = grid.Rotation;
         Vector3 scale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
 
         groundObject.transform.SetPositionAndRotation(position, rotation);
         groundObject.transform.localScale = scale;
+    }
+
+    public Vector3 GetWorldPosition() {
+        return grid.CalculateCellPosition(row, column);
+    }
+
+    public Vector3 GetCellCenter() {
+        return grid.GetCellCenter(row, column);
     }
 
     public CellState GetState() 
@@ -90,7 +98,7 @@ public class Cell {
     public void LoadCell() 
     {
         // Implementation to load cell state
-    }  
+    }
 }
 
 public enum CellState 
@@ -98,5 +106,3 @@ public enum CellState
     EMPTY,
     OCCUPIED
 }
-
-
