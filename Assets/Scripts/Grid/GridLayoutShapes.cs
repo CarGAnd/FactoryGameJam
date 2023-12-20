@@ -7,13 +7,13 @@ public interface IGridLayout {
     Vector2Int GetCellCoordinate(Vector3 worldPosition);
 
     // Calculates the world position of a cell based on its row and column.
-    Vector3 CalculateCellPosition(int row, int column);
+    Vector3 CalculateCellPosition(Vector2Int cellCoord);
 
-    Vector3 GetCellCenter(int row, int column);
+    Vector3 GetCellCenter(Vector2Int cellCoord);
 
     //Get all neighbors of a cell
     //The specific types in this function will likely be changed
-    List<Vector2Int> GetCellNeighbors(int row, int column);
+    List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord);
 }
 
 public class SquareGridLayout : IGridLayout {
@@ -39,13 +39,13 @@ public class SquareGridLayout : IGridLayout {
     };
 
     //Return the worldPosition of the given row and column in a grid with 1x1 cells, no offset, and no rotation
-    public Vector3 CalculateCellPosition(int row, int column) 
+    public Vector3 CalculateCellPosition(Vector2Int cellCoord) 
     {
-        return new Vector3(column, 0, row);
+        return new Vector3(cellCoord.x, 0, cellCoord.y);
     }
 
-    public Vector3 GetCellCenter(int row, int column) {
-        return CalculateCellPosition(row, column) + new Vector3(0.5f, 0, 0.5f);
+    public Vector3 GetCellCenter(Vector2Int cellCoord) {
+        return CalculateCellPosition(cellCoord) + new Vector3(0.5f, 0, 0.5f);
     }
 
     //Return the cell coordinates of the given position in a grid with 1x1 cells, no offset, and no rotation
@@ -57,11 +57,11 @@ public class SquareGridLayout : IGridLayout {
     }
 
     // Moved to grid because a Cell doesn't need to know its neighbors
-    public List<Vector2Int> GetCellNeighbors(int row, int column) {
+    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         
         foreach(Vector2Int offset in fourWayNeighbors) {
-            neighbors.Add(new Vector2Int(column, row) + offset);
+            neighbors.Add(cellCoord + offset);
         }
 
         return neighbors;
@@ -75,13 +75,12 @@ public class SquareGridLayout : IGridLayout {
 }
 
 public class HexGridLayout : IGridLayout {
-    // Implementation for calculating cell position in a hexagonal grid
-    public Vector3 CalculateCellPosition(int row, int column) 
-    {
+
+    public Vector3 CalculateCellPosition(Vector2Int cellCoord) {
         throw new System.NotImplementedException();
     }
 
-    public Vector3 GetCellCenter(int row, int column) {
+    public Vector3 GetCellCenter(Vector2Int cellCoord) {
         throw new System.NotImplementedException();
     }
 
@@ -89,18 +88,18 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 
-    public List<Vector2Int> GetCellNeighbors(int row, int column) {
+    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
         throw new System.NotImplementedException();
     }
 }
 
 public class StairCaseLayout : IGridLayout {
 
-    public Vector3 CalculateCellPosition(int row, int column) {
-        return new Vector3(column + row, 0, row);
+    public Vector3 CalculateCellPosition(Vector2Int cellCoord) {
+        return new Vector3(cellCoord.x + cellCoord.y, 0, cellCoord.y);
     }
 
-    public Vector3 GetCellCenter(int row, int column) {
+    public Vector3 GetCellCenter(Vector2Int cellCoord) {
         throw new System.NotImplementedException();
     }
 
@@ -112,7 +111,7 @@ public class StairCaseLayout : IGridLayout {
         return new Vector2Int(column, gridY);
     }
 
-    public List<Vector2Int> GetCellNeighbors(int row, int column) {
+    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
         throw new System.NotImplementedException();
     }
 }

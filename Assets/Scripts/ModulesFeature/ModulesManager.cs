@@ -97,7 +97,7 @@ public class ModulesManager : MonoBehaviour
         if (modulePrefab != null)
         {
             Vector2Int gridCell = BuildGrid.GetCellCoords(position);
-            Vector3 gridCellCenter = BuildGrid.GetCellCenter(gridCell.y, gridCell.x);
+            Vector3 gridCellCenter = BuildGrid.GetCellCenter(gridCell);
             GameObject module = Instantiate(modulePrefab, gridCellCenter, Quaternion.identity);
             IGridObject gridObject = module.GetComponent<IGridObject>();
             BuildGrid.PlaceObject(gridObject, gridCell, null);

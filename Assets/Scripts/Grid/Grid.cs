@@ -24,36 +24,23 @@ public class Grid : MonoBehaviour {
         CreateGrid();
     }
 
-    public string GetID() {
-        return id;
-    }
-
     // A IGridObject has a place on grid method, which calls this one.
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
     public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout = null) {
         Cell firstCell = cells[startCell.y, startCell.x];
         firstCell.SetOccupyingObject(gridObject);
 
-        if(shapeLayout== null) {
+        if(shapeLayout == null) {
             return;
         }
 
         foreach (Vector2Int deltaCoord in shapeLayout) {
             Vector2Int coord = startCell + deltaCoord;
-            if (CellWithinBounds(coord.y, coord.x)) {
+            if (CellWithinBounds(coord)) {
                 Cell cell = cells[coord.y, coord.x];
                 cell.SetOccupyingObject(gridObject);
             }
         }
-    }
-
-    public bool PositionIsOccupied(int row, int column) {
-        return cells[row, column].IsOccupied();
-    }
-
-    public bool PositionIsOccupied(Vector3 worldPos) {
-        Vector2Int cellCoords = GetCellCoords(worldPos);
-        return PositionIsOccupied(cellCoords.y, cellCoords.x);
     }
 
     public void RemoveObject(Vector2Int coord) {
@@ -73,6 +60,15 @@ public class Grid : MonoBehaviour {
         }*/
     }
 
+    public bool PositionIsOccupied(Vector2Int coord) {
+        return cells[coord.y, coord.x].IsOccupied();
+    }
+
+    public bool PositionIsOccupied(Vector3 worldPos) {
+        Vector2Int cellCoords = GetCellCoords(worldPos);
+        return PositionIsOccupied(cellCoords);
+    }
+
     // Cell via world position
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
         Vector3 adjusted = Quaternion.Inverse(Rotation) * worldPosition - Origin;
@@ -80,20 +76,20 @@ public class Grid : MonoBehaviour {
         return new Vector2Int(cellCoordinates.x, cellCoordinates.y);
     }
 
-    public Vector3 GetCellCenter(int row, int column) {
-        Vector3 normalizedPosition = layout.GetCellCenter(row, column);
+    public Vector3 GetCellCenter(Vector2Int cellCoord) {
+        Vector3 normalizedPosition = layout.GetCellCenter(cellCoord);
         return Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
     }
 
     public Vector3 GetCellCenter(Vector3 worldPosition) {
         Vector2Int cellCoords = GetCellCoords(worldPosition);
-        Vector3 normalizedPosition = layout.GetCellCenter(cellCoords.y, cellCoords.x);
+        Vector3 normalizedPosition = layout.GetCellCenter(cellCoords);
         return Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
     }
 
     // World position via cell
-    public Vector3 GetCellWorldPosition(int row, int column) {
-        Vector3 normalizedPosition = layout.CalculateCellPosition(row, column);
+    public Vector3 GetCellWorldPosition(Vector2Int cellCoord) {
+        Vector3 normalizedPosition = layout.CalculateCellPosition(cellCoord);
         Vector3 worldPosition = Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
         return worldPosition;
     }
@@ -128,12 +124,12 @@ public class Grid : MonoBehaviour {
         gridUpdated?.Invoke();
     }
 
-    public bool CellWithinBounds(int row, int column) {
-        return row >= 0 && row < Rows && column >= 0 && column < Columns;
+    public bool CellWithinBounds(Vector2Int cellCoord) {
+        return cellCoord.y >= 0 && cellCoord.y < Rows && cellCoord.x >= 0 && cellCoord.x < Columns;
     }
 
-    public List<Vector2Int> GetCellNeighbors(int row, int column) {
-        return layout.GetCellNeighbors(row, column);
+    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
+        return layout.GetCellNeighbors(cellCoord);
     }
 
     public List<Vector2Int> FindPathAsCoordinates(Vector2Int startCell, Vector2Int endCell) {
@@ -157,6 +153,9 @@ public class Grid : MonoBehaviour {
         // might be a different class, might be gizmos, not sure.
     }
 
+    public string GetID() {
+        return id;
+    }
 
     [Button("Destroy Grid")]
     private void DestroyGrid() {
@@ -194,9 +193,9 @@ public class BFSPathFind {
         while (frontier.Count > 0) {
             PathCell currentCell = frontier.Dequeue();
             Vector2Int currentCoord = currentCell.coord;
-            List<Vector2Int> neighbors = grid.GetCellNeighbors(currentCoord.y, currentCoord.x);
+            List<Vector2Int> neighbors = grid.GetCellNeighbors(currentCoord);
             foreach (Vector2Int coord in neighbors) {
-                if(!grid.CellWithinBounds(coord.y, coord.x) || grid.PositionIsOccupied(coord.y, coord.x)) {
+                if(!grid.CellWithinBounds(coord) || grid.PositionIsOccupied(coord)) {
                     continue;
                 }
                 PathCell cell = new PathCell(currentCell, coord);

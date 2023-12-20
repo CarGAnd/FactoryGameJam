@@ -27,7 +27,7 @@ public class Cell {
     }
 
     public void UpdatePosition() {
-        Vector3 position = grid.GetCellCenter(row, column) + Vector3.down * 0.5f;
+        Vector3 position = grid.GetCellCenter(new Vector2Int(row, column)) + Vector3.down * 0.5f;
         Quaternion rotation = grid.Rotation;
         Vector3 scale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
 
