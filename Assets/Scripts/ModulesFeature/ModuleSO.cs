@@ -33,7 +33,7 @@ public class ModuleSO : ScriptableObject, IGridObject
         throw new System.NotImplementedException();
     }
 
-    public void RemoveFromGrid() {
+    public void RemoveFromGrid(Grid grid) {
         throw new System.NotImplementedException();
     }
 }

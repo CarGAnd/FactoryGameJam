@@ -13,7 +13,7 @@ public interface IGridObject {
     void PlaceOnGrid(Cell startCell, Grid grid);
 
     // Removes the object from the grid.
-    void RemoveFromGrid();
+    void RemoveFromGrid(Grid grid);
 
     // Method called when the object is removed from the grid.
     void OnRemovedFromGrid();

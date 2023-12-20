@@ -93,7 +93,6 @@ GameObject:
   m_Component:
   - component: {fileID: 556831167441213713}
   - component: {fileID: 7881028356187771791}
-  - component: {fileID: 8599472137631335777}
   m_Layer: 0
   m_Name: ModulesManager
   m_TagString: Untagged
@@ -161,26 +160,4 @@ MonoBehaviour:
   moduleLayer:
     serializedVersion: 2
     m_Bits: 128
-  visualGridObject: {fileID: 5159283325733122242}
-  <BuildGrid>k__BackingField:
-    <Width>k__BackingField: 20
-    <Height>k__BackingField: 20
-    <CellSize>k__BackingField: 4
-    <Origin>k__BackingField: {x: -40, y: 0, z: -40}
-    <Rotation>k__BackingField: 45
---- !u!114 &8599472137631335777
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8822866073735789776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7de8e335d8e1240abe02b859a061a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moduleManager: {fileID: 7881028356187771791}
-  indicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
-    type: 3}
-  gridObject: {fileID: 5159283325733122242}
+  <BuildGrid>k__BackingField: {fileID: 0}

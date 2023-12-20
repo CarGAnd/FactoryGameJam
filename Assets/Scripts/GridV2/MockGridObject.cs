@@ -35,7 +35,7 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
         //grid.PlaceObject(this, startCell, shapeLayout);
     }
 
-    public void RemoveFromGrid() {
+    public void RemoveFromGrid(Grid grid) {
         throw new System.NotImplementedException();
     }
 
