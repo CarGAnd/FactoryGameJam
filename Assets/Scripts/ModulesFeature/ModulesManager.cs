@@ -65,7 +65,7 @@ public class ModulesManager : MonoBehaviour
 
     public void DeleteModule(ModuleBase module) {
         Vector3 modulePosition = module.transform.position;
-        Cell gridCell = BuildGrid.GetCell(modulePosition);
+        Vector2Int gridCell = BuildGrid.GetCellCoords(modulePosition);
         BuildGrid.RemoveObject(gridCell);
     }
 
@@ -96,8 +96,8 @@ public class ModulesManager : MonoBehaviour
         GameObject modulePrefab = GetModulePrefab(moduleType);
         if (modulePrefab != null)
         {
-            Cell gridCell = BuildGrid.GetCell(position);
-            Vector3 gridCellCenter = gridCell.GetCellCenter();
+            Vector2Int gridCell = BuildGrid.GetCellCoords(position);
+            Vector3 gridCellCenter = BuildGrid.GetCellCenter(gridCell.y, gridCell.x);
             GameObject module = Instantiate(modulePrefab, gridCellCenter, Quaternion.identity);
             IGridObject gridObject = module.GetComponent<IGridObject>();
             BuildGrid.PlaceObject(gridObject, gridCell, null);
@@ -134,15 +134,14 @@ public class ModulesManager : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer))
         {
             Vector3 position = hit.point;
-            Cell gridCell = BuildGrid.GetCell(position);
-            Vector3 gridCellCenter = gridCell.GetCellCenter();
+            Vector3 gridCellCenter = BuildGrid.GetCellCenter(position);
             LastHitPoint = position;
             float checkRadius = 0.65f;
 
             Collider[] colliders = Physics.OverlapSphere(gridCellCenter, checkRadius);
             CanPlaceModule = AllCollidersAreGroundLayer(colliders) && !BuildGrid.PositionIsOccupied(position);
-            if(BuildGrid.GetCell(position).GetCellCoordinates() != lastMouseGridPos) {
-                lastMouseGridPos = BuildGrid.GetCell(position).GetCellCoordinates();
+            if(BuildGrid.GetCellCoords(position) != lastMouseGridPos) {
+                lastMouseGridPos = BuildGrid.GetCellCoords(position);
                 MouseOverGridSpace?.Invoke(gridCellCenter);
             }
             

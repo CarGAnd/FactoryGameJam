@@ -16,8 +16,7 @@ public class Cell {
         this.state = state;
         this.grid = grid;
 
-        groundObject = MonoBehaviour.Instantiate(prefab);
-        groundObject.transform.parent = grid.transform;
+        groundObject = MonoBehaviour.Instantiate(prefab, grid.transform);
         UpdatePosition();
 
         // Ensure CellInteractor is attached to groundPrefab.
@@ -34,14 +33,6 @@ public class Cell {
 
         groundObject.transform.SetPositionAndRotation(position, rotation);
         groundObject.transform.localScale = scale;
-    }
-
-    public Vector3 GetWorldPosition() {
-        return grid.CalculateCellPosition(row, column);
-    }
-
-    public Vector3 GetCellCenter() {
-        return grid.GetCellCenter(row, column);
     }
 
     public CellState GetState() 
