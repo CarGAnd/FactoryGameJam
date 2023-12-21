@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
 
 public class AssemblyPieceData : ScriptableObject
@@ -10,4 +7,10 @@ public class AssemblyPieceData : ScriptableObject
     public int movementDistance;
     public int cost;
     public AssemblyPieceType type;
+    public Facing facing;
+
+    public void SetFacing(Facing facing)
+    {
+        this.facing = facing;
+    }
 }

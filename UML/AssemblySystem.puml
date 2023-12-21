@@ -1,0 +1,100 @@
+@startuml AssemblyLineSystem
+
+class AssemblyLineSystem {
+    - grid : Grid
+    + tick : UnityEvent
+    - assemblyLines : List<AssemblyLine>
+    
+    + PlaceAssemblyPiece(worldPosition : Vector3, data : AssemblyPieceData) : void
+    - AddPieceToAssemblyLine(piece : AssemblyPiece) : void
+    - HandleMerging(piece : AssemblyPiece, startLine : AssemblyLine, endLines : List<AssemblyLine>) : void
+    - ConnectCorrectLine(start : AssemblyLine, endLines : List<AssemblyLine>, piece : AssemblyPiece) : AssemblyLine
+    - CombineAssemblyLines(line1 : AssemblyLine, line2 : AssemblyLine, piece : AssemblyPiece) : AssemblyLine
+    + SubscribeToTick(action : UnityAction) : void
+    + UnsubscribeFromTick(action : UnityAction) : void
+    + RemoveAssemblyLine(line : AssemblyLine) : void
+}
+
+class AssemblyLine {
+    - pieces : List<AssemblyPiece>
+    - startPiece : AssemblyPiece
+    - endPiece : AssemblyPiece
+    - connectingAssemblyLines : List<AssemblyLine>
+
+    + AssemblyLine(assemblyPieces : List<AssemblyPiece>)
+    + GetAssemblyLineFromPiece(piece : AssemblyPiece) : AssemblyLine
+    + GetAllConnections() : List<AssemblyLine>
+    + AddConnectingAssemblyLine(line : AssemblyLine) : void
+    + AddConnectingAssemblyLines(lines : List<AssemblyLine>) : void
+    + OnTick() : void
+    + RemoveLineFromTick() : void
+    + GetEndPiece() : AssemblyPiece
+    + GetStartPiece() : AssemblyPiece
+    + IsPieceNewEnd(piece : AssemblyPiece) : bool
+    + IsPieceNewStart(piece : AssemblyPiece) : bool
+    + AddPiece(piece : AssemblyPiece) : void
+    + AddAllPieces() : List<AssemblyPiece>
+    + CleanUp() : void
+    - UpdateStartEndPieces() : void
+}
+
+abstract class AssemblyPiece {
+    - facing : Facing
+    - cell : Cell
+    + NextPiece : AssemblyPiece
+    + PreviousPiece : AssemblyPiece
+
+    + OnTick() : void
+    + GetCell() : Cell
+    + Movement() : Vector2Int
+    + PlaceOnGrid(startCell : Cell, grid : Grid) : void
+    + RemoveFromGrid(grid : Grid) : void
+    + GetObject<T>() : T
+    + GetOccupyingCells(startCell : Cell, grid : Grid) : List<Cell>
+    + GetShapeLayout() : List<Vector2Int>
+    + IsPlaced() : bool
+    + IsSelected() : bool
+    + OnPlacedOnGrid() : void
+    + OnRemovedFromGrid() : void
+    + OnSelected() : void
+}
+
+class ConveyerBelt <<AssemblyPiece>> {
+    + ConveyerBelt(data : AssemblyPieceData, cell : Cell)
+    + Movement() : Vector2Int
+}
+
+class AssemblyPieceData <<ScriptableObject>> {
+    + prefab : GameObject
+    + movementDistance : int
+    + cost : int
+    + type : AssemblyPieceType
+    + facing : Facing
+    + SetFacing(facing : Facing) : void
+}
+
+enum AssemblyPieceType {
+    ConveyerBelt = 10
+    Cannon = 20
+}
+
+enum Facing {
+    Default = 0
+    North = 10
+    East = 20
+    South = 30
+    West = 40
+}
+
+enum PieceState{
+    Available = 0
+    Occupied = 10
+}
+
+AssemblyLineSystem "1" -- "0..*" AssemblyLine
+AssemblyLine "1" -- "0..*" AssemblyPiece
+AssemblyLine "1" -- "0..*" AssemblyLine : connectingAssemblyLines
+AssemblyPiece <|-- ConveyerBelt
+AssemblyPieceData "1" -- "0..1" ConveyerBelt
+
+@enduml
