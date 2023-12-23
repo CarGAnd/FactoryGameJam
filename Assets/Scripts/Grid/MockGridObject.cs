@@ -22,17 +22,8 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
     }
     
     // Implementing IGridObject
-    public List<Cell> GetOccupyingCells(Cell startCell, Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
     public T GetObject<T>() {
         throw new System.NotImplementedException();
-    }
-
-    public void PlaceOnGrid(Cell startCell, Grid grid) {
-        throw new System.NotImplementedException();
-        //grid.PlaceObject(this, startCell, shapeLayout);
     }
 
     public void RemoveFromGrid() {
@@ -55,6 +46,14 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
         throw new System.NotImplementedException();
     }
 
+    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
+        throw new System.NotImplementedException();
+    }
+
+    public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
+        throw new System.NotImplementedException();
+    }
+
     // Implementing IGridInteractable
     public void OnSelected() {
         throw new System.NotImplementedException();
@@ -67,4 +66,6 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
     public bool IsPlaced() {
         throw new System.NotImplementedException();
     }
+
+    
 }

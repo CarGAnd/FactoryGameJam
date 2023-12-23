@@ -4,13 +4,13 @@ using UnityEngine;
 
 public interface IGridObject {
     // Returns a list of cells occupied by the object starting from a given cell.
-    List<Cell> GetOccupyingCells(Cell startCell, Grid grid);
+    List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid);
 
     // Retrieves the object's data as a specific type.
     T GetObject<T>();
 
     // Places the object on the grid starting from a specified cell.
-    void PlaceOnGrid(Cell startCell, Grid grid);
+    void PlaceOnGrid(Vector2Int startCell, Grid grid);
 
     // Removes the object from the grid.
     void RemoveFromGrid();

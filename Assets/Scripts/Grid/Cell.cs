@@ -8,6 +8,8 @@ public class Cell {
     private CellState state;
     private IGridObject occupyingObject;
     private GameObject groundObject;
+    //The list of cells that has the same occupying object
+    private List<Cell> sharedCells;
 
     public Cell(int row, int column, Grid grid, GameObject prefab, CellState state = CellState.EMPTY)
     {
@@ -58,9 +60,18 @@ public class Cell {
         }
     }
 
+    public void SetSharedCells(List<Cell> sharedCells) {
+        this.sharedCells = sharedCells;
+    }
+
+    public List<Cell> GetSharedCells() {
+        return sharedCells;
+    }
+
     public void RemoveOccupyingObject() 
     {
         occupyingObject = null;
+        sharedCells = null;
         state = CellState.EMPTY;
     }
 

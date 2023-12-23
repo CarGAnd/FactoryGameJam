@@ -15,7 +15,7 @@ public class Grid : MonoBehaviour {
 
     [SerializeField] private GameObject cellPrefab;
 
-    private IGridLayout layout;
+    private IGridLayout layout = new SquareGridLayout();
     private string id;
     private Cell[,] cells;
     //private PathfindingAlgorithm pathfindingAlgorithm;
@@ -27,37 +27,37 @@ public class Grid : MonoBehaviour {
     // A IGridObject has a place on grid method, which calls this one.
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
     public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout = null) {
+        List<Cell> sharedCells = new List<Cell>();
         Cell firstCell = cells[startCell.y, startCell.x];
-        firstCell.SetOccupyingObject(gridObject);
-
-        if(shapeLayout == null) {
-            return;
+        sharedCells.Add(firstCell);
+        
+        if(shapeLayout != null) {
+            foreach (Vector2Int deltaCoord in shapeLayout) {
+                Vector2Int coord = startCell + deltaCoord;
+                if (CellWithinBounds(coord)) {
+                    Cell cell = cells[coord.y, coord.x];
+                    sharedCells.Add(cell);
+                }
+            }
         }
 
-        foreach (Vector2Int deltaCoord in shapeLayout) {
-            Vector2Int coord = startCell + deltaCoord;
-            if (CellWithinBounds(coord)) {
-                Cell cell = cells[coord.y, coord.x];
-                cell.SetOccupyingObject(gridObject);
-            }
+        foreach (Cell c in sharedCells) {
+            c.SetOccupyingObject(gridObject);
+            c.SetSharedCells(sharedCells);
         }
     }
 
     public void RemoveObject(Vector2Int coord) {
         Cell firstCell = cells[coord.y, coord.x];
-        firstCell.RemoveOccupyingObject();
+        List<Cell> sharedCells = firstCell.GetSharedCells();
 
-        /*if (shapeLayout == null) {
-            return;
+        foreach (Cell c in sharedCells) {
+            c.RemoveOccupyingObject();
         }
+    }
 
-        foreach (Vector2Int deltaCoord in shapeLayout) {
-            Vector2Int coord = startCell + deltaCoord;
-            if (CellWithinBounds(coord.y, coord.x)) {
-                Cell cell = cells[coord.y, coord.x];
-                cell.SetOccupyingObject(gridObject);
-            }
-        }*/
+    public IGridObject GetObjectAt(Vector2Int coord) {
+        return cells[coord.y, coord.x].GetOccupyingObject();
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
@@ -92,6 +92,18 @@ public class Grid : MonoBehaviour {
         Vector3 normalizedPosition = layout.CalculateCellPosition(cellCoord);
         Vector3 worldPosition = Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
         return worldPosition;
+    }
+
+    //Get the origin position of the cell that a given position is in
+    public Vector3 GetCellWorldPosition(Vector3 worldPosition) {
+        Vector2Int cellCoord = GetCellCoords(worldPosition);
+        return GetCellWorldPosition(cellCoord);
+    }
+
+    public Vector3 GetSubgridCenter(Vector2Int bottomLeft, Vector2Int dimensions) {
+        Vector3 bottomLeftPos = GetCellWorldPosition(bottomLeft);
+        Vector3 subgridSize = new Vector3(CellSize.x * dimensions.x, 1, CellSize.y * dimensions.y);
+        return bottomLeftPos + Rotation * (subgridSize / 2f);
     }
 
     public void ResizeGrid(int newRows, int newColumns) {
@@ -157,7 +169,7 @@ public class Grid : MonoBehaviour {
         return id;
     }
 
-    [Button("Destroy Grid")]
+    [Button("Destroy Grid", ButtonSizes.Medium)]
     private void DestroyGrid() {
         for (int i = transform.childCount - 1; i >= 0; i--) {
             DestroyImmediate(transform.GetChild(i).gameObject);
@@ -166,16 +178,49 @@ public class Grid : MonoBehaviour {
     }
 
 
-    [Button("Create Grid")]
+    [Button("Create Grid", ButtonSizes.Medium)]
     private void CreateGrid() {
         DestroyGrid();
-        layout = new SquareGridLayout();
         cells = new Cell[Rows, Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
             for (int x = 0; x < cells.GetLength(1); x++) {
                 cells[y, x] = new Cell(y, x, this, cellPrefab);
             }
         }
+    }
+
+    [FoldoutGroup("Debug")]
+    [SerializeField] private bool showGridLines = true;
+    [FoldoutGroup("Debug")]
+    [SerializeField] private bool showOccupiedCells = true;
+
+    private void OnDrawGizmos() {
+        if (showGridLines) {
+            Gizmos.color = Color.green;
+            for (int y = 0; y < Rows + 1; y++) {
+                Vector3 start = GetCellWorldPosition(new Vector2Int(0, y));
+                Vector3 end = GetCellWorldPosition(new Vector2Int(Columns, y));
+                Gizmos.DrawLine(start, end);
+            }
+
+            for (int x = 0; x < Columns + 1; x++) {
+                Vector3 start = GetCellWorldPosition(new Vector2Int(x, 0));
+                Vector3 end = GetCellWorldPosition(new Vector2Int(x, Rows));
+                Gizmos.DrawLine(start, end);
+            }
+        }
+
+        if (showOccupiedCells && cells != null) {
+            Gizmos.color = Color.red;
+            for (int y = 0; y < cells.GetLength(0); y++) {
+                for (int x = 0; x < cells.GetLength(1); x++) {
+                    if (cells[y, x].IsOccupied()) {
+                        Vector3 pos = GetCellCenter(new Vector2Int(x, y));
+                        Gizmos.DrawWireSphere(pos, Mathf.Min(CellSize.x, CellSize.y) / 3f);
+                    }
+                }
+            }
+        } 
     }
 }
 
