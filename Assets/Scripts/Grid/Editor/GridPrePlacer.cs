@@ -61,8 +61,12 @@ public class GridPrePlacer : OdinEditorWindow {
         }
     }
 
+    private bool CanSnapToGrid() {
+        return snappingGrid != null && enableSnapping && Selection.activeGameObject != null;
+    }
+
     void OnSceneGUI(SceneView sceneView) {
-        if (!enableSnapping) {
+        if (!CanSnapToGrid()) {
             return;
         }
 

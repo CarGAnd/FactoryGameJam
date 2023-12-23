@@ -13,6 +13,11 @@ public class Grid : MonoBehaviour {
     [field: SerializeField] public Quaternion Rotation { get; private set; }
     [field: SerializeField] public Vector2 CellSize { get; private set; }
 
+    public float TotalGridWidth { get { return Columns * CellSize.x; } }
+    public float TotalGridHeight { get { return Rows * CellSize.y; } }
+
+    private Vector3 RotationPivot { get { return new Vector3(TotalGridWidth, 0, TotalGridHeight) / 2f; } }
+
     [SerializeField] private GameObject cellPrefab;
 
     private IGridLayout layout = new SquareGridLayout();
@@ -71,27 +76,51 @@ public class Grid : MonoBehaviour {
 
     // Cell via world position
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
-        Vector3 adjusted = Quaternion.Inverse(Rotation) * worldPosition - Origin;
-        Vector2Int cellCoordinates = layout.GetCellCoordinate(Vector3.Scale(adjusted, new Vector3(1f /  CellSize.x, 1, 1f / CellSize.y)));
-        return new Vector2Int(cellCoordinates.x, cellCoordinates.y);
+        //Move grid so rotation Pivot is at 0,0
+        Vector3 pivotRelative = worldPosition - RotationPivot - Origin;
+        //Rotate the grid around 0,0 with the inverse of the grids rotation, giving the resulting grid a rotation of 0
+        Vector3 unrotatedGrid = Quaternion.Inverse(Rotation) * pivotRelative;
+        //Move the grid to have the origin at 0,0
+        Vector3 offsetGrid = unrotatedGrid + RotationPivot;
+        //Scale the grid to have a cellsize of 1x1
+        Vector3 normalizedPosition = Vector3.Scale(offsetGrid, new Vector3(1f / CellSize.x, 1, 1f / CellSize.y));
+        //The grid now has origin at 0,0 with a rotation of 0 and a cellsize of 1x1
+        Vector2Int cellCoordinates = layout.GetCellCoordinate(normalizedPosition);
+        return cellCoordinates;
     }
 
     public Vector3 GetCellCenter(Vector2Int cellCoord) {
+        //Calculate the position in a grid with no rotation, the origin at (0,0), and a cellsize of 1x1
         Vector3 normalizedPosition = layout.GetCellCenter(cellCoord);
-        return Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
+        //Scale the grid to have the correct cellsize
+        Vector3 scaledPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
+        //Move the grid so that the rotation pivot is at 0,0
+        Vector3 pivotRelative = scaledPosition - RotationPivot;
+        //Rotate the grid
+        Vector3 rotatedGrid = Rotation * pivotRelative;
+        //Move the grid to the correct offset
+        Vector3 offsetGrid = rotatedGrid + Origin + RotationPivot;
+        return offsetGrid;
     }
 
     public Vector3 GetCellCenter(Vector3 worldPosition) {
         Vector2Int cellCoords = GetCellCoords(worldPosition);
-        Vector3 normalizedPosition = layout.GetCellCenter(cellCoords);
-        return Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
+        return GetCellCenter(cellCoords);
     }
 
     // World position via cell
     public Vector3 GetCellWorldPosition(Vector2Int cellCoord) {
+        //Calculate the position in a grid with no rotation, the origin at (0,0), and a cellsize of 1x1
         Vector3 normalizedPosition = layout.CalculateCellPosition(cellCoord);
-        Vector3 worldPosition = Rotation * new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y) + Origin;
-        return worldPosition;
+        //Scale the grid to have the correct cellsize
+        Vector3 scaledWorldPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
+        //Move the grid so that the rotation pivot is at 0,0
+        Vector3 pivotRelative = scaledWorldPosition - RotationPivot;
+        //Rotate the grid
+        Vector3 rotatedGrid = Rotation * pivotRelative;
+        //Move the grid to the correct offset
+        Vector3 offsetGrid = rotatedGrid + Origin + RotationPivot;
+        return offsetGrid;
     }
 
     //Get the origin position of the cell that a given position is in
