@@ -7,34 +7,15 @@ public class Cell {
     private int column;
     private CellState state;
     private IGridObject occupyingObject;
-    private GameObject groundObject;
     //The list of cells that has the same occupying object
     private List<Cell> sharedCells;
 
-    public Cell(int row, int column, Grid grid, GameObject prefab, CellState state = CellState.EMPTY)
+    public Cell(int row, int column, Grid grid, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;
         this.state = state;
         this.grid = grid;
-
-        groundObject = MonoBehaviour.Instantiate(prefab, grid.transform);
-        UpdatePosition();
-
-        // Ensure CellInteractor is attached to groundPrefab.
-        CellInteractor cellInteractor = groundObject.GetComponent<CellInteractor>();
-        if(cellInteractor != null) {
-            cellInteractor.SetCellReference(this);
-        }
-    }
-
-    public void UpdatePosition() {
-        Vector3 position = grid.GetCellCenter(new Vector2Int(row, column)) + Vector3.down * 0.5f;
-        Quaternion rotation = grid.Rotation;
-        Vector3 scale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
-
-        groundObject.transform.SetPositionAndRotation(position, rotation);
-        groundObject.transform.localScale = scale;
     }
 
     public CellState GetState() 
@@ -49,14 +30,14 @@ public class Cell {
 
     public void SetOccupyingObject(IGridObject occupyingObject) 
     {
-        this.occupyingObject = occupyingObject;
         if(occupyingObject != null) 
         {
+            this.occupyingObject = occupyingObject;
             state = CellState.OCCUPIED;
         } 
         else 
         {
-            state = CellState.EMPTY;
+            RemoveOccupyingObject();
         }
     }
 

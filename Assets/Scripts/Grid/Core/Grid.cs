@@ -13,12 +13,10 @@ public class Grid : MonoBehaviour {
     [field: SerializeField] public Quaternion Rotation { get; private set; }
     [field: SerializeField] public Vector2 CellSize { get; private set; }
 
-    [SerializeField] private GameObject cellPrefab;
-
     public float TotalGridWidth { get { return Columns * CellSize.x; } }
     public float TotalGridHeight { get { return Rows * CellSize.y; } }
 
-    private Vector3 RotationPivot { get { return new Vector3(TotalGridWidth, 0, TotalGridHeight) / 2f; } }
+    public Vector3 RotationPivot { get { return new Vector3(TotalGridWidth, 0, TotalGridHeight) / 2f; } }
 
     private IGridLayout layout = new SquareGridLayout();
     private string id;
@@ -173,11 +171,6 @@ public class Grid : MonoBehaviour {
     }
 
     private void UpdateCellPositions() {
-        for (int y = 0; y < cells.GetLength(0); y++) {
-            for (int x = 0; x < cells.GetLength(1); x++) {
-                cells[y, x].UpdatePosition();
-            }
-        }
         gridUpdated?.Invoke();
     }
 
@@ -214,31 +207,18 @@ public class Grid : MonoBehaviour {
         return id;
     }
 
-    [Button("Destroy Grid", ButtonSizes.Medium)]
-    private void DestroyGrid() {
-        for (int i = transform.childCount - 1; i >= 0; i--) {
-            DestroyImmediate(transform.GetChild(i).gameObject);
-        }
-        cells = null;
-    }
-
-
-    [Button("Create Grid", ButtonSizes.Medium)]
     private void CreateGrid() {
-        DestroyGrid();
         cells = new Cell[Rows, Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
             for (int x = 0; x < cells.GetLength(1); x++) {
-                cells[y, x] = new Cell(y, x, this, cellPrefab);
+                cells[y, x] = new Cell(y, x, this);
             }
         }
     }
 
     #region Debugging
-    [FoldoutGroup("Debug")]
-    [SerializeField] private bool showGridLines = true;
-    [FoldoutGroup("Debug")]
-    [SerializeField] private bool showOccupiedCells = true;
+    [SerializeField, HideInInspector] private bool showGridLines = true;
+    [SerializeField, HideInInspector] private bool showOccupiedCells = true;
 
     private void OnDrawGizmos() {
         if (showGridLines) {
@@ -269,58 +249,4 @@ public class Grid : MonoBehaviour {
         } 
     }
     #endregion
-}
-
-public class BFSPathFind {
-    public List<Vector2Int> FindPathAsCoordinates(Grid grid, Vector2Int startCell, Vector2Int endCell) {
-        if (startCell == endCell) {
-            //if start and end are the same the path is just an empty list
-            return new List<Vector2Int>();
-        }
-
-        Queue<PathCell> frontier = new Queue<PathCell>();
-        frontier.Enqueue(new PathCell(null, startCell));
-        List<Vector2Int> visited = new List<Vector2Int>();
-
-        while (frontier.Count > 0) {
-            PathCell currentCell = frontier.Dequeue();
-            Vector2Int currentCoord = currentCell.coord;
-            List<Vector2Int> neighbors = grid.GetCellNeighbors(currentCoord);
-            foreach (Vector2Int coord in neighbors) {
-                if(!grid.CellWithinBounds(coord) || grid.PositionIsOccupied(coord)) {
-                    continue;
-                }
-                PathCell cell = new PathCell(currentCell, coord);
-                if (coord == endCell) {
-                    return GetPath(cell);
-                }
-                else if (!visited.Contains(coord)) {
-                    frontier.Enqueue(cell);
-                    visited.Add(coord);
-                }
-            }
-        }
-        //no path possible
-        return null;
-    }
-
-    private List<Vector2Int> GetPath(PathCell endCell) {
-        List<Vector2Int> pathList = new List<Vector2Int>();
-        while(endCell != null) {
-            pathList.Add(endCell.coord);
-            endCell = endCell.prevCell;
-        }
-        pathList.Reverse();
-        return pathList;
-    }
-
-    private class PathCell {
-        public PathCell prevCell;
-        public Vector2Int coord;
-
-        public PathCell(PathCell prevCell, Vector2Int coord) {
-            this.prevCell = prevCell;
-            this.coord = coord;
-        }
-    }
 }

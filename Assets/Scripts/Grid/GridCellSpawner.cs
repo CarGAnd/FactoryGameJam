@@ -17,6 +17,18 @@ public class GridCellSpawner : MonoBehaviour
         CreateGrid();
     }
 
+    public void DestroyObjectAt(Vector2Int coord) {
+        Destroy(cells[coord.y, coord.x]);
+        cells[coord.y, coord.x] = null;
+    }
+
+    public void CreateObjectAt(Vector2Int coord) {
+        Vector3 spawnPos = grid.GetCellCenter(coord) + spawnOffset;
+        Quaternion rotation = grid.Rotation;
+        cells[coord.y, coord.x] = Instantiate(cellPrefab, spawnPos, rotation, cellParent);
+        cells[coord.y, coord.x].transform.localScale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
+    }
+
     public GameObject GetGameObjectAt(Vector2Int coord) {
         return cells[coord.y, coord.x];
     }
@@ -24,6 +36,10 @@ public class GridCellSpawner : MonoBehaviour
     public GameObject GetGameObjectAt(Vector3 worldPos) {
         Vector2Int coord = grid.GetCellCoords(worldPos);
         return GetGameObjectAt(coord);
+    }
+
+    public bool CellHasSpawnedPrefab(Vector2Int coord) {
+        return cells[coord.y, coord.x] != null;
     }
 
     [Button("Destroy Grid", ButtonSizes.Medium)]
@@ -41,10 +57,7 @@ public class GridCellSpawner : MonoBehaviour
         cells = new GameObject[grid.Rows, grid.Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
             for (int x = 0; x < cells.GetLength(1); x++) {
-                Vector3 spawnPos = grid.GetCellCenter(new Vector2Int(x, y)) + spawnOffset;
-                Quaternion rotation = grid.Rotation;
-                cells[y, x] = Instantiate(cellPrefab, spawnPos, rotation, cellParent);
-                cells[y, x].transform.localScale = new Vector3(grid.CellSize.x, 1, grid.CellSize.y);
+                CreateObjectAt(new Vector2Int(x, y));
             }
         }
     }

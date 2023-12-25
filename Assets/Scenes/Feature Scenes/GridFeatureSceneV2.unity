@@ -403,8 +403,6 @@ MonoBehaviour:
   <Origin>k__BackingField: {x: -30, y: 0, z: -20}
   <Rotation>k__BackingField: {x: 0, y: 0, z: 0, w: 1}
   <CellSize>k__BackingField: {x: 3, y: 3}
-  cellPrefab: {fileID: 1696181692171875008, guid: e8c30b0e8d403d4438454544b3a177ab,
-    type: 3}
   showGridLines: 1
   showOccupiedCells: 1
 --- !u!114 &356512232
