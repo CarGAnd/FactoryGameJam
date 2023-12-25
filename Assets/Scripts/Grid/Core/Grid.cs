@@ -13,12 +13,12 @@ public class Grid : MonoBehaviour {
     [field: SerializeField] public Quaternion Rotation { get; private set; }
     [field: SerializeField] public Vector2 CellSize { get; private set; }
 
+    [SerializeField] private GameObject cellPrefab;
+
     public float TotalGridWidth { get { return Columns * CellSize.x; } }
     public float TotalGridHeight { get { return Rows * CellSize.y; } }
 
     private Vector3 RotationPivot { get { return new Vector3(TotalGridWidth, 0, TotalGridHeight) / 2f; } }
-
-    [SerializeField] private GameObject cellPrefab;
 
     private IGridLayout layout = new SquareGridLayout();
     private string id;
@@ -62,11 +62,21 @@ public class Grid : MonoBehaviour {
     }
 
     public IGridObject GetObjectAt(Vector2Int coord) {
-        return cells[coord.y, coord.x].GetOccupyingObject();
+        if (CellWithinBounds(coord)) {
+            return cells[coord.y, coord.x].GetOccupyingObject();
+        }
+        else {
+            return null;
+        }   
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
-        return cells[coord.y, coord.x].IsOccupied();
+        if (CellWithinBounds(coord)) {
+            return cells[coord.y, coord.x].IsOccupied();
+        }
+        else {
+            return false;
+        }     
     }
 
     public bool PositionIsOccupied(Vector3 worldPos) {
@@ -76,14 +86,7 @@ public class Grid : MonoBehaviour {
 
     // Cell via world position
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
-        //Move grid so rotation Pivot is at 0,0
-        Vector3 pivotRelative = worldPosition - RotationPivot - Origin;
-        //Rotate the grid around 0,0 with the inverse of the grids rotation, giving the resulting grid a rotation of 0
-        Vector3 unrotatedGrid = Quaternion.Inverse(Rotation) * pivotRelative;
-        //Move the grid to have the origin at 0,0
-        Vector3 offsetGrid = unrotatedGrid + RotationPivot;
-        //Scale the grid to have a cellsize of 1x1
-        Vector3 normalizedPosition = Vector3.Scale(offsetGrid, new Vector3(1f / CellSize.x, 1, 1f / CellSize.y));
+        Vector3 normalizedPosition = RemoveScaleRotationOffset(worldPosition);
         //The grid now has origin at 0,0 with a rotation of 0 and a cellsize of 1x1
         Vector2Int cellCoordinates = layout.GetCellCoordinate(normalizedPosition);
         return cellCoordinates;
@@ -92,15 +95,9 @@ public class Grid : MonoBehaviour {
     public Vector3 GetCellCenter(Vector2Int cellCoord) {
         //Calculate the position in a grid with no rotation, the origin at (0,0), and a cellsize of 1x1
         Vector3 normalizedPosition = layout.GetCellCenter(cellCoord);
-        //Scale the grid to have the correct cellsize
-        Vector3 scaledPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
-        //Move the grid so that the rotation pivot is at 0,0
-        Vector3 pivotRelative = scaledPosition - RotationPivot;
-        //Rotate the grid
-        Vector3 rotatedGrid = Rotation * pivotRelative;
-        //Move the grid to the correct offset
-        Vector3 offsetGrid = rotatedGrid + Origin + RotationPivot;
-        return offsetGrid;
+        //Apply scale, rotation and offset to the position
+        Vector3 worldPosition = ApplyScaleRotationOffset(normalizedPosition);
+        return worldPosition;
     }
 
     public Vector3 GetCellCenter(Vector3 worldPosition) {
@@ -112,6 +109,12 @@ public class Grid : MonoBehaviour {
     public Vector3 GetCellWorldPosition(Vector2Int cellCoord) {
         //Calculate the position in a grid with no rotation, the origin at (0,0), and a cellsize of 1x1
         Vector3 normalizedPosition = layout.CalculateCellPosition(cellCoord);
+        //Apply scale, rotation and offset to the position
+        Vector3 worldPosition = ApplyScaleRotationOffset(normalizedPosition);
+        return worldPosition;
+    }
+
+    private Vector3 ApplyScaleRotationOffset(Vector3 normalizedPosition) {
         //Scale the grid to have the correct cellsize
         Vector3 scaledWorldPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
         //Move the grid so that the rotation pivot is at 0,0
@@ -123,6 +126,18 @@ public class Grid : MonoBehaviour {
         return offsetGrid;
     }
 
+    private Vector3 RemoveScaleRotationOffset(Vector3 worldPosition) {
+        //Move grid so rotation Pivot is at 0,0
+        Vector3 pivotRelative = worldPosition - RotationPivot - Origin;
+        //Rotate the grid around 0,0 with the inverse of the grids rotation, giving the resulting grid a rotation of 0
+        Vector3 unrotatedGrid = Quaternion.Inverse(Rotation) * pivotRelative;
+        //Move the grid to have the origin at 0,0
+        Vector3 offsetGrid = unrotatedGrid + RotationPivot;
+        //Scale the grid to have a cellsize of 1x1
+        Vector3 normalizedPosition = Vector3.Scale(offsetGrid, new Vector3(1f / CellSize.x, 1, 1f / CellSize.y));
+        return normalizedPosition;
+    }
+
     //Get the origin position of the cell that a given position is in
     public Vector3 GetCellWorldPosition(Vector3 worldPosition) {
         Vector2Int cellCoord = GetCellCoords(worldPosition);
@@ -130,9 +145,10 @@ public class Grid : MonoBehaviour {
     }
 
     public Vector3 GetSubgridCenter(Vector2Int bottomLeft, Vector2Int dimensions) {
-        Vector3 bottomLeftPos = GetCellWorldPosition(bottomLeft);
-        Vector3 subgridSize = new Vector3(CellSize.x * dimensions.x, 1, CellSize.y * dimensions.y);
-        return bottomLeftPos + Rotation * (subgridSize / 2f);
+        Vector3 bottomLeftPos = layout.CalculateCellPosition(bottomLeft);
+        Vector3 normalizedCenter = bottomLeftPos + new Vector3(dimensions.x, 0, dimensions.y) / 2f;
+        Vector3 worldPos = ApplyScaleRotationOffset(normalizedCenter);
+        return worldPos;
     }
 
     public void ResizeGrid(int newRows, int newColumns) {
@@ -218,6 +234,7 @@ public class Grid : MonoBehaviour {
         }
     }
 
+    #region Debugging
     [FoldoutGroup("Debug")]
     [SerializeField] private bool showGridLines = true;
     [FoldoutGroup("Debug")]
@@ -251,6 +268,7 @@ public class Grid : MonoBehaviour {
             }
         } 
     }
+    #endregion
 }
 
 public class BFSPathFind {
