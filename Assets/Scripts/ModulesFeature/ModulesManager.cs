@@ -168,9 +168,6 @@ public class ModulesManager : MonoBehaviour
             Gizmos.DrawLine(cam.transform.position, LastHitPoint);
             Gizmos.color = CanPlaceModule ? Color.green : Color.red;
             Gizmos.DrawWireSphere(LastHitPoint, checkRadius);
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(BuildGrid.Origin, BuildGrid.CellSize * new Vector3(BuildGrid.Columns, 1, BuildGrid.Rows) );
         }
     }
 

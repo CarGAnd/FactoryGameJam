@@ -6,17 +6,19 @@ using UnityEngine;
 public abstract class AssemblyPiece : IGridInteractable
 {
     public Facing facing = default;
-    protected Cell cell;
+    protected Vector2Int cellCoords;
     public AssemblyPiece nextPiece;
     public AssemblyPiece previousPiece;
     private PieceState state = PieceState.Available;
     private int distance;
     private AssemblyTravelingObject travelingObject;
+    private Grid grid;
     public abstract override string ToString();
 
-    protected AssemblyPiece(AssemblyPieceData data, Cell cell)
+    protected AssemblyPiece(AssemblyPieceData data, Vector2Int cellCoords, Grid grid)
     {
-        this.cell = cell;
+        this.grid = grid;
+        this.cellCoords = cellCoords;
         facing = data.facing;
         this.distance = data.movementDistance;
     }
@@ -33,10 +35,15 @@ public abstract class AssemblyPiece : IGridInteractable
         }
     }
 
-    public Cell GetCell()
+    public Vector2Int GetGridCoords()
     {
-        return cell;
+        return cellCoords;
     }
+
+    public Vector3 GetWorldPosition() {
+        return grid.GetCellCenter(cellCoords);
+    }
+
     public Vector2Int Movement()
     {
         Vector2Int movement = Vector2Int.zero;
@@ -60,7 +67,7 @@ public abstract class AssemblyPiece : IGridInteractable
 
     private void TransportTravelingObject()
     {
-        travelingObject.MoveToPiece(GetCell(),nextPiece.GetCell());
+        travelingObject.MoveToPiece(GetWorldPosition(), nextPiece.GetWorldPosition());
         nextPiece.ReceiveTravellingObject(travelingObject);
     }
     private void CleanPiece()
@@ -75,21 +82,11 @@ public abstract class AssemblyPiece : IGridInteractable
         state = PieceState.Occupied;
     }
 
-    public void PlaceOnGrid(Cell startCell, Grid grid)
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void RemoveFromGrid(Grid grid)
     {
         throw new System.NotImplementedException();
     }
     public T GetObject<T>()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public List<Cell> GetOccupyingCells(Cell startCell, Grid grid)
     {
         throw new System.NotImplementedException();
     }
@@ -124,7 +121,13 @@ public abstract class AssemblyPiece : IGridInteractable
         throw new System.NotImplementedException();
     }
 
-    
+    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
+        throw new System.NotImplementedException();
+    }
+
+    public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
+        throw new System.NotImplementedException();
+    }
 }
 
 public enum Facing

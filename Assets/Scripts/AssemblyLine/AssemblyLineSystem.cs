@@ -56,7 +56,7 @@ public class AssemblyLineSystem : MonoBehaviour
         {
             AssemblyPiece piece = line.GetStartPiece();
 
-            AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, piece.GetCell().GetCellCenter(), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
+            AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, grid.GetCellCenter(piece.GetGridCoords()), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
             piece.ReceiveTravellingObject(travelingObject);
         }
     }
@@ -75,7 +75,7 @@ public class AssemblyLineSystem : MonoBehaviour
         switch(type)
         {
             case AssemblyPieceType.ConveyerBelt:
-                newPiece = new ConveyerBelt(data, grid.GetCell(worldPosition));
+                newPiece = new ConveyerBelt(data, grid.GetCellCoords(worldPosition), grid);
                 break;
             case AssemblyPieceType.Cannon:
                 //newPiece = new Cannon(data);
@@ -84,7 +84,7 @@ public class AssemblyLineSystem : MonoBehaviour
 
         if(newPiece != null)
         {
-            grid.PlaceObject(newPiece, grid.GetCell(worldPosition));
+            grid.PlaceObject(newPiece, grid.GetCellCoords(worldPosition));
             AddPieceToAssemblyLine(newPiece);
 
         }

@@ -237,12 +237,13 @@ public class Grid : MonoBehaviour {
         }
 
         if (showOccupiedCells && cells != null) {
-            Gizmos.color = Color.red;
+            Gizmos.color = new Color(1, 0, 0, 0.5f);
             for (int y = 0; y < cells.GetLength(0); y++) {
                 for (int x = 0; x < cells.GetLength(1); x++) {
                     if (cells[y, x].IsOccupied()) {
                         Vector3 pos = GetCellCenter(new Vector2Int(x, y));
-                        Gizmos.DrawWireSphere(pos, Mathf.Min(CellSize.x, CellSize.y) / 3f);
+                        Vector3 cubeSize = new Vector3(1, 0.01f, 1) * Mathf.Min(CellSize.x, CellSize.y);
+                        Gizmos.DrawCube(pos, cubeSize);
                     }
                 }
             }

@@ -3,11 +3,9 @@ using UnityEngine;
 
 public class AssemblyTravelingObject : MonoBehaviour
 {
-    public void MoveToPiece(Cell startPiece, Cell endPiece)
+    public void MoveToPiece(Vector3 startPosition, Vector3 endPosition)
     {
         // Assuming each AssemblyPiece has a method to get its world position
-        Vector3 startPosition = startPiece.GetCellCenter();
-        Vector3 endPosition = endPiece.GetCellCenter();
         StartCoroutine(MoveToPieceCoroutine(startPosition, endPosition));
     }
 

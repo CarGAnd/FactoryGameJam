@@ -83,7 +83,7 @@ public class AssemblyLine
         {
             return true;
         }
-        return endPiece.GetCell().GetCellCoordinates() + endPiece.Movement() == piece.GetCell().GetCellCoordinates();
+        return endPiece.GetGridCoords() + endPiece.Movement() == piece.GetGridCoords();
     }
     public bool IsPieceNewStart(AssemblyPiece piece)
     {
@@ -91,7 +91,7 @@ public class AssemblyLine
         {
             return true;
         }
-        return startPiece.GetCell().GetCellCoordinates() == piece.GetCell().GetCellCoordinates() + piece.Movement();
+        return startPiece.GetGridCoords() == piece.GetGridCoords() + piece.Movement();
     }
     public void AddPiece(AssemblyPiece piece)
     {
@@ -153,16 +153,16 @@ public class AssemblyLine
     public void DebugLine()
     {
         string line = "";
-        line += startPiece.GetCell().GetCellCoordinates() + " -> ";
+        line += startPiece.GetGridCoords() + " -> ";
         foreach(AssemblyPiece piece in pieces)
         {
             if(piece == startPiece || piece == endPiece)
             {
                 continue;
             }
-            line += piece.GetCell().GetCellCoordinates() + " ";
+            line += piece.GetGridCoords() + " ";
         }
-        line += " -> "+ endPiece.GetCell().GetCellCoordinates();
+        line += " -> "+ endPiece.GetGridCoords();
         Debug.Log(line);
     }
 
