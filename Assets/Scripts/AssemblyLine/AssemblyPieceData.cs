@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(fileName = "AssemblyPieceData", menuName = "AssemblyPieces/AssemblyPiece", order = 1)]
 public class AssemblyPieceData : ScriptableObject
 {
     [Tooltip("The prefab that is specific to this piece.")]

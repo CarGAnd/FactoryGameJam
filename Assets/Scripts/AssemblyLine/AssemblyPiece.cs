@@ -6,24 +6,74 @@ using UnityEngine;
 public abstract class AssemblyPiece : IGridInteractable
 {
     public Facing facing = default;
-    private Cell cell;
-    public AssemblyPiece NextPiece {get; set;}
-    public AssemblyPiece PreviousPiece {get; set;}
+    protected Cell cell;
+    public AssemblyPiece nextPiece;
+    public AssemblyPiece previousPiece;
+    private PieceState state = PieceState.Available;
+    private int distance;
+    private AssemblyTravelingObject travelingObject;
+    public abstract override string ToString();
 
     protected AssemblyPiece(AssemblyPieceData data, Cell cell)
     {
         this.cell = cell;
+        facing = data.facing;
+        this.distance = data.movementDistance;
     }
     public void OnTick()
     {
-
+        if(state == PieceState.Available)
+        {
+            return;
+        }
+        if(nextPiece != null && nextPiece.state == PieceState.Available)
+        {
+            TransportTravelingObject();
+            CleanPiece();   
+        }
     }
 
     public Cell GetCell()
     {
         return cell;
     }
-    public abstract Vector2Int Movement();
+    public Vector2Int Movement()
+    {
+        Vector2Int movement = Vector2Int.zero;
+        switch(facing)
+        {
+            case Facing.North:
+                movement = Vector2Int.up;
+                break;
+            case Facing.East:
+                movement = Vector2Int.right;
+                break;
+            case Facing.South:
+                movement = Vector2Int.down;
+                break;
+            case Facing.West:
+                movement = Vector2Int.left;
+                break;
+        }
+        return movement * distance;
+    }
+
+    private void TransportTravelingObject()
+    {
+        travelingObject.MoveToPiece(GetCell(),nextPiece.GetCell());
+        nextPiece.ReceiveTravellingObject(travelingObject);
+    }
+    private void CleanPiece()
+    {
+        travelingObject = null;
+        state = PieceState.Available;
+    }
+
+    public void ReceiveTravellingObject(AssemblyTravelingObject travelingObject)
+    {
+        this.travelingObject = travelingObject;
+        state = PieceState.Occupied;
+    }
 
     public void PlaceOnGrid(Cell startCell, Grid grid)
     {
@@ -79,11 +129,10 @@ public abstract class AssemblyPiece : IGridInteractable
 
 public enum Facing
 {
-    Default = 0,
-    North = 10,
-    East = 20,
-    South = 30,
-    West = 40
+    North = 0,
+    East = 10,
+    South = 20,
+    West = 30
 }
 
 public enum PieceState

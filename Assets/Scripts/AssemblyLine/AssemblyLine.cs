@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using UnityEngine;
 public class AssemblyLine
 {
     private List<AssemblyPiece> pieces;
@@ -35,6 +35,7 @@ public class AssemblyLine
         }
         foreach(AssemblyLine connectingLine in connectingAssemblyLines)
         {
+            if(connectingLine.GetAssemblyLineFromPiece(piece) != null)
             return connectingLine.GetAssemblyLineFromPiece(piece);
         }
         return null;
@@ -82,11 +83,7 @@ public class AssemblyLine
         {
             return true;
         }
-        if(endPiece.GetCell().GetCellCoordinates() + endPiece.Movement() == piece.GetCell().GetCellCoordinates())
-        {
-            return true;
-        }
-        return false;
+        return endPiece.GetCell().GetCellCoordinates() + endPiece.Movement() == piece.GetCell().GetCellCoordinates();
     }
     public bool IsPieceNewStart(AssemblyPiece piece)
     {
@@ -94,22 +91,20 @@ public class AssemblyLine
         {
             return true;
         }
-        if(startPiece.GetCell().GetCellCoordinates() == piece.GetCell().GetCellCoordinates() + piece.Movement())
-        {
-            return true;
-        }
-        return false;
+        return startPiece.GetCell().GetCellCoordinates() == piece.GetCell().GetCellCoordinates() + piece.Movement();
     }
     public void AddPiece(AssemblyPiece piece)
     {
         bool isEnd = IsPieceNewEnd(piece);
         bool isStart = IsPieceNewStart(piece);
+
+
         if(isEnd)
         {
             if(endPiece != null)
             {
-                endPiece.NextPiece = piece;
-                piece.PreviousPiece = endPiece;
+                endPiece.nextPiece = piece;
+                piece.previousPiece = endPiece;
             }
             endPiece = piece;
         }
@@ -117,15 +112,12 @@ public class AssemblyLine
         {
             if(startPiece != null)
             {
-                startPiece.PreviousPiece = piece;
-                piece.NextPiece = startPiece;
+                startPiece.previousPiece = piece;
+                piece.nextPiece = startPiece;
             }
             startPiece = piece;
         }
-        if(isEnd || isStart)
-        {
-            pieces.Add(piece);
-        }
+        pieces.Add(piece);
     }
     public List<AssemblyPiece> AddAllPieces()
     {
@@ -147,15 +139,31 @@ public class AssemblyLine
     {
         foreach(AssemblyPiece piece in pieces)
         {
-            if(piece.NextPiece == null)
+            if(piece.nextPiece == null)
             {
                 endPiece = piece;
             }
-            if(piece.PreviousPiece == null)
+            if(piece.previousPiece == null)
             {
                 startPiece = piece;
             }
         }
+    }
+
+    public void DebugLine()
+    {
+        string line = "";
+        line += startPiece.GetCell().GetCellCoordinates() + " -> ";
+        foreach(AssemblyPiece piece in pieces)
+        {
+            if(piece == startPiece || piece == endPiece)
+            {
+                continue;
+            }
+            line += piece.GetCell().GetCellCoordinates() + " ";
+        }
+        line += " -> "+ endPiece.GetCell().GetCellCoordinates();
+        Debug.Log(line);
     }
 
 }

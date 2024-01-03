@@ -114,7 +114,7 @@ public class ConnectorController : MonoBehaviour
         DragFailure?.Invoke();
         OnAssemblyChangeRef.Value = ReturnValue.Failed;
         //SpawnScreenText.SpawnDebugText("Drag Failed."); :C
-        Debug.Log("Drag failed.");
+        //Debug.Log("Drag failed.");
         ResetParameters();
     }
 
