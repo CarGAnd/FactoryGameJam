@@ -2,12 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class ModuleSO : ScriptableObject, IGridObject
+public abstract class Module : MonoBehaviour, IGridObject
 {
-    [SerializeField] private int width;
-    [SerializeField] private int height;
-    [SerializeField] private GameObject modulePrefab;
+    [SerializeField] private ModuleSO moduleData;
 
     public T GetObject<T>() {
         throw new System.NotImplementedException();
@@ -18,7 +15,7 @@ public class ModuleSO : ScriptableObject, IGridObject
     }
 
     public List<Vector2Int> GetShapeLayout() {
-        throw new System.NotImplementedException();
+        return moduleData.GetLayoutShape();
     }
 
     public void OnPlacedOnGrid() {
@@ -35,5 +32,17 @@ public class ModuleSO : ScriptableObject, IGridObject
 
     public void RemoveFromGrid(Grid grid) {
         throw new System.NotImplementedException();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }
