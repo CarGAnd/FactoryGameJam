@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +13,7 @@ public class AssemblyLineSystem : MonoBehaviour
     private float currentTick = 0f;
     private List<AssemblyLine> assemblyLines;
 
-    //To Be Removed
+    //To Be Removed -- It's part of debugging
     public GameObject travelingObjectPrefab;
 
     private void Awake()
@@ -54,11 +55,27 @@ public class AssemblyLineSystem : MonoBehaviour
     {
         foreach(AssemblyLine line in assemblyLines)
         {
-            AssemblyPiece piece = line.GetStartPiece();
-
-            AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, grid.GetCellCenter(piece.GetGridCoords()), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
-            piece.ReceiveTravellingObject(travelingObject);
+            SpawnAtAllConnectingLines(line);
         }
+
+    }
+
+    private void SpawnAtAllConnectingLines(AssemblyLine line)
+    {
+        List<AssemblyLine> connectingLines = line.GetAllConnections();
+
+        foreach(AssemblyLine connectingLine in connectingLines)
+        {
+            SpawnAtAllConnectingLines(connectingLine);
+        }
+
+        SpawnTravelingPieceAtPiece(line.GetStartPiece());
+    }
+
+    private void SpawnTravelingPieceAtPiece(AssemblyPiece piece)
+    {
+        AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, grid.GetCellCenter(piece.GetGridCoords()), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
+        piece.ReceiveTravellingObject(travelingObject);
     }
 
     public void PlaceAssemblyPiece(Vector3 worldPosition, AssemblyPieceData data)
@@ -92,137 +109,149 @@ public class AssemblyLineSystem : MonoBehaviour
 
     private void AddPieceToAssemblyLine(AssemblyPiece piece)
     {
-        AssemblyLine startLine = null;
-        List<AssemblyLine> endLines = new();
-        foreach(AssemblyLine line in assemblyLines)
+        AssemblyPiece intersectingPiece;
+        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out intersectingPiece);
+        List<AssemblyLine> endLines = FindLinesPieceIsEndOf(piece);
+        
+
+        //Should cover all scenarios where we're combining two or more lines.
+        if(intersectedLine != null && endLines.Count > 0)
         {
-            if(line.IsPieceNewStart(piece))
+            //We start by considering the scenario where the two lines are facing the same way.
+            AssemblyLine correctEndLine = FindCorrectEndLine(endLines, intersectingPiece);
+            if(correctEndLine != null)
             {
-                startLine = line;
+                AssemblyLine resultingLine = MergeLines(intersectedLine, correctEndLine, piece);
+                resultingLine.DebugLine();
+                HandleConnectingLines(resultingLine, endLines.Except(new[]{correctEndLine}).ToList(), piece);
+                return;
             }
-            else if(line.IsPieceNewEnd(piece))
+            //Alright we assume the endlines do not face the same way as the intersected line. 
+            else
             {
-                endLines.Add(line);
+                //In which case we first need to see if the new piece is part of an existing endline.
+                correctEndLine = FindCorrectEndLine(endLines, piece);
+                if(correctEndLine != null)
+                {
+                    //We add the piece to our end line.
+                    correctEndLine.AddPiece(piece);
+                    //And now we need to ensure that all endlines are connecting lines to this line.
+                    HandleConnectingLines(correctEndLine, endLines.Except(new[]{correctEndLine}).ToList(), piece);
+                    //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
+                    HandleConnectingLines(intersectedLine, new List<AssemblyLine>{correctEndLine}, intersectingPiece);
+                    return;
+                }
+                //In case they don't face the same way as the piece, but still intersect with the piece.
+                else
+                {
+                    AssemblyLine newLine = CreateNewLine(piece);
+                    //We add the endlines as connecting lines to this line
+                    HandleConnectingLines(newLine, endLines, piece);
+                    //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
+                    HandleConnectingLines(intersectedLine, new List<AssemblyLine>{newLine}, intersectingPiece);
+                }
             }
         }
-        
-        if(startLine != null)
+        else if(intersectedLine != null)
         {
-            if(endLines.Count > 0)
+            if(intersectingPiece.facing == piece.facing)
             {
-                HandleMerging(piece, endLines, startLine);
+                intersectedLine.AddPiece(piece);
             }
             else
             {
-                startLine.AddPiece(piece);
+                AssemblyLine newLine = CreateNewLine(piece);
+                HandleConnectingLines(intersectedLine, new List<AssemblyLine>{newLine}, intersectingPiece);
             }
         }
         else if(endLines.Count > 0)
         {
-            HandleMerging(piece, endLines);
+            AssemblyLine correctEndLine = FindCorrectEndLine(endLines, piece);
+            if(correctEndLine != null)
+            {
+                correctEndLine.AddPiece(piece);
+                HandleConnectingLines(correctEndLine, endLines.Except(new[]{correctEndLine}).ToList(), piece);
+            }
+            else
+            {
+                AssemblyLine newLine = CreateNewLine(piece);
+                HandleConnectingLines(newLine, endLines, piece);
+            }
         }
         else
         {
-            AssemblyLine newLine = new AssemblyLine();
-            newLine.AddPiece(piece);
-            assemblyLines.Add(newLine);
+            CreateNewLine(piece);
         }
     }
-
-    private void HandleMerging(AssemblyPiece piece, List<AssemblyLine> endLines, AssemblyLine startLine = null)
+    private AssemblyLine GetIntersectedAssemblyLine(AssemblyPiece piece, out AssemblyPiece intersectedPiece)
     {
-        //Handles merging if startline is not null, meaning the piece is connecting 2 lines.
-        if(startLine != null)
+        foreach(AssemblyLine line in assemblyLines)
         {
-            startLine.AddPiece(piece);
-            AssemblyLine newLine = ConnectCorrectLine(endLines,piece,startLine);
-            foreach(AssemblyLine line in endLines)
+            if(line.GetIntersectedAssemblyLine(piece.GetGridCoords() + piece.Movement(), out intersectedPiece) != null)
             {
-                if(newLine != null)
-                {
-                    newLine.AddConnectingAssemblyLine(line);
-                }
-                else
-                {
-                    startLine.AddConnectingAssemblyLine(line);
-                }
-                RemoveAssemblyLine(line);
+                return line;
             }
         }
-        //Handles merging if startline is null, meaning the piece is the end of line(s).
-        else
-        {
-            AssemblyLine newLine = ConnectCorrectEndLine(endLines,piece);
-            if(newLine == null)
-            {
-                newLine = new AssemblyLine();
-                newLine.AddPiece(piece);
-                assemblyLines.Add(newLine);
-            }
-            foreach(AssemblyLine line in endLines)
-            {
-                newLine.AddConnectingAssemblyLine(line);
-                RemoveAssemblyLine(line);
-            }
-        }
-    }
-
-    private AssemblyLine ConnectCorrectLine(List<AssemblyLine> endLines, AssemblyPiece piece, AssemblyLine start = null)
-    {
-        // the function also removes the usage of startLine meaning the addition of the piece above, only works if the start isn't replaced by new line, but will not toss an error.
-        foreach(AssemblyLine line in endLines)
-        {
-            if(line.GetEndPiece().facing == piece.facing)
-            {
-                endLines.Remove(line);
-                return CombineAssemblyLines(start, line, piece);
-            } 
-        }
+        intersectedPiece = null;
         return null;
     }
 
-    //Handles removal of previous lines, and the addition of the new one.
-    private AssemblyLine CombineAssemblyLines(AssemblyLine line1, AssemblyLine line2, AssemblyPiece piece)
+    private AssemblyLine CreateNewLine(AssemblyPiece piece)
     {
-        List<AssemblyPiece> newLinePieces = new();
-
-        AssemblyPiece startLine1 = line1.GetStartPiece();
-        AssemblyPiece endLine2 = line2.GetEndPiece();
-
-        endLine2.nextPiece = piece;
-        piece.previousPiece = endLine2;
-
-        piece.nextPiece = startLine1;
-        startLine1.previousPiece = piece;
-        
-
-        newLinePieces.AddRange(line1.AddAllPieces());
-        newLinePieces.AddRange(line2.AddAllPieces());
-
-        AssemblyLine newLine = new AssemblyLine(newLinePieces);
-        newLine.AddConnectingAssemblyLine(line1.GetAllConnections());
-        newLine.AddConnectingAssemblyLine(line2.GetAllConnections());
-
-
-        RemoveAssemblyLine(line1);
-        RemoveAssemblyLine(line2);
+        AssemblyLine newLine = new AssemblyLine();
+        newLine.AddPiece(piece);
         assemblyLines.Add(newLine);
-        
         return newLine;
     }
 
-    private AssemblyLine ConnectCorrectEndLine(List<AssemblyLine> endLines, AssemblyPiece piece)
+    private AssemblyLine MergeLines(AssemblyLine startLine, AssemblyLine endLine, AssemblyPiece piece)
     {
-        foreach(AssemblyLine line in endLines)
+        //We add the piece to startline, which also means it becomes the new start piece of that line.
+        startLine.AddPiece(piece);
+        //Now we need to align the two lines' pieces.
+
+        startLine.GetStartPiece().previousPiece = endLine.GetEndPiece();
+        endLine.GetEndPiece().nextPiece = startLine.GetStartPiece();
+
+        //we now create a list of assemblyPieces, where we should add the endline first, as it's the furthest back.
+
+        List<AssemblyPiece> combinedPieces = new();
+        combinedPieces.AddRange(endLine.AddAllPieces());
+        combinedPieces.AddRange(startLine.AddAllPieces());
+
+        //We create a new AssemblyLine using these pieces. We also need to make sure we're moving the connecting lines.
+
+        AssemblyLine newLine = new AssemblyLine(combinedPieces);
+        startLine.MoveConnectingLines(newLine);
+        endLine.MoveConnectingLines(newLine);
+
+        //We ensure the new lines are recorded and the old ones are disposed of.
+
+        RemoveAssemblyLine(startLine);
+        RemoveAssemblyLine(endLine);
+        assemblyLines.Add(newLine);
+
+        return newLine;
+    }
+
+    private void HandleConnectingLines(AssemblyLine mainLine, List<AssemblyLine> connectingLines, AssemblyPiece connectingPiece)
+    {
+        foreach(AssemblyLine line in connectingLines)
         {
-            if(line.GetEndPiece().facing == piece.facing)
-            {
-                line.AddPiece(piece);
-                endLines.Remove(line);
-                return line;
-            } 
+            mainLine.AddConnectingAssemblyLine(line, connectingPiece);
+            assemblyLines.Remove(line);
         }
-        return null;
+    }
+
+    private List<AssemblyLine> FindLinesPieceIsEndOf(AssemblyPiece piece)
+    {
+        //Linq returns an empty list if no lines are found and not null.
+        return assemblyLines.Where(line => line.IsPieceNewEnd(piece)).ToList();
+    }
+
+    private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, AssemblyPiece piece)
+    {
+        return endLines.FirstOrDefault(line => line.GetEndPiece().facing == piece.facing);
     }
 
     public void SubscribeToTick(UnityAction action)

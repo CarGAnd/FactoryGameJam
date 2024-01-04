@@ -22,7 +22,8 @@ public class ConveyerBelt : AssemblyPiece
                 pieceRotation = Quaternion.Euler(0, 0, 0);
                 break;
         }
-        MonoBehaviour.Instantiate(data.prefab, grid.GetCellCenter(cellCoords), pieceRotation);
+        GameObject newConveyerBelt = MonoBehaviour.Instantiate(data.prefab, grid.GetCellCenter(cellCoords), pieceRotation);
+        
     }
 
     public override string ToString()

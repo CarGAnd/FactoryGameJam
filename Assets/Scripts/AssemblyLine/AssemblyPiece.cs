@@ -35,6 +35,13 @@ public abstract class AssemblyPiece : IGridInteractable
         }
     }
 
+    public AssemblyPiece GetPieceFromCoords(Vector2Int coords)
+    {
+        if (coords == cellCoords)
+            return this;
+        return null;
+    }
+
     public Vector2Int GetGridCoords()
     {
         return cellCoords;
