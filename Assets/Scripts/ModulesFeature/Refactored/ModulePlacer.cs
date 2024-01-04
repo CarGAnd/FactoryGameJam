@@ -28,11 +28,12 @@ public class ModulePlacer : MonoBehaviour
         buildingSelector.selectedObjectChanged.RemoveListener(OnSelectedBuildingChanged);
     }
 
-    private void TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition) {
-        Vector2Int gridPosition = grid.GetSubgridOriginCoord(mouseHitPosition, new Vector2Int(moduleData.width, moduleData.height));
-        List<Vector2Int> buildingPositions = grid.GetPositionsInSubgrid(gridPosition, currentModule.GetLayoutShapeDimensions());
-        bool positionsAreFree = grid.AllPositionsAreFree(buildingPositions);
-        if (positionsAreFree) {
+    public void TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition) {
+        Vector2Int buildingDimensions = moduleData.GetLayoutShapeDimensions();
+        Vector2Int gridPosition = grid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
+        List<Vector2Int> buildingPositions = grid.GetPositionsInSubgrid(gridPosition, buildingDimensions);
+        bool allPositionsAreFree = grid.AllPositionsAreFree(buildingPositions);
+        if (allPositionsAreFree) {
             PlaceModule(moduleData, gridPosition);
         }
     }

@@ -9,12 +9,16 @@ public class GridVisual : MonoBehaviour
     [SerializeField] private BuildingSelector buildingSelector;
 
     private Grid buildGrid;
-    private GameObject indicatorObject;
     private GridObjectSO selectedObjectData;
+    private List<GameObject> indicatorObjects;
+    private GameObject placementPreview;
 
     private void Awake() {
+        indicatorObjects = new List<GameObject>();
         buildGrid = mouseInput.BuildGrid;
-        CreateIndicatorObject();
+        for(int i = 0; i < 9; i++) {
+            CreateIndicatorObject();
+        }
     }
 
     private void OnEnable() {
@@ -26,12 +30,21 @@ public class GridVisual : MonoBehaviour
     }
 
     private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
-        indicatorObject.transform.localScale = new Vector3(newBuilding.width * buildGrid.CellSize.x, newBuilding.height * buildGrid.CellSize.y, 1);
         selectedObjectData = newBuilding;
-    }
+        Destroy(placementPreview);
+        placementPreview = Instantiate(newBuilding.previewPrefab);
+        int buildingArea = newBuilding.width * newBuilding.height;
+        while(indicatorObjects.Count < buildingArea) {
+            CreateIndicatorObject();
+        }
 
-    private void SetBuildMode(bool active) {
-        indicatorObject.SetActive(active);
+        for(int i = 0; i < buildingArea; i++) {
+            indicatorObjects[i].SetActive(true);
+        }
+
+        for(int i = buildingArea; i < indicatorObjects.Count; i++) {
+            indicatorObjects[i].SetActive(false);
+        }
     }
 
     private void Update() {
@@ -45,25 +58,24 @@ public class GridVisual : MonoBehaviour
         Vector3 mouseHitPosition = mouseInput.LastGroundHitPoint;
         Vector2Int buildingDimensions = selectedObjectData.GetLayoutShapeDimensions();
         Vector2Int subgridOriginCoord = buildGrid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
-        Vector3 newPosition = buildGrid.GetSubgridCenter(subgridOriginCoord, buildingDimensions);
-        indicatorObject.transform.position = newPosition + Vector3.up * 0.01f;
-        bool isOccupied = false;
+        //TODO: everything after here should only run if the subgridOriginCoord has changed between frames (i.e the mouse has moved enough to move the placement of the building)
+        Vector3 subgridCenter = buildGrid.GetSubgridCenter(subgridOriginCoord, buildingDimensions);
+        placementPreview.transform.position = subgridCenter;
         List<Vector2Int> positions = buildGrid.GetPositionsInSubgrid(subgridOriginCoord, buildingDimensions);
-        foreach(Vector2Int position in positions) {
-            if (buildGrid.PositionIsOccupied(position)) {
-                isOccupied = true;
-                break;
-            }
+        for(int i = 0; i < positions.Count; i++) {
+            bool isOccupied = buildGrid.PositionIsOccupied(positions[i]);
+            indicatorObjects[i].transform.position = buildGrid.GetCellCenter(positions[i]);
+            Color color = isOccupied ? Color.red : Color.green;
+            color = new Vector4(color.r, color.g, color.b, 0.6f);
+            indicatorObjects[i].GetComponent<MeshRenderer>().material.color = color;
         }
-        Color color = isOccupied ? Color.red : Color.green;
-        color = new Vector4(color.r, color.g, color.b, 0.6f);
-        indicatorObject.GetComponent<MeshRenderer>().material.color = color;
     }
 
     private void CreateIndicatorObject() {
-        indicatorObject = Instantiate(indicatorPrefab);
-        indicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
-        Vector3 oldRot = indicatorObject.transform.rotation.eulerAngles;
-        indicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation.eulerAngles.y, oldRot.z);
+        GameObject newIndicatorObject = Instantiate(indicatorPrefab);
+        newIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
+        Vector3 oldRot = newIndicatorObject.transform.rotation.eulerAngles;
+        newIndicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation.eulerAngles.y, oldRot.z);
+        indicatorObjects.Add(newIndicatorObject);
     }
 }
