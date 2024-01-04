@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AssemblyPieceData", menuName = "AssemblyPieces/AssemblyPiece", order = 1)]
-public class AssemblyPieceData : ScriptableObject
+public class AssemblyPieceData : GridObjectSO
 {
     [Tooltip("The prefab that is specific to this piece.")]
     public GameObject prefab;
