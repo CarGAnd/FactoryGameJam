@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a31e7fc262587245b2968124624af35, type: 3}
-  m_Name: RotateModule
+  m_Name: Module2x2
   m_EditorClassIdentifier: 
-  width: 2
-  height: 2
-  modulePrefab: {fileID: 4645770682384099664, guid: ea23e06de9874a349a9b21cfae403fc5,
+  <width>k__BackingField: 2
+  <height>k__BackingField: 2
+  <modulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7d4eb9430bf66794790072f0920cafcb,
+    type: 3}
+  <previewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7d4eb9430bf66794790072f0920cafcb,
     type: 3}

@@ -8,6 +8,7 @@ public class GridObjectSO : ScriptableObject
     [field: SerializeField] public int width { get; private set; }
     [field: SerializeField] public int height { get; private set; }
     [field: SerializeField] public GameObject modulePrefab { get; private set; }
+    [field: SerializeField] public GameObject previewPrefab { get; private set; }
 
     public List<Vector2Int> GetLayoutShape() {
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();

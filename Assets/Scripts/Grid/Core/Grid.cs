@@ -82,6 +82,15 @@ public class Grid : MonoBehaviour {
         return PositionIsOccupied(cellCoords);
     }
 
+    public bool AllPositionsAreFree(List<Vector2Int> positions) {
+        foreach(Vector2Int position in positions) {
+            if (PositionIsOccupied(position)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // Cell via world position
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
         Vector3 normalizedPosition = RemoveScaleRotationOffset(worldPosition);
@@ -148,6 +157,24 @@ public class Grid : MonoBehaviour {
         Vector3 worldPos = ApplyScaleRotationOffset(normalizedCenter);
         return worldPos;
     }
+
+    //TODO: take grid rotation into account / Check if rotation already works with this
+    public Vector2Int GetSubgridOriginCoord(Vector3 subgridCenter, Vector2Int subgridDimensions) {
+        Vector3 offset = new Vector3(CellSize.x / 2f * (subgridDimensions.x - 1), 0, CellSize.y / 2f * (subgridDimensions.y - 1));
+        Vector3 offsetHitPos = subgridCenter - offset;
+        return GetCellCoords(offsetHitPos);
+    }
+
+    public List<Vector2Int> GetPositionsInSubgrid(Vector2Int lowerLeft, Vector2Int subgridDimensions) {
+        List<Vector2Int> positions = new List<Vector2Int>();
+        for(int x = 0; x < subgridDimensions.x; x++) {
+            for(int y = 0; y < subgridDimensions.y; y++) {
+                positions.Add(new Vector2Int(x, y) + lowerLeft);
+            }
+        }
+        return positions;
+    }
+
 
     public void ResizeGrid(int newRows, int newColumns) {
         // Implementation to resize the grid.

@@ -10,7 +10,7 @@ public class MouseInput : MonoBehaviour {
     [SerializeField] private LayerMask groundLayer;
     [field: SerializeField] public Grid BuildGrid { get; private set; }
 
-    public Vector3 LastHitPoint { get; private set; }
+    public Vector3 LastGroundHitPoint { get; private set; }
     public Vector2Int LastMouseGridPos { get; private set; }
 
     void Awake() {
@@ -26,7 +26,7 @@ public class MouseInput : MonoBehaviour {
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer)) {
             Vector3 position = hit.point;
             Vector3 gridCellCenter = BuildGrid.GetCellCenter(position);
-            LastHitPoint = position;
+            LastGroundHitPoint = position;
 
             if (BuildGrid.GetCellCoords(position) != LastMouseGridPos) {
                 LastMouseGridPos = BuildGrid.GetCellCoords(position);
