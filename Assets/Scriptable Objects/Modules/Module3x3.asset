@@ -16,4 +16,5 @@ MonoBehaviour:
   <height>k__BackingField: 3
   <modulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: d92012b7897216a47986547f054565fd,
     type: 3}
-  <previewPrefab>k__BackingField: {fileID: 0}
+  <previewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: d92012b7897216a47986547f054565fd,
+    type: 3}
