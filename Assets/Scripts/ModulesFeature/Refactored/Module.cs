@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class Module : MonoBehaviour, IGridObject
 {
-    [SerializeField] private ModuleSO moduleData;
+    [SerializeField] private GridObjectSO moduleData;
 
     public T GetObject<T>() {
         throw new System.NotImplementedException();

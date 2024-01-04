@@ -26,7 +26,7 @@ public class GridVisual : MonoBehaviour
         moduleManager.BuildModeToggled.RemoveListener(SetBuildMode);
     }
 
-    private void SetBuildMode(bool active) {
+private void SetBuildMode(bool active) {
         indicatorObject.SetActive(active);
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu]
-public class ModuleSO : ScriptableObject
+public class GridObjectSO : ScriptableObject
 {
     [SerializeField] private int width;
     [SerializeField] private int height;
