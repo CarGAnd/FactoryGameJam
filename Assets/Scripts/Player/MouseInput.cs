@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class MouseInput : MonoBehaviour {
     
@@ -21,7 +22,7 @@ public class MouseInput : MonoBehaviour {
     }
 
     private void UpdateMousePosition() {
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer)) {
             Vector3 position = hit.point;
             Vector3 gridCellCenter = BuildGrid.GetCellCenter(position);

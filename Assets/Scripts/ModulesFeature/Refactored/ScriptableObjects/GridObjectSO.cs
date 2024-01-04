@@ -5,9 +5,9 @@ using UnityEngine;
 [CreateAssetMenu]
 public class GridObjectSO : ScriptableObject
 {
-    [SerializeField] private int width;
-    [SerializeField] private int height;
-    [SerializeField] private GameObject modulePrefab;
+    [field: SerializeField] public int width { get; private set; }
+    [field: SerializeField] public int height { get; private set; }
+    [field: SerializeField] public GameObject modulePrefab { get; private set; }
 
     public List<Vector2Int> GetLayoutShape() {
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();

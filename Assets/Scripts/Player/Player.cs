@@ -45,13 +45,13 @@ public class Player : MonoBehaviour
     }
 
     private void PlaceModule(ModuleTypes moduleTypes)
-    {
+    {/*
         Ray mousePosToWorld = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
         if(Physics.Raycast(mousePosToWorld, out RaycastHit hit)) {
             ModulesManager.Instance.PlaceModule(moduleTypes, hit.point);
         }
-    }
+    */}
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
     {
