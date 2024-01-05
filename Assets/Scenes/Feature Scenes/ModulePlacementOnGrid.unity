@@ -16465,10 +16465,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   placeableObjects:
-  - {fileID: 11400000, guid: c9ed244f04051b64a90747e96523d875, type: 2}
-  - {fileID: 11400000, guid: 647c37da31790fe459a6b9d45fa96de4, type: 2}
-  - {fileID: 11400000, guid: 54784d1660416e04c89e65ee6542c3da, type: 2}
-  - {fileID: 11400000, guid: 10091bec172933f4e8f4c7c1360ca2ba, type: 2}
+  - {fileID: 11400000, guid: 6f310acba411845469a3ddb6f34638b0, type: 2}
+  - {fileID: 11400000, guid: 3297a09495656024e958125a9a0c3667, type: 2}
+  - {fileID: 11400000, guid: 685625752ea6769439303b2b0e775896, type: 2}
+  - {fileID: 11400000, guid: ddd93d0bd612f0446924445635749f76, type: 2}
 --- !u!1 &800544999
 GameObject:
   m_ObjectHideFlags: 0

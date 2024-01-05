@@ -69,8 +69,8 @@ public class ModulePlacer : MonoBehaviour
 
     private void PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft) {
         Vector3 spawnPos = grid.GetSubgridCenter(lowerLeft, moduleData.GetLayoutShapeDimensions(NumRotations));
-        GameObject moduleObject = Instantiate(moduleData.ModulePrefab, spawnPos, CurrentPlacementRotation);
-        IGridObject gridObject = moduleObject.GetComponent<IGridObject>();
+        IGridObject gridObject = moduleData.CreateInstance(spawnPos, CurrentPlacementRotation, NumRotations);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
+        gridObject.PlaceOnGrid(lowerLeft, grid);
     }
 }

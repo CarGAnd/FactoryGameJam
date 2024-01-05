@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a31e7fc262587245b2968124624af35, type: 3}
-  m_Name: Module1x1
+  m_Script: {fileID: 11500000, guid: 7d3e3cb36fcf18b45b3a81d98fb37cf4, type: 3}
+  m_Name: TestModule1x3
   m_EditorClassIdentifier: 
   <Width>k__BackingField: 1
-  <Height>k__BackingField: 1
-  <ModulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
+  <Height>k__BackingField: 3
+  <ModulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7625611fca12f944fb1b3fbb84a95c6e,
     type: 3}
-  <PreviewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
+  <PreviewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7625611fca12f944fb1b3fbb84a95c6e,
     type: 3}

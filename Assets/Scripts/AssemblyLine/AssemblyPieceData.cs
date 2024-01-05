@@ -10,6 +10,10 @@ public class AssemblyPieceData : GridObjectSO
     public AssemblyPieceType type;
     public Facing facing;
 
+    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations) {
+        throw new System.NotImplementedException();
+    }
+
     public void SetFacing(Facing facing)
     {
         this.facing = facing;

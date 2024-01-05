@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu]
-public class GridObjectSO : ScriptableObject
+public abstract class GridObjectSO : ScriptableObject
 {
     [field: SerializeField] public int Width { get; private set; }
     [field: SerializeField] public int Height { get; private set; }
@@ -36,4 +35,6 @@ public class GridObjectSO : ScriptableObject
                 return new Vector2Int(Width, Height);
         }
     }
+
+    public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations);
 }
