@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25a59208b34bd4e449511ddc4ab47368, type: 3}
   m_Name: ConveyerBelt
   m_EditorClassIdentifier: 
+  <width>k__BackingField: 1
+  <height>k__BackingField: 1
+  <modulePrefab>k__BackingField: {fileID: 2146613974639957740, guid: 709f4d2ffc7e7c449bbdb479b135d542,
+    type: 3}
+  <previewPrefab>k__BackingField: {fileID: 2146613974639957740, guid: 709f4d2ffc7e7c449bbdb479b135d542,
+    type: 3}
   prefab: {fileID: 2146613974639957740, guid: 709f4d2ffc7e7c449bbdb479b135d542, type: 3}
   movementDistance: 1
   cost: 0

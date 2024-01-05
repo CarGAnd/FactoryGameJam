@@ -166,15 +166,28 @@ public class AssemblyLine
         }
     }
 
+    public void ReplaceExistingLine(AssemblyLine currentLine, AssemblyLine newLine, AssemblyPiece piece)
+    {
+        connectingAssemblyLines.Remove(currentLine);
+        connectingAssemblyLines.Add(newLine);
+        connectingLinesPiece[piece].Remove(currentLine);
+        connectingLinesPiece[piece].Add(newLine);
+    }
+
+    public void RemoveConnection(AssemblyLine line)
+    {
+        connectingAssemblyLines.Remove(line);
+    }
+
     private void UpdateStartEndPieces()
     {
         foreach(AssemblyPiece piece in pieces)
         {
-            if(piece.nextPiece == null)
+            if(piece.nextPiece == null || !pieces.Contains(piece.nextPiece))
             {
                 endPiece = piece;
             }
-            if(piece.previousPiece == null)
+            if(piece.previousPiece == null || !pieces.Contains(piece.previousPiece))
             {
                 startPiece = piece;
             }
@@ -237,7 +250,8 @@ public class AssemblyLine
         {
             foreach(var connectingLine in kvp.Value)
             {
-               connectingLineStr += DebugConnectingLine(connectingLine, kvp.Key, depth + 1);
+                connectingLineStr += "\n";
+                connectingLineStr += DebugConnectingLine(connectingLine, kvp.Key, depth + 1);
             }
         }
         return connectingLineStr;
