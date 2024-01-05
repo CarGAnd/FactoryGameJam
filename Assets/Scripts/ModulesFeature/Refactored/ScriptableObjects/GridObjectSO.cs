@@ -5,24 +5,35 @@ using UnityEngine;
 [CreateAssetMenu]
 public class GridObjectSO : ScriptableObject
 {
-    [field: SerializeField] public int width { get; private set; }
-    [field: SerializeField] public int height { get; private set; }
-    [field: SerializeField] public GameObject modulePrefab { get; private set; }
-    [field: SerializeField] public GameObject previewPrefab { get; private set; }
+    [field: SerializeField] public int Width { get; private set; }
+    [field: SerializeField] public int Height { get; private set; }
+    [field: SerializeField] public GameObject ModulePrefab { get; private set; }
+    [field: SerializeField] public GameObject PreviewPrefab { get; private set; }
 
-    public List<Vector2Int> GetLayoutShape() {
+    public List<Vector2Int> GetLayoutShape(int numRotations) {
+        Vector2Int rotatedDimensions = GetLayoutShapeDimensions(numRotations);
+        int rotatedWidth = rotatedDimensions.x;
+        int rotatedHeight = rotatedDimensions.y;
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
-        for(int x = 0; x < width; x++) {
-            for(int y = 0; y < height; y++) {
+        for(int x = 0; x < rotatedWidth; x++) {
+            for(int y = 0; y < rotatedHeight; y++) {
                 occupiedPositions.Add(new Vector2Int(x, y));
             }
         }
         return occupiedPositions;
     }
 
-    public Vector2Int GetLayoutShapeDimensions() {
-        return new Vector2Int(width, height);
+    public Vector2Int GetLayoutShapeDimensions(int numRotations) {
+        int modRotations = numRotations % 4;
+        switch (modRotations) {
+            case 0:
+            case 2:
+                return new Vector2Int(Width, Height);
+            case 1:
+            case 3:
+                return new Vector2Int(Height, Width);
+            default:
+                return new Vector2Int(Width, Height);
+        }
     }
-
-
 }

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a31e7fc262587245b2968124624af35, type: 3}
   m_Name: Module1x1
   m_EditorClassIdentifier: 
-  <width>k__BackingField: 1
-  <height>k__BackingField: 1
-  <modulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
+  <Width>k__BackingField: 1
+  <Height>k__BackingField: 1
+  <ModulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
     type: 3}
-  <previewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
+  <PreviewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 97531357fd60a3c4eb6f17dbb3c613da,
     type: 3}

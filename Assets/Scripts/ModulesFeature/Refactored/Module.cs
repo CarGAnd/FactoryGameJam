@@ -15,7 +15,7 @@ public abstract class Module : MonoBehaviour, IGridObject
     }
 
     public List<Vector2Int> GetShapeLayout() {
-        return moduleData.GetLayoutShape();
+        return moduleData.GetLayoutShape(0);
     }
 
     public void OnPlacedOnGrid() {
@@ -32,17 +32,5 @@ public abstract class Module : MonoBehaviour, IGridObject
 
     public void RemoveFromGrid(Grid grid) {
         throw new System.NotImplementedException();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

@@ -6,12 +6,13 @@ public class GridVisual : MonoBehaviour
 {
     [SerializeField] private MouseInput mouseInput;
     [SerializeField] private GameObject indicatorPrefab;
-    [SerializeField] private BuildingSelector buildingSelector;
+    [SerializeField] private ModulePlacer modulePlacer;
 
     private Grid buildGrid;
     private GridObjectSO selectedObjectData;
     private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
+    private Vector2Int lastOriginCoord;
 
     private void Awake() {
         indicatorObjects = new List<GameObject>();
@@ -22,18 +23,28 @@ public class GridVisual : MonoBehaviour
     }
 
     private void OnEnable() {
-        buildingSelector.selectedObjectChanged.AddListener(OnSelectedBuildingChanged);
+        modulePlacer.moduleChanged.AddListener(OnModuleChanged);
+        modulePlacer.moduleRotated.AddListener(OnModuleRotated);
     }
 
     private void OnDisable() {
-        buildingSelector.selectedObjectChanged.RemoveListener(OnSelectedBuildingChanged);
+        modulePlacer.moduleChanged.RemoveListener(OnModuleChanged);
+        modulePlacer.moduleRotated.RemoveListener(OnModuleRotated);
     }
 
-    private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
+    private void OnModuleRotated() {
+        if(placementPreview == null) {
+            return;
+        }
+        Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
+        placementPreview.transform.rotation = newRotation;
+    }
+
+    private void OnModuleChanged(GridObjectSO newBuilding) {
         selectedObjectData = newBuilding;
         Destroy(placementPreview);
-        placementPreview = Instantiate(newBuilding.previewPrefab);
-        int buildingArea = newBuilding.width * newBuilding.height;
+        placementPreview = Instantiate(newBuilding.PreviewPrefab);
+        int buildingArea = newBuilding.Width * newBuilding.Height;
         while(indicatorObjects.Count < buildingArea) {
             CreateIndicatorObject();
         }
@@ -45,6 +56,9 @@ public class GridVisual : MonoBehaviour
         for(int i = buildingArea; i < indicatorObjects.Count; i++) {
             indicatorObjects[i].SetActive(false);
         }
+        
+        Vector2Int newBuildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        UpdatePreviewPositions(lastOriginCoord, newBuildingDimensions);
     }
 
     private void Update() {
@@ -56,12 +70,22 @@ public class GridVisual : MonoBehaviour
             return;
         }
         Vector3 mouseHitPosition = mouseInput.LastGroundHitPoint;
-        Vector2Int buildingDimensions = selectedObjectData.GetLayoutShapeDimensions();
+        Vector2Int buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         Vector2Int subgridOriginCoord = buildGrid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
-        //TODO: everything after here should only run if the subgridOriginCoord has changed between frames (i.e the mouse has moved enough to move the placement of the building)
-        Vector3 subgridCenter = buildGrid.GetSubgridCenter(subgridOriginCoord, buildingDimensions);
+
+        if(subgridOriginCoord == lastOriginCoord) {
+            //Mouse has not moved enough to move the building
+            return;
+        }
+
+        UpdatePreviewPositions(subgridOriginCoord, buildingDimensions);
+    }
+
+    private void UpdatePreviewPositions(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
+        Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
         placementPreview.transform.position = subgridCenter;
-        List<Vector2Int> positions = buildGrid.GetPositionsInSubgrid(subgridOriginCoord, buildingDimensions);
+
+        List<Vector2Int> positions = buildGrid.GetPositionsInSubgrid(buildingOriginCoord, buildingDimensions);
         for(int i = 0; i < positions.Count; i++) {
             bool isOccupied = buildGrid.PositionIsOccupied(positions[i]);
             indicatorObjects[i].transform.position = buildGrid.GetCellCenter(positions[i]);
@@ -69,6 +93,8 @@ public class GridVisual : MonoBehaviour
             color = new Vector4(color.r, color.g, color.b, 0.6f);
             indicatorObjects[i].GetComponent<MeshRenderer>().material.color = color;
         }
+
+        lastOriginCoord = buildingOriginCoord;
     }
 
     private void CreateIndicatorObject() {
