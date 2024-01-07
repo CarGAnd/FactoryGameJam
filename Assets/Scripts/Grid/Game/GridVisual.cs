@@ -9,10 +9,13 @@ public class GridVisual : MonoBehaviour
     [SerializeField] private ModulePlacer modulePlacer;
 
     private Grid buildGrid;
-    private GridObjectSO selectedObjectData;
     private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
     private Vector2Int lastOriginCoord;
+
+    private GridObjectSO selectedObjectData;
+    private List<Vector2Int> buildingLayoutShape;
+    private Vector2Int buildingDimensions;
 
     private void Awake() {
         indicatorObjects = new List<GameObject>();
@@ -33,18 +36,28 @@ public class GridVisual : MonoBehaviour
     }
 
     private void OnModuleRotated() {
-        if(placementPreview == null) {
+        if(selectedObjectData == null) {
             return;
         }
+
         Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
         placementPreview.transform.rotation = newRotation;
+
+        buildingLayoutShape = selectedObjectData.GetLayoutShape(modulePlacer.NumRotations);
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        
+        UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
 
     private void OnModuleChanged(GridObjectSO newBuilding) {
         selectedObjectData = newBuilding;
+        buildingLayoutShape = newBuilding.GetLayoutShape(modulePlacer.NumRotations);
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        
         Destroy(placementPreview);
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
-        int buildingArea = newBuilding.Width * newBuilding.Height;
+        
+        int buildingArea = buildingLayoutShape.Count;
         while(indicatorObjects.Count < buildingArea) {
             CreateIndicatorObject();
         }
@@ -57,8 +70,7 @@ public class GridVisual : MonoBehaviour
             indicatorObjects[i].SetActive(false);
         }
         
-        Vector2Int newBuildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
-        UpdatePreviewPositions(lastOriginCoord, newBuildingDimensions);
+        UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
 
     private void Update() {
@@ -69,8 +81,8 @@ public class GridVisual : MonoBehaviour
         if(selectedObjectData == null) {
             return;
         }
+
         Vector3 mouseHitPosition = mouseInput.LastGroundHitPoint;
-        Vector2Int buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         Vector2Int subgridOriginCoord = buildGrid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
 
         if(subgridOriginCoord == lastOriginCoord) {
@@ -85,10 +97,10 @@ public class GridVisual : MonoBehaviour
         Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
         placementPreview.transform.position = subgridCenter;
 
-        List<Vector2Int> positions = buildGrid.GetPositionsInSubgrid(buildingOriginCoord, buildingDimensions);
-        for(int i = 0; i < positions.Count; i++) {
-            bool isOccupied = buildGrid.PositionIsOccupied(positions[i]);
-            indicatorObjects[i].transform.position = buildGrid.GetCellCenter(positions[i]);
+        for(int i = 0; i < buildingLayoutShape.Count; i++) {
+            Vector2Int buildPosition = buildingLayoutShape[i] + buildingOriginCoord;
+            bool isOccupied = buildGrid.PositionIsOccupied(buildPosition);
+            indicatorObjects[i].transform.position = buildGrid.GetCellCenter(buildPosition);
             Color color = isOccupied ? Color.red : Color.green;
             color = new Vector4(color.r, color.g, color.b, 0.6f);
             indicatorObjects[i].GetComponent<MeshRenderer>().material.color = color;

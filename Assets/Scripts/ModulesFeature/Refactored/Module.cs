@@ -14,6 +14,11 @@ public abstract class Module : MonoBehaviour, IGridObject
         this.numRotations = numRotations;
     }
 
+    public void DestroyModule() {
+        RemoveFromGrid(grid);
+        Destroy(gameObject);
+    }
+
     public T GetObject<T>() {
         throw new System.NotImplementedException();
     }
@@ -41,6 +46,5 @@ public abstract class Module : MonoBehaviour, IGridObject
 
     public void RemoveFromGrid(Grid grid) {
         grid.RemoveObject(gridPosition);
-        Destroy(gameObject);
     }
 }

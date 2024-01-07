@@ -27,12 +27,9 @@ public class Grid : MonoBehaviour {
         CreateGrid();
     }
 
-    // A IGridObject has a place on grid method, which calls this one.
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-    public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout = null) {
+    public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
         List<Cell> sharedCells = new List<Cell>();
-        Cell firstCell = cells[startCell.y, startCell.x];
-        sharedCells.Add(firstCell);
         
         if(shapeLayout != null) {
             foreach (Vector2Int deltaCoord in shapeLayout) {
@@ -50,12 +47,23 @@ public class Grid : MonoBehaviour {
         }
     }
 
+    public void PlaceObject(IGridObject gridObject, Vector2Int coordinate) {
+        Cell cell = cells[coordinate.y, coordinate.x];
+        cell.SetOccupyingObject(gridObject);
+        cell.SetSharedCells(null);
+    }
+
     public void RemoveObject(Vector2Int coord) {
         Cell firstCell = cells[coord.y, coord.x];
         List<Cell> sharedCells = firstCell.GetSharedCells();
 
-        foreach (Cell c in sharedCells) {
-            c.RemoveOccupyingObject();
+        if(sharedCells == null) {
+            firstCell.RemoveOccupyingObject();
+        }
+        else {
+            foreach (Cell c in sharedCells) {
+                c.RemoveOccupyingObject();
+            }
         }
     }
 
