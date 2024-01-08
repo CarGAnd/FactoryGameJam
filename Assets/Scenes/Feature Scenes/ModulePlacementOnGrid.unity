@@ -15141,7 +15141,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79d7a83e168f15f47a2e800d3b186937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conveyerBeltData: {fileID: 11400000, guid: bba8986c598116c4d84e69d7933f8416, type: 2}
 --- !u!1 &741072210
 GameObject:
   m_ObjectHideFlags: 0
@@ -16469,6 +16468,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3297a09495656024e958125a9a0c3667, type: 2}
   - {fileID: 11400000, guid: 685625752ea6769439303b2b0e775896, type: 2}
   - {fileID: 11400000, guid: ddd93d0bd612f0446924445635749f76, type: 2}
+  - {fileID: 11400000, guid: bba8986c598116c4d84e69d7933f8416, type: 2}
 --- !u!1 &800544999
 GameObject:
   m_ObjectHideFlags: 0

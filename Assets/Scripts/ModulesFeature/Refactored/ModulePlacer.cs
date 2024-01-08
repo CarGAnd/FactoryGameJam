@@ -15,31 +15,35 @@ public class ModulePlacer : MonoBehaviour
     public Quaternion CurrentPlacementRotation { get; private set; }
     public int NumRotations { get; private set; }
 
-    private GridObjectSO currentModule;
-    
+    private IPlacementStrategy placementHandler;
+
     private void Update() {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) {
-            TryPlaceModule(currentModule, mouseInput.LastGroundHitPoint);
-        }
-        if (Input.mouseScrollDelta.y > 0.1f) {
-            RotateModuleCounterClockwise();
-        }
-        if(Input.mouseScrollDelta.y < -0.1f) {
-            RotateModuleClockwise();
+        if(placementHandler != null) {
+            placementHandler.UpdateInput(grid, mouseInput.LastGroundHitPoint, this);
         }
     }
 
-    private void RotateModuleClockwise() {
+    public void RotateModuleClockwise() {
         SetModuleRotation(NumRotations + 1);
     }
 
-    private void RotateModuleCounterClockwise() {
+    public void RotateModuleCounterClockwise() {
         SetModuleRotation(NumRotations - 1);
     }
 
+    public List<Vector2Int> GetHoveredPositions() {
+        if(placementHandler != null) {
+            return placementHandler.GetHoveredPositions(grid, mouseInput.LastGroundHitPoint, this);
+        }
+        else {
+            return new List<Vector2Int>();
+        }
+    }
+
     private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
-        currentModule = newBuilding;
         moduleChanged?.Invoke(newBuilding);
+        placementHandler = newBuilding.GetPlacementHandler();
+        placementHandler.SetModule(newBuilding);
         SetModuleRotation(0);
     }
 
@@ -72,5 +76,82 @@ public class ModulePlacer : MonoBehaviour
         IGridObject gridObject = moduleData.CreateInstance(spawnPos, CurrentPlacementRotation, NumRotations);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
         gridObject.OnPlacedOnGrid(lowerLeft, grid);
+    }
+}
+
+public interface IPlacementStrategy {
+    void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
+    void SetModule(GridObjectSO newModule);
+    List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
+}
+
+public class ClickPlacer : IPlacementStrategy {
+
+    private GridObjectSO currentModule;
+
+    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        Vector2Int gridPosition = grid.GetSubgridOriginCoord(mousePosOnGrid, buildingDimensions);
+        List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.NumRotations);
+        for(int i = 0; i < buildingPositions.Count; i++) {
+            buildingPositions[i] += gridPosition;
+        }
+        return buildingPositions;
+    }
+
+    public void SetModule(GridObjectSO newModule) {
+        this.currentModule = newModule;
+    }
+
+    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+            modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid);
+        }
+        if (Input.mouseScrollDelta.y > 0.1f) {
+            modulePlacer.RotateModuleCounterClockwise();
+        }
+        if(Input.mouseScrollDelta.y < -0.1f) {
+            modulePlacer.RotateModuleClockwise();
+        }
+    }
+}
+
+public class ClickAndDragPlacer : IPlacementStrategy {
+    private GridObjectSO currentModule;
+    private Vector2Int startDragPos;
+    private bool isDragging;
+
+    public void SetModule(GridObjectSO newModule) {
+        currentModule = newModule;
+    }
+
+    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+            startDragPos = grid.GetCellCoords(mousePosOnGrid);
+            isDragging = true;
+        }
+        if (Input.GetKeyUp(KeyCode.Mouse1) && isDragging) {
+            Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
+            List<Vector2Int> path = grid.FindPath(startDragPos, endDragPos);
+            foreach(Vector2Int position in path) {
+                modulePlacer.TryPlaceModule(currentModule, grid.GetCellCenter(position));
+            }
+            isDragging = false;
+        }
+        if (Input.mouseScrollDelta.y > 0.1f) {
+            modulePlacer.RotateModuleCounterClockwise();
+        }
+        if (Input.mouseScrollDelta.y < -0.1f) {
+            modulePlacer.RotateModuleClockwise();
+        }
+    }
+
+    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        if (!isDragging) {
+            return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };
+        }
+        else {
+            return grid.FindPath(startDragPos, grid.GetCellCoords(mousePosOnGrid));
+        }
     }
 }

@@ -14,7 +14,6 @@ public class GridVisual : MonoBehaviour
     private Vector2Int lastOriginCoord;
 
     private GridObjectSO selectedObjectData;
-    private List<Vector2Int> buildingLayoutShape;
     private Vector2Int buildingDimensions;
 
     private void Awake() {
@@ -43,7 +42,6 @@ public class GridVisual : MonoBehaviour
         Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
         placementPreview.transform.rotation = newRotation;
 
-        buildingLayoutShape = selectedObjectData.GetLayoutShape(modulePlacer.NumRotations);
         buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
@@ -51,26 +49,27 @@ public class GridVisual : MonoBehaviour
 
     private void OnModuleChanged(GridObjectSO newBuilding) {
         selectedObjectData = newBuilding;
-        buildingLayoutShape = newBuilding.GetLayoutShape(modulePlacer.NumRotations);
         buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         
         Destroy(placementPreview);
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
-        
-        int buildingArea = buildingLayoutShape.Count;
-        while(indicatorObjects.Count < buildingArea) {
+    
+        UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
+    }
+
+    private void UpdateIndicatorCount(int newCount) {
+        while(indicatorObjects.Count < newCount) {
             CreateIndicatorObject();
         }
 
-        for(int i = 0; i < buildingArea; i++) {
+        for(int i = 0; i < newCount; i++) {
             indicatorObjects[i].SetActive(true);
         }
 
-        for(int i = buildingArea; i < indicatorObjects.Count; i++) {
+        for(int i = newCount; i < indicatorObjects.Count; i++) {
             indicatorObjects[i].SetActive(false);
         }
-        
-        UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
+
     }
 
     private void Update() {
@@ -97,8 +96,10 @@ public class GridVisual : MonoBehaviour
         Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
         placementPreview.transform.position = subgridCenter;
 
-        for(int i = 0; i < buildingLayoutShape.Count; i++) {
-            Vector2Int buildPosition = buildingLayoutShape[i] + buildingOriginCoord;
+        List<Vector2Int> hoveredPositions = modulePlacer.GetHoveredPositions();
+        UpdateIndicatorCount(hoveredPositions.Count);
+        for(int i = 0; i < hoveredPositions.Count; i++) {
+            Vector2Int buildPosition = hoveredPositions[i];
             bool isOccupied = buildGrid.PositionIsOccupied(buildPosition);
             indicatorObjects[i].transform.position = buildGrid.GetCellCenter(buildPosition);
             Color color = isOccupied ? Color.red : Color.green;

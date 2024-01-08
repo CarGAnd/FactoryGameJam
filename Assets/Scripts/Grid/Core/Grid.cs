@@ -217,7 +217,7 @@ public class Grid : MonoBehaviour {
         return layout.GetCellNeighbors(cellCoord);
     }
 
-    public List<Vector2Int> FindPathAsCoordinates(Vector2Int startCell, Vector2Int endCell) {
+    public List<Vector2Int> FindPath(Vector2Int startCell, Vector2Int endCell) {
         //Uses BFS for now
         //TODO: implement A*
         return new BFSPathFind().FindPathAsCoordinates(this, startCell, endCell);

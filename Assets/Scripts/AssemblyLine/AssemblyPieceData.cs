@@ -14,6 +14,10 @@ public class AssemblyPieceData : GridObjectSO
         return assemblyPiece;
     }
 
+    public override IPlacementStrategy GetPlacementHandler() {
+        return new ClickAndDragPlacer();
+    }
+
     private void SetFacing(Quaternion rotation) {
         float yRotation = rotation.eulerAngles.y;
         switch(yRotation)
