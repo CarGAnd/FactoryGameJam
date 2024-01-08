@@ -3,19 +3,36 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "AssemblyPieceData", menuName = "AssemblyPieces/AssemblyPiece", order = 1)]
 public class AssemblyPieceData : GridObjectSO
 {
-    [Tooltip("The prefab that is specific to this piece.")]
-    public GameObject prefab;
     public int movementDistance;
     public int cost;
     public AssemblyPieceType type;
-    public Facing facing;
-
+    public Facing Facing { get; private set; }
     public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations) {
-        throw new System.NotImplementedException();
+        SetFacing(rotation);
+        Instantiate(ModulePrefab, position, rotation);
+        AssemblyPiece assemblyPiece = AssemblyLineSystem.Instance.CreateAssemblyPiece(this);
+        return assemblyPiece;
     }
 
-    public void SetFacing(Facing facing)
-    {
-        this.facing = facing;
+    private void SetFacing(Quaternion rotation) {
+        float yRotation = rotation.eulerAngles.y;
+        switch(yRotation)
+        {
+            case 90:
+                Facing = Facing.North;
+                break;
+            case 0:
+                Facing = Facing.West;
+                break;
+            case 270:
+                Facing = Facing.South;
+                break;
+            case 180:
+                Facing = Facing.East;
+                break;
+            default:
+                Debug.LogError("Invalid rotation");
+                break;
+        }
     }
 }

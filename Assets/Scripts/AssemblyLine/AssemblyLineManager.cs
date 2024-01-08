@@ -23,7 +23,6 @@ public class AssemblyLineManager
         AssemblyPiece intersectingPiece;
         AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out intersectingPiece);
         List<AssemblyLine> endLines = FindLinesPieceIsEndOf(piece);
-        
 
         //Should cover all scenarios where we're combining two or more lines.
         if(intersectedLine != null && endLines.Count > 0)

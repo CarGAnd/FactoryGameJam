@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using Codice.CM.Client.Differences;
 using UnityEngine;
 
@@ -15,11 +16,9 @@ public abstract class AssemblyPiece : IGridInteractable
     private Grid grid;
     public abstract override string ToString();
 
-    protected AssemblyPiece(AssemblyPieceData data, Vector2Int cellCoords, Grid grid)
+    protected AssemblyPiece(AssemblyPieceData data)
     {
-        this.grid = grid;
-        this.cellCoords = cellCoords;
-        facing = data.facing;
+        this.facing = data.Facing;
         this.distance = data.movementDistance;
     }
     public void OnTick()
@@ -133,7 +132,9 @@ public abstract class AssemblyPiece : IGridInteractable
     }
 
     public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
+        this.cellCoords = startCell;
+        this.grid = grid;
+        AssemblyLineSystem.Instance.PlaceAssemblyPiece(this);
     }
 }
 

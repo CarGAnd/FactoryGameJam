@@ -11,7 +11,7 @@ public class AssemblyLineSystem : MonoBehaviour
     [SerializeField] private float tickRate = 0.200f;
     private float currentTick = 0f;
     private List<AssemblyLine> assemblyLines;
-    private AssemblyLineManager AssemblyLineManager;
+    private AssemblyLineManager assemblyLineManager;
 
     //To Be Removed -- It's part of debugging
     public GameObject travelingObjectPrefab;
@@ -21,7 +21,7 @@ public class AssemblyLineSystem : MonoBehaviour
         Instance = this;
         assemblyLines = new List<AssemblyLine>();
         Tick = new UnityEvent();
-        AssemblyLineManager = new AssemblyLineManager(assemblyLines);
+        assemblyLineManager = new AssemblyLineManager(assemblyLines);
     }
 
     private void Update()
@@ -74,23 +74,7 @@ public class AssemblyLineSystem : MonoBehaviour
         piece.ReceiveTravellingObject(travelingObject);
     }
 
-    public void PlaceAssemblyPiece(Vector3 worldPosition, AssemblyPieceData assemblyPieceData)
-    {
-        if (grid.PositionIsOccupied(worldPosition))
-        {
-            Debug.Log("Position is occupied");
-            return;
-        }
-
-        AssemblyPiece newPiece = CreateAssemblyPiece(worldPosition, assemblyPieceData);
-        if (newPiece != null)
-        {
-            grid.PlaceObject(newPiece, grid.GetCellCoords(worldPosition));
-            AssemblyLineManager.PlaceAssemblyPiece(newPiece);
-        }
-    }
-
-    private AssemblyPiece CreateAssemblyPiece(Vector3 worldPosition, AssemblyPieceData assemblyPieceData)
+    public AssemblyPiece CreateAssemblyPiece(AssemblyPieceData assemblyPieceData)
     {
         AssemblyPieceType type = assemblyPieceData.type;
         AssemblyPiece newPiece = null;
@@ -98,14 +82,18 @@ public class AssemblyLineSystem : MonoBehaviour
         switch (type)
         {
             case AssemblyPieceType.ConveyerBelt:
-                newPiece = new ConveyerBelt(assemblyPieceData, grid.GetCellCoords(worldPosition), grid);
+                newPiece = new ConveyerBelt(assemblyPieceData);
                 break;
             case AssemblyPieceType.Cannon:
                 //newPiece = new Cannon(data);
                 break;
         }
-
         return newPiece;
+    }
+
+    public void PlaceAssemblyPiece(AssemblyPiece piece)
+    {
+        assemblyLineManager.PlaceAssemblyPiece(piece);
     }
 
     public void SubscribeToTick(UnityAction action)
