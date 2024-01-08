@@ -71,6 +71,6 @@ public class ModulePlacer : MonoBehaviour
         Vector3 spawnPos = grid.GetSubgridCenter(lowerLeft, moduleData.GetLayoutShapeDimensions(NumRotations));
         IGridObject gridObject = moduleData.CreateInstance(spawnPos, CurrentPlacementRotation, NumRotations);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
-        gridObject.PlaceOnGrid(lowerLeft, grid);
+        gridObject.OnPlacedOnGrid(lowerLeft, grid);
     }
 }

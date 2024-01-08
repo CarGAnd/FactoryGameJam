@@ -9,7 +9,6 @@ public class ModuleSO : GridObjectSO
         GameObject g = Instantiate(ModulePrefab, position, rotation);
         Module module = g.GetComponent<Module>();
         module.SetInitInfo(numRotations);
-        IGridObject gridObject = g.GetComponent<IGridObject>();
-        return gridObject;
+        return module;
     }
 }

@@ -16,25 +16,9 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
     {
         Selected.AddListener(OnSelected);
         Deselected.AddListener(OnDeselected);
-        PlacedOnGrid.AddListener(OnPlacedOnGrid);
-        RemovedFromGrid.AddListener(OnRemovedFromGrid);
-
     }
     
-    // Implementing IGridObject
-    public T GetObject<T>() {
-        throw new System.NotImplementedException();
-    }
-
-    public void RemoveFromGrid() {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnRemovedFromGrid() {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnPlacedOnGrid() {
+    public void RemoveFromGrid(Grid grid) {
         throw new System.NotImplementedException();
     }
 
@@ -50,7 +34,7 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
         throw new System.NotImplementedException();
     }
 
-    public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
+    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         throw new System.NotImplementedException();
     }
 
@@ -67,7 +51,4 @@ public class MockGridObject : MonoBehaviour, IGridInteractable {
         throw new System.NotImplementedException();
     }
 
-    public void RemoveFromGrid(Grid grid) {
-        throw new System.NotImplementedException();
-    }
 }

@@ -92,11 +92,6 @@ public abstract class AssemblyPiece : IGridInteractable
     {
         throw new System.NotImplementedException();
     }
-    public T GetObject<T>()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public List<Vector2Int> GetShapeLayout()
     {
         throw new System.NotImplementedException();
@@ -112,16 +107,6 @@ public abstract class AssemblyPiece : IGridInteractable
         throw new System.NotImplementedException();
     }
 
-    public void OnPlacedOnGrid()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnRemovedFromGrid()
-    {
-        throw new System.NotImplementedException();
-    }
-
     public void OnSelected()
     {
         throw new System.NotImplementedException();
@@ -131,7 +116,7 @@ public abstract class AssemblyPiece : IGridInteractable
         throw new System.NotImplementedException();
     }
 
-    public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
+    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
         AssemblyLineSystem.Instance.PlaceAssemblyPiece(this);

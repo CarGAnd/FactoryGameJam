@@ -35,10 +35,6 @@ public class GridInitializer : MonoBehaviour
 }
 
 public class TestGridObject : IGridObject {
-    public T GetObject<T>() {
-        throw new System.NotImplementedException();
-    }
-
     public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
         throw new System.NotImplementedException();
     }
@@ -47,19 +43,7 @@ public class TestGridObject : IGridObject {
         throw new System.NotImplementedException();
     }
 
-    public void OnPlacedOnGrid() {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnRemovedFromGrid() {
-        throw new System.NotImplementedException();
-    }
-
-    public void PlaceOnGrid(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public void RemoveFromGrid() {
+    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         throw new System.NotImplementedException();
     }
 
