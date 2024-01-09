@@ -30,7 +30,6 @@ public abstract class GridObjectSO : ScriptableObject
         return occupiedPositions;
     }
 
-
     public List<Vector2Int> GetFancyLayoutShape(int numRotations) {
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
         List<Vector2Int> positions = buildingLayout.GetTrueValues();
@@ -42,6 +41,11 @@ public abstract class GridObjectSO : ScriptableObject
 
     public Vector2Int GetLayoutShapeDimensions(int numRotations) {
         int modRotations = numRotations % 4;
+        
+        if(modRotations < 0) {
+            modRotations += 4;
+        }
+
         switch (modRotations) {
             case 0:
             case 2:
@@ -55,8 +59,13 @@ public abstract class GridObjectSO : ScriptableObject
     }
 
     private Vector2Int GetRotatedPosition(Vector2Int inputVector, int numRotations) {
-        int modRotations = 4 - (numRotations % 4);
-        switch (modRotations) {
+        int modRotation = 4 - (numRotations % 4);
+        
+        if(modRotation >= 4) {
+            modRotation -= 4;
+        }
+
+        switch (modRotation) {
             case 0:
                 return inputVector;
             case 1:

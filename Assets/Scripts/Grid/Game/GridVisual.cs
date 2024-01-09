@@ -58,18 +58,17 @@ public class GridVisual : MonoBehaviour
     }
 
     private void UpdateIndicatorCount(int newCount) {
-        while(indicatorObjects.Count < newCount) {
+        while (indicatorObjects.Count < newCount) {
             CreateIndicatorObject();
         }
 
-        for(int i = 0; i < newCount; i++) {
+        for (int i = 0; i < newCount; i++) {
             indicatorObjects[i].SetActive(true);
         }
 
-        for(int i = newCount; i < indicatorObjects.Count; i++) {
+        for (int i = newCount; i < indicatorObjects.Count; i++) {
             indicatorObjects[i].SetActive(false);
         }
-
     }
 
     private void Update() {

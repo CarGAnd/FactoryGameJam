@@ -110,7 +110,7 @@ public class ClickPlacer : IPlacementStrategy {
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
         }
-        if(Input.mouseScrollDelta.y < -0.1f) {
+        if (Input.mouseScrollDelta.y < -0.1f) {
             modulePlacer.RotateModuleClockwise();
         }
     }
