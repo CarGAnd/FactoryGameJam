@@ -21,7 +21,6 @@ public class Grid : MonoBehaviour {
     private IGridLayout layout = new SquareGridLayout();
     private string id;
     private Cell[,] cells;
-    //private PathfindingAlgorithm pathfindingAlgorithm;
 
     private void Awake() {
         CreateGrid();
@@ -66,7 +65,8 @@ public class Grid : MonoBehaviour {
             }
         }
     }
-
+    
+    //TODO: implement this correctly
     public void MoveObject(Vector2Int from, Vector2Int to) {
         IGridObject gridObject = GetObjectAt(from);
         Cell fromCell = cells[from.y, from.x];
@@ -240,11 +240,6 @@ public class Grid : MonoBehaviour {
     public void LoadGrid() {
         // Implementation to load grid state
         // This is meant to load the grid data.
-    }
-
-    public void VisualizeGrid() {
-        // Implementation for grid visualization
-        // might be a different class, might be gizmos, not sure.
     }
 
     public string GetID() {

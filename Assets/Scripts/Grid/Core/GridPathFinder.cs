@@ -14,6 +14,11 @@ public class BFSPathFind {
             return new List<Vector2Int>() { startCell };
         }
 
+        if (grid.PositionIsOccupied(endCell)) {
+            //If the goal cell is occupied it is impossible to find a path
+            return null;
+        }
+
         Queue<PathCell> frontier = new Queue<PathCell>();
         frontier.Enqueue(new PathCell(null, startCell));
         List<Vector2Int> visited = new List<Vector2Int>();
@@ -58,6 +63,38 @@ public class BFSPathFind {
             this.prevCell = prevCell;
             this.coord = coord;
         }
+    }
+}
+
+public class Path {
+
+    private List<Vector2Int> pathCoords;
+
+    public Path(List<Vector2Int> pathCoords) {
+        if(pathCoords == null) {
+            this.pathCoords = new List<Vector2Int>();
+        }
+        else {
+            this.pathCoords = pathCoords;
+        }
+    }
+
+    public List<Vector2Int> GetPath() {
+        return pathCoords;
+    }
+
+    public List<Vector2Int> GetPathDirections() {
+        List<Vector2Int> pathDirections = new List<Vector2Int>(pathCoords.Count);
+        for(int i = 0; i < pathCoords.Count - 1; i++) {
+            pathDirections[i] = pathCoords[i + 1] - pathCoords[i];
+        }
+        pathDirections[pathCoords.Count - 1] = pathDirections[pathCoords.Count - 2]; 
+
+        return pathDirections;
+    }
+
+    public bool IsEmpty() {
+        return pathCoords.Count == 0;
     }
 }
 
