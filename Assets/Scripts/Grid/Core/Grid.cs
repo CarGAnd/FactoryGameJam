@@ -67,6 +67,15 @@ public class Grid : MonoBehaviour {
         }
     }
 
+    public void MoveObject(Vector2Int from, Vector2Int to) {
+        IGridObject gridObject = GetObjectAt(from);
+        Cell fromCell = cells[from.y, from.x];
+        List<Cell> sharedCells = fromCell.GetSharedCells();
+        Vector2Int moveDiff = to - from;
+        RemoveObject(from);
+        PlaceObject(gridObject, to, gridObject.GetShapeLayout());
+    }
+
     public IGridObject GetObjectAt(Vector2Int coord) {
         if (CellWithinBounds(coord)) {
             return cells[coord.y, coord.x].GetOccupyingObject();

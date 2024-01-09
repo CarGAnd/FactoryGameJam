@@ -131,12 +131,16 @@ public class ClickAndDragPlacer : IPlacementStrategy {
             isDragging = true;
         }
         if (Input.GetKeyUp(KeyCode.Mouse1) && isDragging) {
+            isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
             List<Vector2Int> path = grid.FindPath(startDragPos, endDragPos);
+            if(path == null) {
+                //If no path is found, we cannot place modules
+                return;
+            }
             foreach(Vector2Int position in path) {
                 modulePlacer.TryPlaceModule(currentModule, grid.GetCellCenter(position));
             }
-            isDragging = false;
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
@@ -151,7 +155,13 @@ public class ClickAndDragPlacer : IPlacementStrategy {
             return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };
         }
         else {
-            return grid.FindPath(startDragPos, grid.GetCellCoords(mousePosOnGrid));
+            List<Vector2Int> path = grid.FindPath(startDragPos, grid.GetCellCoords(mousePosOnGrid));
+            if(path != null) {
+                return path;
+            }
+            else {
+                return new List<Vector2Int>();
+            }
         }
     }
 }

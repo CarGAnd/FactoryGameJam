@@ -10,8 +10,8 @@ public class GridPathFinder
 public class BFSPathFind {
     public List<Vector2Int> FindPathAsCoordinates(Grid grid, Vector2Int startCell, Vector2Int endCell) {
         if (startCell == endCell) {
-            //if start and end are the same the path is just an empty list
-            return new List<Vector2Int>();
+            //if start and end are the same the path is just the starting position
+            return new List<Vector2Int>() { startCell };
         }
 
         Queue<PathCell> frontier = new Queue<PathCell>();
