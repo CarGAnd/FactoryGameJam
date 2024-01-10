@@ -27,7 +27,7 @@ public class ClickPlacer : IPlacementStrategy {
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (Input.GetKeyDown(KeyCode.Mouse1)) {
-            modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid);
+            modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentPlacementRotation);
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
@@ -55,14 +55,12 @@ public class ClickAndDragPlacer : IPlacementStrategy {
         if (Input.GetKeyUp(KeyCode.Mouse1) && isDragging) {
             isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
-            List<Vector2Int> path = grid.FindPath(startDragPos, endDragPos);
-            if(path == null) {
+            Path path = grid.FindPath(startDragPos, endDragPos);
+            if(path.IsEmpty()) {
                 //If no path is found, we cannot place modules
                 return;
             }
-            foreach(Vector2Int position in path) {
-                modulePlacer.TryPlaceModule(currentModule, grid.GetCellCenter(position));
-            }
+            modulePlacer.PlaceModulesAlongPath(currentModule, path);
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
@@ -77,9 +75,9 @@ public class ClickAndDragPlacer : IPlacementStrategy {
             return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };
         }
         else {
-            List<Vector2Int> path = grid.FindPath(startDragPos, grid.GetCellCoords(mousePosOnGrid));
-            if(path != null) {
-                return path;
+            Path path = grid.FindPath(startDragPos, grid.GetCellCoords(mousePosOnGrid));
+            if(!path.IsEmpty()) {
+                return path.GetPositions();
             }
             else {
                 return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };

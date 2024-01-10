@@ -61,20 +61,37 @@ public class ModulePlacer : MonoBehaviour
         buildingSelector.selectedObjectChanged.RemoveListener(OnSelectedBuildingChanged);
     }
 
-    public void TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition) {
+    public void TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition, Quaternion rotation) {
         Vector2Int buildingDimensions = moduleData.GetLayoutShapeDimensions(NumRotations);
         Vector2Int gridPosition = grid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
-        List<Vector2Int> buildingPositions = grid.GetPositionsInSubgrid(gridPosition, buildingDimensions);
+        TryPlaceModule(moduleData, gridPosition, rotation);
+    }
+
+    public void TryPlaceModule(GridObjectSO moduleData, Vector2Int lowerLeftPosition, Quaternion rotation) {
+        List<Vector2Int> buildingPositions = moduleData.GetLayoutShape(NumRotations);
+        for(int i = 0; i < buildingPositions.Count; i++) {
+            buildingPositions[i] += lowerLeftPosition;
+        }
         bool allPositionsAreFree = grid.AllPositionsAreFree(buildingPositions);
         if (allPositionsAreFree) {
-            PlaceModule(moduleData, gridPosition);
+            PlaceModule(moduleData, lowerLeftPosition, rotation);
         }
     }
 
-    private void PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft) {
+    private void PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft, Quaternion rotation) {
         Vector3 spawnPos = grid.GetSubgridCenter(lowerLeft, moduleData.GetLayoutShapeDimensions(NumRotations));
-        IGridObject gridObject = moduleData.CreateInstance(spawnPos, CurrentPlacementRotation, NumRotations);
+        IGridObject gridObject = moduleData.CreateInstance(spawnPos, rotation, NumRotations);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
         gridObject.OnPlacedOnGrid(lowerLeft, grid);
+    }
+
+    public void PlaceModulesAlongPath(GridObjectSO moduleData, Path path) {
+        List<Vector2Int> pathPositions = path.GetPositions();
+        List<Vector2Int> pathDirections = path.GetDirections();
+        for(int i = 0; i < pathPositions.Count; i++) {
+            //TODO: rotate modules correctly according to the direction in the directions list above
+            //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
+            TryPlaceModule(moduleData, pathPositions[i], CurrentPlacementRotation);
+        }    
     }
 }

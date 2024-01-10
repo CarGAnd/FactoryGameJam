@@ -226,10 +226,14 @@ public class Grid : MonoBehaviour {
         return layout.GetCellNeighbors(cellCoord);
     }
 
-    public List<Vector2Int> FindPath(Vector2Int startCell, Vector2Int endCell) {
+    public Path FindPath(Vector2Int startCell, Vector2Int endCell) {
         //Uses BFS for now
         //TODO: implement A*
-        return new BFSPathFind().FindPathAsCoordinates(this, startCell, endCell);
+        return new BFSPathFind().FindPath(this, startCell, endCell);
+    }
+
+    public Vector2Int FindClosestUnoccupiedPosition(Vector2Int start) {
+        return new BFSPathFind().FindClosestUnoccupiedCell(this, start);
     }
 
     public void SaveGrid() {
