@@ -177,6 +177,13 @@ public class AssemblyLine
     public void RemoveConnection(AssemblyLine line)
     {
         connectingAssemblyLines.Remove(line);
+        foreach(var kvp in connectingLinesPiece)
+        {
+            if(kvp.Value.Contains(line))
+            {
+                kvp.Value.Remove(line);
+            }
+        }
     }
 
     private void UpdateStartEndPieces()

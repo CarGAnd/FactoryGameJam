@@ -80,8 +80,6 @@ public class AssemblyLineManager
         if (correctEndLine != null)
         {
             CombineLinesFacingSameWay(piece, intersectedLine, endLines, correctEndLine);
-            Debug.Log("Combined lines facing same way");
-
         }
         //Alright we assume the endlines do not face the same way as the intersected line. 
         else
@@ -159,13 +157,20 @@ public class AssemblyLineManager
 
     private void CombineLinesFacingSameWay(AssemblyPiece piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
     {
-        if(LoopDetected(correctEndLine, intersectedLine))
-        {
-
-        }
-        //We merge the two lines.
+        //We merge the two lines. The first part of loop detection happens in MergeLines
         AssemblyLine resultingLine = MergeLines(intersectedLine, correctEndLine, piece);
         HandleConnectingLines(resultingLine, endLines.Except(new[] { correctEndLine }).ToList(), piece);
+        //Now we have the next loop scenario, if one of the connecting lines that was added piece results in a loop.
+        foreach(AssemblyLine line in resultingLine.GetAllConnections())
+        {
+            if(LoopDetected(line, resultingLine))
+            {
+                line.GetEndPiece().nextPiece = piece;
+                resultingLine.RemoveConnection(line);
+                assemblyLines.Add(line);
+                break;
+            }
+        }
     }
 
     private AssemblyLine GetIntersectedAssemblyLine(AssemblyPiece piece, out AssemblyPiece intersectedPiece)
@@ -221,21 +226,22 @@ public class AssemblyLineManager
         combinedPieces.AddRange(startLine.AddAllPieces());
         //We create a new AssemblyLine using these pieces. We also need to make sure we're moving the connecting lines.
 
+        
         AssemblyLine newLine = new AssemblyLine(combinedPieces);
 
         startLine.MoveConnectingLines(newLine);
         endLine.MoveConnectingLines(newLine);
-
-        //If the previous startline was a connecting line of another line then we also need to replace it with the new line.
-        if(startLine.GetEndPiece().nextPiece != null)
+        AssemblyLine nextLine = GetIntersectedAssemblyLine(startLine.GetEndPiece(), out AssemblyPiece i);
+        if(LoopDetected(endLine, startLine))
         {
-            GetIntersectedAssemblyLine(startLine.GetEndPiece(), out AssemblyPiece intersectedPiece).ReplaceExistingLine(startLine, newLine, intersectedPiece);
+            nextLine.RemoveConnection(startLine);
+            assemblyLines.Add(newLine);
         }
         else
         {
-            //If it wasn't a connecting line, then we need to add it to the list of assembly lines.
-            assemblyLines.Add(newLine);
+            nextLine.ReplaceExistingLine(startLine, newLine, i);
         }
+
         //We ensure the new lines are recorded and the old ones are disposed of.
 
         RemoveAssemblyLine(startLine);
