@@ -9,6 +9,7 @@ public class Cell {
     private IGridObject occupyingObject;
     //The list of cells that has the same occupying object
     private List<Cell> sharedCells;
+    private Vector2Int occupyingObjectOrigin;
 
     public Cell(int row, int column, Grid grid, CellState state = CellState.EMPTY)
     {
@@ -28,11 +29,13 @@ public class Cell {
         return occupyingObject;
     }
 
-    public void SetOccupyingObject(IGridObject occupyingObject) 
+    public void SetOccupyingObject(IGridObject occupyingObject, Vector2Int objectOriginCell, List<Cell> sharedCells = null) 
     {
         if(occupyingObject != null) 
         {
             this.occupyingObject = occupyingObject;
+            this.occupyingObjectOrigin = objectOriginCell;
+            this.sharedCells = sharedCells;
             state = CellState.OCCUPIED;
         } 
         else 
@@ -41,12 +44,16 @@ public class Cell {
         }
     }
 
-    public void SetSharedCells(List<Cell> sharedCells) {
-        this.sharedCells = sharedCells;
+    public void SetOccupyingObject(IGridObject occupyingObject) {
+        SetOccupyingObject(occupyingObject, new Vector2Int(column, row), null);
     }
 
     public List<Cell> GetSharedCells() {
         return sharedCells;
+    }
+
+    public Vector2Int GetOccupyingObjectOrigin() {
+        return occupyingObjectOrigin;
     }
 
     public void RemoveOccupyingObject() 
@@ -65,22 +72,6 @@ public class Cell {
     public bool IsOccupied() 
     {
         return state == CellState.OCCUPIED;
-    }
-
-    //This method will be called from CellInteractor, which should be placed on the groundPrefab.
-    public void SelectCell() 
-    {
-        // Implementation for selecting the cell
-    }
-
-    public void SaveCell() 
-    {
-        // Implementation to save cell state
-    }
-
-    public void LoadCell() 
-    {
-        // Implementation to load cell state
     }
 }
 

@@ -41,15 +41,13 @@ public class Grid : MonoBehaviour {
         }
 
         foreach (Cell c in sharedCells) {
-            c.SetOccupyingObject(gridObject);
-            c.SetSharedCells(sharedCells);
+            c.SetOccupyingObject(gridObject, startCell, sharedCells);
         }
     }
 
     public void PlaceObject(IGridObject gridObject, Vector2Int coordinate) {
         Cell cell = cells[coordinate.y, coordinate.x];
         cell.SetOccupyingObject(gridObject);
-        cell.SetSharedCells(null);
     }
 
     public void RemoveObject(Vector2Int coord) {
@@ -66,14 +64,21 @@ public class Grid : MonoBehaviour {
         }
     }
     
-    //TODO: implement this correctly
     public void MoveObject(Vector2Int from, Vector2Int to) {
         IGridObject gridObject = GetObjectAt(from);
         Cell fromCell = cells[from.y, from.x];
         List<Cell> sharedCells = fromCell.GetSharedCells();
-        Vector2Int moveDiff = to - from;
+        if(sharedCells == null) {
+            sharedCells = new List<Cell>() { fromCell };
+        }
+        Vector2Int objectOrigin = fromCell.GetOccupyingObjectOrigin();
+        List<Vector2Int> objectLayout = new List<Vector2Int>();
+        foreach(Cell c in sharedCells) {
+            Vector2Int originDelta = c.GetCellCoordinates() - objectOrigin;
+            objectLayout.Add(originDelta);
+        }
         RemoveObject(from);
-        PlaceObject(gridObject, to, gridObject.GetShapeLayout());
+        PlaceObject(gridObject, to, objectLayout);
     }
 
     public IGridObject GetObjectAt(Vector2Int coord) {
