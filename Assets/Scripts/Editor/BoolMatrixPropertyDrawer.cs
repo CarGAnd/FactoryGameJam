@@ -49,13 +49,10 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         for(int i = 0; i < buttonTexts.Length; i++) {
             buttonTexts[i] = boolArray.GetArrayElementAtIndex(i).boolValue ? "O" : "";
         }
-
-        int selected = GUI.SelectionGrid(matrixRect, -1, buttonTexts, lastWidth);
         
-        if(selected != -1) {
-            boolArray.GetArrayElementAtIndex(selected).boolValue = !boolArray.GetArrayElementAtIndex(selected).boolValue;
-        }
-
+        Vector2 matrixStart = new Vector2(matrixRect.x, matrixRect.y);
+        DrawMatrix(boolArray, widthProperty.intValue, heightProperty.intValue, matrixStart);
+        
         if(GUI.Button(clearButtonRect, new GUIContent("Clear"))) {
             for(int i = 0; i < boolArray.arraySize; i++) {
                 boolArray.GetArrayElementAtIndex(i).boolValue = false;
@@ -70,6 +67,22 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
 
         EditorGUI.indentLevel = indentLevel;
         EditorGUI.EndProperty();
+    }
+
+    private void DrawMatrix(SerializedProperty boolArray, int width, int height, Vector2 startPosition) {
+        Color oldColor = GUI.color;
+        Vector2 matrixStart = new Vector2(startPosition.x, startPosition.y);
+        for(int y = 0; y < height; y++) {
+            for(int x = 0; x < width; x++) {
+                int arrayIndex = y * width + x;
+                GUI.color = boolArray.GetArrayElementAtIndex(arrayIndex).boolValue ? Color.green : Color.red; 
+                Rect buttonRect = new Rect(matrixStart.x + checkboxSize.x * x, matrixStart.y + checkboxSize.y * y, checkboxSize.x, checkboxSize.y);
+                if(GUI.Button(buttonRect, "")) {
+                    boolArray.GetArrayElementAtIndex(arrayIndex).boolValue = !boolArray.GetArrayElementAtIndex(arrayIndex).boolValue;
+                }
+            }
+        }
+        GUI.color = oldColor;
     }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {

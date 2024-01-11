@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(ModuleInputOutput))]
 public abstract class Module : MonoBehaviour, IGridObject
 {
     [SerializeField] private GridObjectSO moduleData;

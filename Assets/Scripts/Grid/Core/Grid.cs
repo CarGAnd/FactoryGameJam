@@ -197,7 +197,6 @@ public class Grid : MonoBehaviour {
         return positions;
     }
 
-
     public void ResizeGrid(int newRows, int newColumns) {
         // Implementation to resize the grid.
         // Remember to preserve existing cells' data
@@ -234,21 +233,11 @@ public class Grid : MonoBehaviour {
     public Path FindPath(Vector2Int startCell, Vector2Int endCell) {
         //Uses BFS for now
         //TODO: implement A*
-        return new BFSPathFind().FindPath(this, startCell, endCell);
+        return GridBFS.FindPath(this, startCell, endCell);
     }
 
     public Vector2Int FindClosestUnoccupiedPosition(Vector2Int start) {
-        return new BFSPathFind().FindClosestUnoccupiedCell(this, start);
-    }
-
-    public void SaveGrid() {
-        // Implementation to save grid state
-        // This is meant to save the grid data.
-    }
-
-    public void LoadGrid() {
-        // Implementation to load grid state
-        // This is meant to load the grid data.
+        return GridBFS.FindClosestUnoccupiedCell(this, start);
     }
 
     public string GetID() {
