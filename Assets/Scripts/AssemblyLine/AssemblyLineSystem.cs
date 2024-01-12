@@ -6,11 +6,12 @@ using UnityEngine.Events;
 public class AssemblyLineSystem : MonoBehaviour
 {
     public static AssemblyLineSystem Instance;
-    private UnityEvent Tick;
+    private UnityEvent TransportTick;
     [SerializeField] private Grid grid;
     [SerializeField] private float tickRate = 0.200f;
     private float currentTick = 0f;
     private List<AssemblyLine> assemblyLines;
+    public List<AssemblyLine> AssemblyLines { get => assemblyLines; }
     private AssemblyLineManager assemblyLineManager;
 
     //To Be Removed -- It's part of debugging
