@@ -89,9 +89,23 @@ public class ModulePlacer : MonoBehaviour
         List<Vector2Int> pathPositions = path.GetPositions();
         List<Vector2Int> pathDirections = path.GetDirections();
         for(int i = 0; i < pathPositions.Count; i++) {
-            //TODO: rotate modules correctly according to the direction in the directions list above
             //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
-            TryPlaceModule(moduleData, pathPositions[i], CurrentPlacementRotation);
+            TryPlaceModule(moduleData, pathPositions[i], RotationFromDirection(pathDirections[i]));
         }    
+    }
+
+    private Quaternion RotationFromDirection(Vector2Int direction) {
+        if(direction == Vector2Int.left) {
+            return Quaternion.Euler(new Vector3(0, 0, 0));
+        }
+        else if(direction == Vector2Int.up) {
+            return Quaternion.Euler(new Vector3(0, 90, 0));
+        }
+        else if(direction == Vector2Int.right) {
+            return Quaternion.Euler(new Vector3(0, 180, 0));
+        }
+        else {
+            return Quaternion.Euler(new Vector3(0, 270, 0));
+        }
     }
 }

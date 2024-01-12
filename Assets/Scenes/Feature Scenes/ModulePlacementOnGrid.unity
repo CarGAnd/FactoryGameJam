@@ -343,6 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 17596881}
   - component: {fileID: 17596880}
+  - component: {fileID: 17596882}
   m_Layer: 0
   m_Name: AssemblyLineSystem_Test
   m_TagString: Untagged
@@ -381,6 +382,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 512752894}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &17596882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 17596879}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dccc2a1d5c5d01549b6a0c54858d7913, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grid: {fileID: 857417367}
 --- !u!1 &35298997
 GameObject:
   m_ObjectHideFlags: 0
