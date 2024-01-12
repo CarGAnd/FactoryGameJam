@@ -14,7 +14,7 @@ public class AssemblyLine
         connectingAssemblyLines = new List<AssemblyLine>();
         connectingLinesPiece = new();
 
-        AssemblyLineSystem.Instance.SubscribeToTick(OnTick);
+        AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
     }
     public AssemblyLine(IEnumerable<AssemblyPiece> assemblyPieces)
     {
@@ -23,7 +23,7 @@ public class AssemblyLine
         connectingLinesPiece = new();
 
         UpdateStartEndPieces();
-        AssemblyLineSystem.Instance.SubscribeToTick(OnTick);
+        AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
     }
     public List<AssemblyLine> GetAllConnections()
     {
@@ -60,19 +60,19 @@ public class AssemblyLine
         connectingAssemblyLines.AddRange(lines);
     }
 
-    public void OnTick()
+    public void OnTransportTick()
     {
         var node = pieces.Last;
         while(node != null)
         {
-            node.Value.OnTick();
+            node.Value.TransportTick();
             node = node.Previous;
         }
     }
 
     public void RemoveLineFromTick()
     {
-        AssemblyLineSystem.Instance.UnsubscribeFromTick(OnTick);
+        AssemblyLineSystem.Instance.UnsubscribeFromTransportTick(OnTransportTick);
     }
 
     public AssemblyPiece GetEndPiece()

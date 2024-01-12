@@ -1,16 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Codice.CM.Client.Differences;
 using UnityEngine;
 
-public abstract class AssemblyPiece : IGridInteractable
+public abstract class AssemblyPiece : IGridInteractable, ITransportable
 {
     public Facing facing = default;
     protected Vector2Int cellCoords;
     public AssemblyPiece nextPiece;
     public AssemblyPiece previousPiece;
-    private PieceState state = PieceState.Available;
+    private TransportState state = TransportState.Available;
     private int distance;
     private AssemblyTravelingObject travelingObject;
     private Grid grid;
@@ -20,18 +18,6 @@ public abstract class AssemblyPiece : IGridInteractable
     {
         this.facing = data.Facing;
         this.distance = data.movementDistance;
-    }
-    public void OnTick()
-    {
-        if(state == PieceState.Available)
-        {
-            return;
-        }
-        if(nextPiece != null && nextPiece.state == PieceState.Available)
-        {
-            TransportTravelingObject();
-            CleanPiece();   
-        }
     }
 
     public AssemblyPiece GetPieceFromCoords(Vector2Int coords)
@@ -70,22 +56,28 @@ public abstract class AssemblyPiece : IGridInteractable
         }
         return movement * distance;
     }
+    public void TransportTick()
+    {
+        if(state == TransportState.Available)
+        {
+            return;
+        }
+        if(nextPiece != null && nextPiece.state == TransportState.Available)
+        {
+            SendObject();   
+        }
+    }
 
-    private void TransportTravelingObject()
+    public void ReceivedObject(AssemblyTravelingObject travelingObject)
+    {
+        state = TransportState.Occupied;
+        this.travelingObject = travelingObject;
+    }
+
+    public void SendObject()
     {
         travelingObject.MoveToPiece(GetWorldPosition(), nextPiece.GetWorldPosition());
-        nextPiece.ReceiveTravellingObject(travelingObject);
-    }
-    private void CleanPiece()
-    {
-        travelingObject = null;
-        state = PieceState.Available;
-    }
-
-    public void ReceiveTravellingObject(AssemblyTravelingObject travelingObject)
-    {
-        this.travelingObject = travelingObject;
-        state = PieceState.Occupied;
+        nextPiece.ReceivedObject(travelingObject);
     }
 
     public void RemoveFromGrid(Grid grid)
@@ -122,7 +114,6 @@ public abstract class AssemblyPiece : IGridInteractable
         AssemblyLineSystem.Instance.PlaceAssemblyPiece(this);
     }
 }
-
 public enum Facing
 {
     North = 0,
@@ -131,8 +122,4 @@ public enum Facing
     West = 30
 }
 
-public enum PieceState
-{
-    Available = 0,
-    Occupied = 10,
-}
+

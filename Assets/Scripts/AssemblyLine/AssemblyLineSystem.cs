@@ -21,16 +21,16 @@ public class AssemblyLineSystem : MonoBehaviour
     {
         Instance = this;
         assemblyLines = new List<AssemblyLine>();
-        Tick = new UnityEvent();
+        TransportTick = new UnityEvent();
         assemblyLineManager = new AssemblyLineManager(assemblyLines);
     }
-
+    // This tick could probably be moved to a GameManager.
     private void Update()
     {
         currentTick += Time.deltaTime;
         if(currentTick >= tickRate)
         {
-            Tick.Invoke();
+            TransportTick.Invoke();
             currentTick = 0f;
         }
     }
@@ -72,7 +72,7 @@ public class AssemblyLineSystem : MonoBehaviour
     private void SpawnTravelingPieceAtPiece(AssemblyPiece piece)
     {
         AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, grid.GetCellCenter(piece.GetGridCoords()), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
-        piece.ReceiveTravellingObject(travelingObject);
+        piece.ReceivedObject(travelingObject);
     }
 
     public AssemblyPiece CreateAssemblyPiece(AssemblyPieceData assemblyPieceData)
@@ -97,13 +97,13 @@ public class AssemblyLineSystem : MonoBehaviour
         assemblyLineManager.PlaceAssemblyPiece(piece);
     }
 
-    public void SubscribeToTick(UnityAction action)
+    public void SubscribeToTransportTick(UnityAction action)
     {
-        Tick.AddListener(action);
+        TransportTick.AddListener(action);
     }
 
-    public void UnsubscribeFromTick(UnityAction action)
+    public void UnsubscribeFromTransportTick(UnityAction action)
     {
-        Tick.RemoveListener(action);
+        TransportTick.RemoveListener(action);
     }
 }
