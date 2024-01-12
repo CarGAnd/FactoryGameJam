@@ -232,15 +232,23 @@ public class AssemblyLineManager
         startLine.MoveConnectingLines(newLine);
         endLine.MoveConnectingLines(newLine);
         AssemblyLine nextLine = GetIntersectedAssemblyLine(startLine.GetEndPiece(), out AssemblyPiece i);
-        if(LoopDetected(endLine, startLine))
+        if(nextLine != null)
         {
-            nextLine.RemoveConnection(startLine);
-            assemblyLines.Add(newLine);
+            if(LoopDetected(endLine, startLine))
+            {
+                nextLine.RemoveConnection(startLine);
+                assemblyLines.Add(newLine);
+            }
+            else
+            {
+                nextLine.ReplaceExistingLine(startLine, newLine, i);
+            }
         }
         else
         {
-            nextLine.ReplaceExistingLine(startLine, newLine, i);
+            assemblyLines.Add(newLine);
         }
+        
 
         //We ensure the new lines are recorded and the old ones are disposed of.
 
