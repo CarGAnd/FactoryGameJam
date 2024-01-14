@@ -16,8 +16,7 @@ public class ModuleSO : GridObjectSO
 
     public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations) {
         GameObject g = Instantiate(ModulePrefab, position, rotation);
-        Module module = g.GetComponent<Module>();
-        module.SetInitInfo(numRotations);
-        return module;
+        ModuleInputOutput inputOutput = g.GetComponent<ModuleInputOutput>();
+        return inputOutput;
     }
 }

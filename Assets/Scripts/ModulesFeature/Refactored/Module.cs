@@ -3,37 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(ModuleInputOutput))]
-public abstract class Module : MonoBehaviour, IGridObject
+public abstract class Module : MonoBehaviour
 {
     [SerializeField] private GridObjectSO moduleData;
 
-    private Vector2Int gridPosition;
-    private Grid grid;
-    private int numRotations;
+    private ModuleInputOutput inputOutput;
 
-    public void SetInitInfo(int numRotations) {
-        this.numRotations = numRotations;
+    private void Start() {
+        inputOutput = GetComponent<ModuleInputOutput>();
     }
 
     public void DestroyModule() {
-        RemoveFromGrid(grid);
+        inputOutput.Destroy();
         Destroy(gameObject);
-    }
-
-    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public List<Vector2Int> GetShapeLayout() {
-        return moduleData.GetLayoutShape(numRotations);
-    }
-
-    public void OnPlacedOnGrid(Vector2Int startPosition, Grid grid) {
-        this.grid = grid;
-        this.gridPosition = startPosition;
-    }
-
-    public void RemoveFromGrid(Grid grid) {
-        grid.RemoveObject(gridPosition);
     }
 }

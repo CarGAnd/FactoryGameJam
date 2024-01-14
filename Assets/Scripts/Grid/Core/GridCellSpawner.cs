@@ -14,7 +14,7 @@ public class GridCellSpawner : MonoBehaviour
     private GameObject[,] cells;
 
     private void Awake() {
-        CreateGrid();
+        CreateCells();
     }
 
     public void DestroyObjectAt(Vector2Int coord) {
@@ -42,17 +42,17 @@ public class GridCellSpawner : MonoBehaviour
         return cells[coord.y, coord.x] != null;
     }
 
-    [Button("Destroy Grid", ButtonSizes.Medium)]
-    private void DestroyGrid() {
+    [Button("Destroy Prefabs", ButtonSizes.Medium)]
+    private void DestroyCells() {
         for (int i = cellParent.childCount - 1; i >= 0; i--) {
             DestroyImmediate(cellParent.GetChild(i).gameObject);
         }
         cells = null;
     }
 
-    [Button("Create Grid", ButtonSizes.Medium)]
-    private void CreateGrid() {
-        DestroyGrid();
+    [Button("Create Prefabs", ButtonSizes.Medium)]
+    private void CreateCells() {
+        DestroyCells();
         grid = GetComponent<Grid>();
         cells = new GameObject[grid.Rows, grid.Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {

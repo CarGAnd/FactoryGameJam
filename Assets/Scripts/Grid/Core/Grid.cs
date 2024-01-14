@@ -34,7 +34,7 @@ public class Grid : MonoBehaviour {
             foreach (Vector2Int deltaCoord in shapeLayout) {
                 Vector2Int coord = startCell + deltaCoord;
                 if (CellWithinBounds(coord)) {
-                    Cell cell = cells[coord.y, coord.x];
+                    Cell cell = GetCellAt(coord);
                     sharedCells.Add(cell);
                 }
             }
@@ -46,12 +46,12 @@ public class Grid : MonoBehaviour {
     }
 
     public void PlaceObject(IGridObject gridObject, Vector2Int coordinate) {
-        Cell cell = cells[coordinate.y, coordinate.x];
+        Cell cell = GetCellAt(coordinate);
         cell.SetOccupyingObject(gridObject);
     }
 
     public void RemoveObject(Vector2Int coord) {
-        Cell firstCell = cells[coord.y, coord.x];
+        Cell firstCell = GetCellAt(coord);
         List<Cell> sharedCells = firstCell.GetSharedCells();
 
         if(sharedCells == null) {
@@ -66,7 +66,7 @@ public class Grid : MonoBehaviour {
     
     public void MoveObject(Vector2Int from, Vector2Int to) {
         IGridObject gridObject = GetObjectAt(from);
-        Cell fromCell = cells[from.y, from.x];
+        Cell fromCell = GetCellAt(from);
         List<Cell> sharedCells = fromCell.GetSharedCells();
         if(sharedCells == null) {
             sharedCells = new List<Cell>() { fromCell };
@@ -83,16 +83,39 @@ public class Grid : MonoBehaviour {
 
     public IGridObject GetObjectAt(Vector2Int coord) {
         if (CellWithinBounds(coord)) {
-            return cells[coord.y, coord.x].GetOccupyingObject();
+            return GetCellAt(coord).GetOccupyingObject();
         }
         else {
             return null;
         }   
     }
 
+    public T GetObjectAsType<T>(Vector2Int coord) {
+        IGridObject obj = GetObjectAt(coord);
+        if(obj is T) {
+            return (T)obj;
+        }
+        else {
+            return default(T);
+        }
+    }
+
+    public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
+        List<Vector2Int> sharedPositions = new List<Vector2Int>();
+        List<Cell> sharedCells = GetCellAt(coord).GetSharedCells();
+        foreach(Cell c in sharedCells) {
+            sharedPositions.Add(c.GetCellCoordinates());
+        }
+        return sharedPositions;
+    }
+
+    public Vector2Int GetObjectOriginCoord(Vector2Int coord) {
+        return GetCellAt(coord).GetOccupyingObjectOrigin();
+    }
+
     public bool PositionIsOccupied(Vector2Int coord) {
         if (CellWithinBounds(coord)) {
-            return cells[coord.y, coord.x].IsOccupied();
+            return GetCellAt(coord).IsOccupied();
         }
         else {
             return false;
@@ -242,6 +265,10 @@ public class Grid : MonoBehaviour {
 
     public string GetID() {
         return id;
+    }
+
+    private Cell GetCellAt(Vector2Int coord) {
+        return cells[coord.y, coord.x];
     }
 
     private void CreateGrid() {

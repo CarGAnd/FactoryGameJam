@@ -52,6 +52,10 @@ public class Cell {
         return sharedCells;
     }
 
+    public Vector2Int GetObjectOrigin() {
+        return occupyingObjectOrigin;
+    }
+
     public Vector2Int GetOccupyingObjectOrigin() {
         return occupyingObjectOrigin;
     }
