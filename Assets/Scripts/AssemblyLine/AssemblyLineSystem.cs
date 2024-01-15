@@ -69,7 +69,7 @@ public class AssemblyLineSystem : MonoBehaviour
         SpawnTravelingPieceAtPiece(line.GetStartPiece());
     }
 
-    private void SpawnTravelingPieceAtPiece(AssemblyPiece piece)
+    private void SpawnTravelingPieceAtPiece(ITransportable piece)
     {
         AssemblyTravelingObject travelingObject = Instantiate(travelingObjectPrefab, grid.GetCellCenter(piece.GetGridCoords()), Quaternion.identity).GetComponent<AssemblyTravelingObject>();
         piece.ReceivedObject(travelingObject);
@@ -92,7 +92,7 @@ public class AssemblyLineSystem : MonoBehaviour
         return newPiece;
     }
 
-    public void PlaceAssemblyPiece(AssemblyPiece piece)
+    public void PlaceAssemblyPiece(ITransportable piece)
     {
         assemblyLineManager.PlaceAssemblyPiece(piece);
     }

@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class AssemblyTravelingObject : MonoBehaviour
 {
-    public void MoveToPiece(Vector3 startPosition, Vector3 endPosition)
+    public void MoveToPiece(Vector2Int startPosition, Vector2Int endPosition, Grid grid)
     {
-        StartCoroutine(MoveToPieceCoroutine(new Vector3(startPosition.x, 0.4f, startPosition.z), new Vector3(endPosition.x, 0.4f, endPosition.z)));
+        Vector3 start = grid.GetCellCenter(startPosition);
+        Vector3 end = grid.GetCellCenter(endPosition);
+        StartCoroutine(MoveToPieceCoroutine(new Vector3(start.x, 0.4f, start.z), new Vector3(end.x, 0.4f, end.z)));
     }
 
     private IEnumerator MoveToPieceCoroutine(Vector3 startPosition, Vector3 endPosition)

@@ -25,7 +25,7 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Vector3 start = grid.GetCellWorldPosition(line.GetStartPiece().GetGridCoords());
         Vector3 end = grid.GetCellWorldPosition(line.GetEndPiece().GetGridCoords());
 
-        Facing facing = line.GetStartPiece().facing;
+        Facing facing = line.GetStartPiece().Facing;
         float heightOffset = 1f;
         AdjustLinePosition(ref start, ref end, facing, grid.CellSize, heightOffset);
         Color newColor = GetUniqueColor(line);
@@ -49,7 +49,7 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Vector3 start = grid.GetCellWorldPosition(line.GetStartPiece().GetGridCoords());
         Vector3 end = grid.GetCellWorldPosition(line.GetEndPiece().GetGridCoords());
 
-        Facing facing = line.GetStartPiece().facing;
+        Facing facing = line.GetStartPiece().Facing;
         float heightOffset = 1f;
         AdjustLinePosition(ref start, ref end, facing, grid.CellSize, heightOffset);
         Gizmos.color = color;

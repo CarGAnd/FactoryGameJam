@@ -11,7 +11,7 @@ public class AssemblyLineManager
     {
         this.assemblyLines = assemblyLines;
     }
-    public void PlaceAssemblyPiece(AssemblyPiece newPiece)
+    public void PlaceTransportablePiece(ITransportable newPiece)
     {
         if(newPiece != null)
         {
@@ -19,9 +19,9 @@ public class AssemblyLineManager
         }
     }
 
-    private void AddPieceToAssemblyLine(AssemblyPiece piece)
+    private void AddPieceToAssemblyLine(ITransportable piece)
     {
-        AssemblyPiece intersectedPiece;
+        ITransportable intersectedPiece;
         AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out intersectedPiece);
         List<AssemblyLine> endLines = FindLinesPieceIsEndOf(piece);
 
@@ -43,7 +43,7 @@ public class AssemblyLineManager
         }
     }
 
-    private void HandleEndConnections(AssemblyPiece piece, List<AssemblyLine> endLines)
+    private void HandleEndConnections(ITransportable piece, List<AssemblyLine> endLines)
     {
         AssemblyLine correctEndLine = FindCorrectEndLine(endLines, piece);
         if (correctEndLine != null)
@@ -58,10 +58,10 @@ public class AssemblyLineManager
         }
     }
 
-    private void HandleSingleIntersection(AssemblyPiece piece, AssemblyPiece intersectedPiece, AssemblyLine intersectedLine)
+    private void HandleSingleIntersection(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine)
     {
         //The case where the new piece is just the new start of an intersected line.
-        if (intersectedPiece.facing == piece.facing)
+        if (intersectedPiece.Facing == piece.Facing)
         {
             intersectedLine.AddPiece(piece);
         }
@@ -73,7 +73,7 @@ public class AssemblyLineManager
         }
     }
 
-    private void HandleMultipleIntersections(AssemblyPiece piece, AssemblyPiece intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
+    private void HandleMultipleIntersections(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
     {
         //We start by considering the scenario where there are two lines are facing the same way.
         AssemblyLine correctEndLine = FindCorrectEndLine(endLines, intersectedPiece, piece);
@@ -92,7 +92,7 @@ public class AssemblyLineManager
                 return;
             }
             //However the new piece might still face the same way as the intersected line.
-            else if(piece.facing == intersectedPiece.facing)
+            else if(piece.Facing == intersectedPiece.Facing)
             {
                 CombineEndLinesWithIntersectedLine(piece, intersectedLine, endLines);
             }
@@ -104,7 +104,7 @@ public class AssemblyLineManager
         }
     }
 
-    private void CombineEndLinesWithIntersectedLine(AssemblyPiece piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
+    private void CombineEndLinesWithIntersectedLine(ITransportable piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
     {
         intersectedLine.AddPiece(piece);
         //We add the endlines as connecting lines to this line
@@ -113,7 +113,7 @@ public class AssemblyLineManager
         {
             if(LoopDetected(line, intersectedLine))
             {
-                line.GetEndPiece().nextPiece = piece;
+                line.GetEndPiece().SetNextPiece(piece);
                 loopingEndLine = line;
                 break;
             }
@@ -122,7 +122,7 @@ public class AssemblyLineManager
         HandleConnectingLines(intersectedLine, endLines.Except(new[] {loopingEndLine}).ToList(), piece);
     }
 
-    private void CombineEndLinesFacingDifferentThanPiece(AssemblyPiece piece, AssemblyPiece intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
+    private void CombineEndLinesFacingDifferentThanPiece(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
     {
         AssemblyLine newLine = CreateNewLine(piece);
         //We add the endlines as connecting lines to this line
@@ -130,14 +130,14 @@ public class AssemblyLineManager
 
         if(LoopDetected(newLine, intersectedLine))
         {
-            piece.nextPiece = intersectedPiece;
+            piece.SetNextPiece(intersectedPiece);
             return;
         }
         //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
         HandleConnectingLines(intersectedLine, new List<AssemblyLine> { newLine }, intersectedPiece);
     }
 
-    private void CombineEndLineFacingPiece(AssemblyPiece piece, AssemblyPiece intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
+    private void CombineEndLineFacingPiece(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
     {
         //We add the piece to our end line.
         correctEndLine.AddPiece(piece);
@@ -146,7 +146,7 @@ public class AssemblyLineManager
 
         if(LoopDetected(correctEndLine, intersectedLine))
         {
-            piece.nextPiece = intersectedPiece;
+            piece.SetNextPiece(intersectedPiece);
             return;
         }
 
@@ -155,7 +155,7 @@ public class AssemblyLineManager
         return;
     }
 
-    private void CombineLinesFacingSameWay(AssemblyPiece piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
+    private void CombineLinesFacingSameWay(ITransportable piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
     {
         //We merge the two lines. The first part of loop detection happens in MergeLines
         AssemblyLine resultingLine = MergeLines(intersectedLine, correctEndLine, piece);
@@ -165,7 +165,7 @@ public class AssemblyLineManager
         {
             if(LoopDetected(line, resultingLine))
             {
-                line.GetEndPiece().nextPiece = piece;
+                line.GetEndPiece().SetNextPiece(piece);
                 resultingLine.RemoveConnection(line);
                 assemblyLines.Add(line);
                 break;
@@ -173,7 +173,7 @@ public class AssemblyLineManager
         }
     }
 
-    private AssemblyLine GetIntersectedAssemblyLine(AssemblyPiece piece, out AssemblyPiece intersectedPiece)
+    private AssemblyLine GetIntersectedAssemblyLine(ITransportable piece, out ITransportable intersectedPiece)
     {
         foreach(AssemblyLine line in assemblyLines)
         {
@@ -186,10 +186,10 @@ public class AssemblyLineManager
         intersectedPiece = null;
         return null;
     }
-    private AssemblyLine RecursiveIntersectionSearch(AssemblyLine line, AssemblyPiece piece, out AssemblyPiece intersectedPiece)
+    private AssemblyLine RecursiveIntersectionSearch(AssemblyLine line, ITransportable piece, out ITransportable intersectedPiece)
     {
         //if the current line is intersected
-        AssemblyLine intersectedLine = line.GetIntersectedAssemblyLine(piece.GetGridCoords() + piece.Movement(), out intersectedPiece);
+        AssemblyLine intersectedLine = line.GetIntersectedAssemblyLine(piece.GetNextCellCoords(), out intersectedPiece);
         if(intersectedLine != null)
         {
             return intersectedLine;
@@ -207,7 +207,7 @@ public class AssemblyLineManager
         return null;
     }
 
-    private AssemblyLine CreateNewLine(AssemblyPiece piece)
+    private AssemblyLine CreateNewLine(ITransportable piece)
     {
         AssemblyLine newLine = new AssemblyLine();
         newLine.AddPiece(piece);
@@ -215,13 +215,13 @@ public class AssemblyLineManager
         return newLine;
     }
 
-    private AssemblyLine MergeLines(AssemblyLine startLine, AssemblyLine endLine, AssemblyPiece piece)
+    private AssemblyLine MergeLines(AssemblyLine startLine, AssemblyLine endLine, ITransportable piece)
     {
         startLine.AddPiece(piece);
-        startLine.GetStartPiece().previousPiece = endLine.GetEndPiece();
-        endLine.GetEndPiece().nextPiece = startLine.GetStartPiece();
+        startLine.GetStartPiece().SetPreviousPiece(endLine.GetEndPiece());
+        endLine.GetEndPiece().SetNextPiece(startLine.GetStartPiece());
 
-        List<AssemblyPiece> combinedPieces = new();
+        List<ITransportable> combinedPieces = new();
         combinedPieces.AddRange(endLine.AddAllPieces());
         combinedPieces.AddRange(startLine.AddAllPieces());
         //We create a new AssemblyLine using these pieces. We also need to make sure we're moving the connecting lines.
@@ -231,7 +231,7 @@ public class AssemblyLineManager
 
         startLine.MoveConnectingLines(newLine);
         endLine.MoveConnectingLines(newLine);
-        AssemblyLine nextLine = GetIntersectedAssemblyLine(startLine.GetEndPiece(), out AssemblyPiece i);
+        AssemblyLine nextLine = GetIntersectedAssemblyLine(startLine.GetEndPiece(), out ITransportable i);
         if(nextLine != null)
         {
             if(LoopDetected(endLine, startLine))
@@ -258,7 +258,7 @@ public class AssemblyLineManager
         return newLine;
     }
 
-    private void HandleConnectingLines(AssemblyLine mainLine, List<AssemblyLine> connectingLines, AssemblyPiece connectingPiece)
+    private void HandleConnectingLines(AssemblyLine mainLine, List<AssemblyLine> connectingLines, ITransportable connectingPiece)
     {
         foreach(AssemblyLine line in connectingLines)
         {
@@ -266,20 +266,20 @@ public class AssemblyLineManager
             assemblyLines.Remove(line);
         }
     }
-    private List<AssemblyLine> FindLinesPieceIsEndOf(AssemblyPiece piece)
+    private List<AssemblyLine> FindLinesPieceIsEndOf(ITransportable piece)
     {
         //Linq returns an empty list if no lines are found and not null.
         return assemblyLines.Where(line => line.IsPieceNewEnd(piece)).ToList();
     }
 
-    private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, AssemblyPiece intersectedPiece, AssemblyPiece newPiece)
+    private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, ITransportable intersectedPiece, ITransportable newPiece)
     {
-        return endLines.FirstOrDefault(line => line.GetEndPiece().facing == intersectedPiece.facing && line.GetEndPiece().facing == newPiece.facing);
+        return endLines.FirstOrDefault(line => line.GetEndPiece().Facing == intersectedPiece.Facing && line.GetEndPiece().Facing == newPiece.Facing);
     }
 
-    private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, AssemblyPiece intersectedPiece)
+    private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, ITransportable intersectedPiece)
     {
-        return endLines.FirstOrDefault(line => line.GetEndPiece().facing == intersectedPiece.facing);
+        return endLines.FirstOrDefault(line => line.GetEndPiece().Facing == intersectedPiece.Facing);
     }
 
     private bool LoopDetected(AssemblyLine correctEndLine, AssemblyLine intersectedLine)
