@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModuleInputOutput : MonoBehaviour, IGridObject
+public class ModuleInputOutput : MonoBehaviour, IGridObject, ITransportable
 {
     private ModuleSO moduleSettings;
     private Vector2Int originCell;
@@ -44,6 +44,22 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     public List<Vector2Int> GetShapeLayout() {
+        throw new System.NotImplementedException();
+    }
+
+    public void TransportTick() {
+        throw new System.NotImplementedException();
+    }
+
+    public void ReceivedObject(AssemblyTravelingObject travelingObject) {
+        throw new System.NotImplementedException();
+    }
+
+    public void SendObject() {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector2Int GetGridCoords() {
         throw new System.NotImplementedException();
     }
 }

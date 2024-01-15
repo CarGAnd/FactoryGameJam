@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 
 public class GridBFS {
-    private static List<Vector2Int> FindPath(Grid grid, Vector2Int startCell, Func<Vector2Int, bool> goalCondition, Func<Vector2Int, bool> isWalkableCell) {
+    public static List<Vector2Int> FindPath(ISearchable grid, Vector2Int startCell, Func<Vector2Int, bool> goalCondition, Func<Vector2Int, bool> isWalkableCell) {
         if (goalCondition(startCell)) {
             //if the condition is satisfied in the starting cell then the path is just the starting cell
             return new List<Vector2Int>() { startCell };
@@ -17,9 +17,9 @@ public class GridBFS {
         while (frontier.Count > 0) {
             PathCell currentCell = frontier.Dequeue();
             Vector2Int currentCoord = currentCell.coord;
-            List<Vector2Int> neighbors = grid.GetCellNeighbors(currentCoord);
+            List<Vector2Int> neighbors = grid.GetNeighbors(currentCoord);
             foreach (Vector2Int coord in neighbors) {
-                if (!grid.CellWithinBounds(coord) || !isWalkableCell(coord)) {
+                if (!isWalkableCell(coord)) {
                     continue;
                 }
                 PathCell cell = new PathCell(currentCell, coord);
@@ -34,23 +34,6 @@ public class GridBFS {
         }
         //no path possible
         return null;
-    }
-
-
-    public static Path FindPath(Grid grid, Vector2Int startCoord, Vector2Int endCoord) {
-        List<Vector2Int> positions = null;
-        
-        if(grid.PositionIsOccupied(endCoord)) {
-            return new Path(positions);
-        }
-        
-        positions = FindPath(grid, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => !grid.PositionIsOccupied(coord));
-        return new Path(positions);
-    }
-
-    public static Vector2Int FindClosestUnoccupiedCell(Grid grid, Vector2Int startCoord) {
-        List<Vector2Int> path = FindPath(grid, startCoord, (Vector2Int coord) => !grid.PositionIsOccupied(coord), (Vector2Int coord) => true);
-        return path[path.Count - 1];
     }
 
     private static List<Vector2Int> GetPath(PathCell endCell) {

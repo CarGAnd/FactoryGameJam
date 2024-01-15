@@ -51,7 +51,7 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         }
         
         Vector2 matrixStart = new Vector2(matrixRect.x, matrixRect.y);
-        DrawMatrix(boolArray, widthProperty.intValue, heightProperty.intValue, matrixStart);
+        DrawBoolMatrix(boolArray, widthProperty.intValue, heightProperty.intValue, matrixStart);
         
         if(GUI.Button(clearButtonRect, new GUIContent("Clear"))) {
             for(int i = 0; i < boolArray.arraySize; i++) {
@@ -69,7 +69,7 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    private void DrawMatrix(SerializedProperty boolArray, int width, int height, Vector2 startPosition) {
+    private void DrawBoolMatrix(SerializedProperty boolArray, int width, int height, Vector2 startPosition) {
         Color oldColor = GUI.color;
         Vector2 matrixStart = new Vector2(startPosition.x, startPosition.y);
         for(int y = 0; y < height; y++) {

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Grid : MonoBehaviour {
-
+public class Grid : MonoBehaviour, ISearchable
+{
     [HideInInspector] public UnityEvent gridUpdated;
 
     [field: SerializeField] public int Columns { get; private set; }
@@ -166,30 +166,6 @@ public class Grid : MonoBehaviour {
         return worldPosition;
     }
 
-    private Vector3 ApplyScaleRotationOffset(Vector3 normalizedPosition) {
-        //Scale the grid to have the correct cellsize
-        Vector3 scaledWorldPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
-        //Move the grid so that the rotation pivot is at 0,0
-        Vector3 pivotRelative = scaledWorldPosition - RotationPivot;
-        //Rotate the grid
-        Vector3 rotatedGrid = Rotation * pivotRelative;
-        //Move the grid to the correct offset
-        Vector3 offsetGrid = rotatedGrid + Origin + RotationPivot;
-        return offsetGrid;
-    }
-
-    private Vector3 RemoveScaleRotationOffset(Vector3 worldPosition) {
-        //Move grid so rotation Pivot is at 0,0
-        Vector3 pivotRelative = worldPosition - RotationPivot - Origin;
-        //Rotate the grid around 0,0 with the inverse of the grids rotation, giving the resulting grid a rotation of 0
-        Vector3 unrotatedGrid = Quaternion.Inverse(Rotation) * pivotRelative;
-        //Move the grid to have the origin at 0,0
-        Vector3 offsetGrid = unrotatedGrid + RotationPivot;
-        //Scale the grid to have a cellsize of 1x1
-        Vector3 normalizedPosition = Vector3.Scale(offsetGrid, new Vector3(1f / CellSize.x, 1, 1f / CellSize.y));
-        return normalizedPosition;
-    }
-
     //Get the origin position of the cell that a given position is in
     public Vector3 GetCellWorldPosition(Vector3 worldPosition) {
         Vector2Int cellCoord = GetCellCoords(worldPosition);
@@ -218,6 +194,30 @@ public class Grid : MonoBehaviour {
             }
         }
         return positions;
+    }
+
+    private Vector3 ApplyScaleRotationOffset(Vector3 normalizedPosition) {
+        //Scale the grid to have the correct cellsize
+        Vector3 scaledWorldPosition = new Vector3(normalizedPosition.x * CellSize.x, 0, normalizedPosition.z * CellSize.y);
+        //Move the grid so that the rotation pivot is at 0,0
+        Vector3 pivotRelative = scaledWorldPosition - RotationPivot;
+        //Rotate the grid
+        Vector3 rotatedGrid = Rotation * pivotRelative;
+        //Move the grid to the correct offset
+        Vector3 offsetGrid = rotatedGrid + Origin + RotationPivot;
+        return offsetGrid;
+    }
+
+    private Vector3 RemoveScaleRotationOffset(Vector3 worldPosition) {
+        //Move grid so rotation Pivot is at 0,0
+        Vector3 pivotRelative = worldPosition - RotationPivot - Origin;
+        //Rotate the grid around 0,0 with the inverse of the grids rotation, giving the resulting grid a rotation of 0
+        Vector3 unrotatedGrid = Quaternion.Inverse(Rotation) * pivotRelative;
+        //Move the grid to have the origin at 0,0
+        Vector3 offsetGrid = unrotatedGrid + RotationPivot;
+        //Scale the grid to have a cellsize of 1x1
+        Vector3 normalizedPosition = Vector3.Scale(offsetGrid, new Vector3(1f / CellSize.x, 1, 1f / CellSize.y));
+        return normalizedPosition;
     }
 
     public void ResizeGrid(int newRows, int newColumns) {
@@ -249,18 +249,24 @@ public class Grid : MonoBehaviour {
         return cellCoord.y >= 0 && cellCoord.y < Rows && cellCoord.x >= 0 && cellCoord.x < Columns;
     }
 
-    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
+    public List<Vector2Int> GetNeighbors(Vector2Int cellCoord) {
         return layout.GetCellNeighbors(cellCoord);
     }
 
-    public Path FindPath(Vector2Int startCell, Vector2Int endCell) {
-        //Uses BFS for now
-        //TODO: implement A*
-        return GridBFS.FindPath(this, startCell, endCell);
+     public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
+        List<Vector2Int> positions = null;
+        
+        if(PositionIsOccupied(endCoord)) {
+            return new Path(positions);
+        }
+        
+        positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
+        return new Path(positions);
     }
 
-    public Vector2Int FindClosestUnoccupiedPosition(Vector2Int start) {
-        return GridBFS.FindClosestUnoccupiedCell(this, start);
+    public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {
+        List<Vector2Int> path = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
+        return path[path.Count - 1];
     }
 
     public string GetID() {
