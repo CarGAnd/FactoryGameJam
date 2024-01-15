@@ -7,6 +7,7 @@ public interface ITransportable
     void TransportTick();
     void ReceivedObject(AssemblyTravelingObject travelingObject);
     void SendObject();
+    Vector2Int GetGridCoords();
 }
 public enum TransportState
 {

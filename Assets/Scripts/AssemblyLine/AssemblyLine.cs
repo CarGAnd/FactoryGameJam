@@ -139,8 +139,6 @@ public class AssemblyLine
                 pieces.AddFirst(piece);
             }
         }
-
-        
     }
     public List<AssemblyPiece> AddAllPieces()
     {
