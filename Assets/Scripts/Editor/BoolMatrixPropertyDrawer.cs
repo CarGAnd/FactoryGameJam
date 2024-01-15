@@ -51,7 +51,7 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         }
         
         Vector2 matrixStart = new Vector2(matrixRect.x, matrixRect.y);
-        DrawBoolMatrix(boolArray, widthProperty.intValue, heightProperty.intValue, matrixStart);
+        DrawBoolMatrix(boolArray, widthProperty.intValue, heightProperty.intValue, checkboxSize, matrixStart);
         
         if(GUI.Button(clearButtonRect, new GUIContent("Clear"))) {
             for(int i = 0; i < boolArray.arraySize; i++) {
@@ -69,14 +69,14 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    private void DrawBoolMatrix(SerializedProperty boolArray, int width, int height, Vector2 startPosition) {
+    private void DrawBoolMatrix(SerializedProperty boolArray, int width, int height, Vector2 cellSize, Vector2 startPosition) {
         Color oldColor = GUI.color;
         Vector2 matrixStart = new Vector2(startPosition.x, startPosition.y);
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 int arrayIndex = y * width + x;
                 GUI.color = boolArray.GetArrayElementAtIndex(arrayIndex).boolValue ? Color.green : Color.red; 
-                Rect buttonRect = new Rect(matrixStart.x + checkboxSize.x * x, matrixStart.y + checkboxSize.y * y, checkboxSize.x, checkboxSize.y);
+                Rect buttonRect = new Rect(matrixStart.x + cellSize.x * x, matrixStart.y + cellSize.y * y, cellSize.x, cellSize.y);
                 if(GUI.Button(buttonRect, "")) {
                     boolArray.GetArrayElementAtIndex(arrayIndex).boolValue = !boolArray.GetArrayElementAtIndex(arrayIndex).boolValue;
                 }
@@ -84,6 +84,7 @@ public class BoolMatrixPropertyDrawer : PropertyDrawer
         }
         GUI.color = oldColor;
     }
+
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label) {
         if (!property.isExpanded) {

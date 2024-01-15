@@ -58,7 +58,7 @@ public abstract class GridObjectSO : ScriptableObject
         }
     }
 
-    private Vector2Int GetRotatedPosition(Vector2Int inputVector, int numRotations) {
+    protected Vector2Int GetRotatedPosition(Vector2Int inputVector, int numRotations) {
         int modRotation = 4 - (numRotations % 4);
         
         if(modRotation >= 4) {
@@ -85,3 +85,4 @@ public abstract class GridObjectSO : ScriptableObject
 
     public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations);
 }
+

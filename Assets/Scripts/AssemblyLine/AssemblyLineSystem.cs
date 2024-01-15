@@ -92,9 +92,9 @@ public class AssemblyLineSystem : MonoBehaviour
         return newPiece;
     }
 
-    public void PlaceAssemblyPiece(ITransportable piece)
+    public void PlaceTransportablePiece(ITransportable piece)
     {
-        assemblyLineManager.PlaceAssemblyPiece(piece);
+        assemblyLineManager.PlaceTransportablePiece(piece);
     }
 
     public void SubscribeToTransportTick(UnityAction action)

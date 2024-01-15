@@ -9,20 +9,38 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject, ITransportable
     private Grid grid;
     private int numRotations;
 
-    public void Initialize(ModuleSO moduleSettings) {
+    private List<PortSettings> inputPorts;
+    private List<PortSettings> outputPorts;
+
+    public ITransportable NextPiece => throw new System.NotImplementedException();
+
+    public ITransportable PreviousPiece => throw new System.NotImplementedException();
+
+    public Facing Facing => throw new System.NotImplementedException();
+
+    public void Initialize(ModuleSO moduleSettings, int numRotations) {
         this.moduleSettings = moduleSettings;
+        this.inputPorts = moduleSettings.GetInputs(numRotations);
+        this.outputPorts = moduleSettings.GetOutputs(numRotations);
+        this.numRotations = numRotations;
     }
 
-    public void HasInputAtPosition(Vector2Int gridPosition) {
-
+    public PortSettings GetInputAtPosition(Vector2Int gridPosition) {
+        foreach(PortSettings ps in inputPorts) {
+            if(ps.position + originCell == gridPosition) {
+                return ps;
+            }
+        }
+        return null;
     }   
     
-    public void HasOutputAtPosition(Vector2Int gridPosition) {
-
-    }
-
-    private void ConnectOnPlacement() {
-
+    public PortSettings GetOutputAtPosition(Vector2Int gridPosition) {
+        foreach(PortSettings ps in outputPorts) {
+            if(ps.position + originCell == gridPosition) {
+                return ps;
+            }
+        }
+        return null;
     }
 
     public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
@@ -32,7 +50,6 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject, ITransportable
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.originCell = startCell;
         this.grid = grid;
-        ConnectOnPlacement();
     }
 
     public void Destroy() {
@@ -60,6 +77,44 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject, ITransportable
     }
 
     public Vector2Int GetGridCoords() {
+        throw new System.NotImplementedException();
+    }
+
+    private void OnDrawGizmos() {
+        if(grid == null) {
+            return;
+        }
+        List<Vector2Int> positions = grid.GetPositionsInSubgrid(originCell, new Vector2Int(moduleSettings.Width, moduleSettings.Height));
+        foreach(Vector2Int position in positions) {
+            PortSettings input = GetInputAtPosition(position);
+            PortSettings output = GetOutputAtPosition(position);
+            if (input != null) {
+                Gizmos.color = Color.green;
+                Vector2Int facingDirection = input.direction.GetIntDirection();
+                Gizmos.DrawWireCube(grid.GetCellCenter(position - facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+
+            }
+            else if (output != null) {
+                Gizmos.color = Color.red;
+                Vector2Int facingDirection = output.direction.GetIntDirection();
+                Gizmos.DrawWireCube(grid.GetCellCenter(position + facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+            }
+        }
+    }
+
+    public void SetPreviousPiece(ITransportable previousPiece) {
+        throw new System.NotImplementedException();
+    }
+
+    public void SetNextPiece(ITransportable nextPiece) {
+        throw new System.NotImplementedException();
+    }
+
+    public Vector2Int GetNextCellCoords() {
+        throw new System.NotImplementedException();
+    }
+
+    public TransportState GetState() {
         throw new System.NotImplementedException();
     }
 }

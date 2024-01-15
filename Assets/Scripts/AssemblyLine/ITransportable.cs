@@ -23,10 +23,3 @@ public enum TransportState
     Available = 0,
     Occupied = 10,
 }
-public enum Facing
-{
-    North = 0,
-    East = 10,
-    South = 20,
-    West = 30
-}
