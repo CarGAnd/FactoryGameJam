@@ -5,8 +5,6 @@ using UnityEngine;
 [RequireComponent(typeof(ModuleInputOutput))]
 public abstract class Module : MonoBehaviour
 {
-    [SerializeField] private GridObjectSO moduleData;
-
     private ModuleInputOutput inputOutput;
 
     private void Start() {

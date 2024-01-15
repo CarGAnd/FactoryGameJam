@@ -17,6 +17,7 @@ public class PortLayout
         List<PortSettings> ports = new List<PortSettings>();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
+                //Flip the y axis so 0 is at the bottom
                 int arrayIndex = (height - y - 1) * width + x;
                 int arrayValue = portSettings[arrayIndex];
                 if(arrayValue <= 0) {
