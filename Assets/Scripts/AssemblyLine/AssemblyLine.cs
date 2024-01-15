@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 public class AssemblyLine
 {
-    private LinkedList<AssemblyPiece> pieces;
-    private AssemblyPiece startPiece;
-    private AssemblyPiece endPiece;
+    private LinkedList<ITransportable> pieces;
+    private ITransportable startPiece;
+    private ITransportable endPiece;
     private List<AssemblyLine> connectingAssemblyLines;
 
-    private Dictionary<AssemblyPiece, List<AssemblyLine>> connectingLinesPiece;
+    private Dictionary<ITransportable, List<AssemblyLine>> connectingLinesPiece;
     public AssemblyLine()
     {
         pieces = new();
@@ -16,9 +16,9 @@ public class AssemblyLine
 
         AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
     }
-    public AssemblyLine(IEnumerable<AssemblyPiece> assemblyPieces)
+    public AssemblyLine(IEnumerable<ITransportable> assemblyPieces)
     {
-        pieces = new LinkedList<AssemblyPiece>(assemblyPieces);
+        pieces = new LinkedList<ITransportable>(assemblyPieces);
         connectingAssemblyLines = new List<AssemblyLine>();
         connectingLinesPiece = new();
 
@@ -31,7 +31,7 @@ public class AssemblyLine
     }
     
     //The dictionary logic will probably be useful when working on removal of assemblylines.
-    public void AddConnectingAssemblyLine(AssemblyLine line, AssemblyPiece endPiece)
+    public void AddConnectingAssemblyLine(AssemblyLine line, ITransportable endPiece)
     {
         connectingAssemblyLines.Add(line);
         line.SetConnectingEnd(endPiece);
@@ -47,7 +47,7 @@ public class AssemblyLine
             connectingLinesPiece.Add(endPiece, new List<AssemblyLine>(){line});
         }
     }
-    public void AddConnectingAssemblyLine(List<AssemblyLine> lines, AssemblyPiece endPiece)
+    public void AddConnectingAssemblyLine(List<AssemblyLine> lines, ITransportable endPiece)
     {
         foreach(AssemblyLine line in lines)
         {
@@ -75,31 +75,31 @@ public class AssemblyLine
         AssemblyLineSystem.Instance.UnsubscribeFromTransportTick(OnTransportTick);
     }
 
-    public AssemblyPiece GetEndPiece()
+    public ITransportable GetEndPiece()
     {
         return endPiece;
     }
-    public AssemblyPiece GetStartPiece()
+    public ITransportable GetStartPiece()
     {
         return startPiece;
     }
-    public bool IsPieceNewEnd(AssemblyPiece piece)
+    public bool IsPieceNewEnd(ITransportable piece)
     {
         if(endPiece == null)
         {
             return true;
         }
-        return endPiece.GetGridCoords() + endPiece.Movement() == piece.GetGridCoords();
+        return endPiece.GetNextCellCoords() == piece.GetGridCoords();
     }
-    public bool IsPieceNewStart(AssemblyPiece piece)
+    public bool IsPieceNewStart(ITransportable piece)
     {
         if(startPiece == null)
         {
             return true;
         }
-        return startPiece.GetGridCoords() == piece.GetGridCoords() + piece.Movement();
+        return startPiece.GetGridCoords() == piece.GetNextCellCoords();    
     }
-    public void AddPiece(AssemblyPiece piece)
+    public void AddPiece(ITransportable piece)
     {
         bool isEnd = IsPieceNewEnd(piece);
         bool isStart = IsPieceNewStart(piece);
@@ -107,10 +107,10 @@ public class AssemblyLine
         {
             if(startPiece != null && endPiece != null)
             {
-                startPiece.previousPiece = piece;
-                endPiece.nextPiece = piece;
-                piece.nextPiece = startPiece;
-                piece.previousPiece = endPiece;
+                startPiece.SetPreviousPiece(piece);
+                endPiece.SetNextPiece(piece);
+                piece.SetNextPiece(startPiece);
+                piece.SetPreviousPiece(endPiece);
             }
             startPiece = piece;
             endPiece = piece;
@@ -122,8 +122,8 @@ public class AssemblyLine
             {
                 if(endPiece != null)
                 {
-                    endPiece.nextPiece = piece;
-                    piece.previousPiece = endPiece;
+                    endPiece.SetNextPiece(piece);
+                    piece.SetPreviousPiece(endPiece);
                 }
                 endPiece = piece;
                 pieces.AddLast(piece);
@@ -132,26 +132,26 @@ public class AssemblyLine
             {
                 if(startPiece != null)
                 {
-                    startPiece.previousPiece = piece;
-                    piece.nextPiece = startPiece;
+                    startPiece.SetPreviousPiece(piece);
+                    piece.SetNextPiece(startPiece);
                 }
                 startPiece = piece;
                 pieces.AddFirst(piece);
             }
         }
     }
-    public List<AssemblyPiece> AddAllPieces()
+    public List<ITransportable> AddAllPieces()
     {
-        List<AssemblyPiece> allPieces = new List<AssemblyPiece>();
+        List<ITransportable> allPieces = new List<ITransportable>();
         allPieces.AddRange(pieces);
         return allPieces;
     }
 
-    public void SetConnectingEnd(AssemblyPiece piece)
+    public void SetConnectingEnd(ITransportable piece)
     {
         if(endPiece != null)
         {
-            endPiece.nextPiece = piece;
+            endPiece.SetNextPiece(piece);
         }
     }
 
@@ -164,7 +164,7 @@ public class AssemblyLine
         }
     }
 
-    public void ReplaceExistingLine(AssemblyLine currentLine, AssemblyLine newLine, AssemblyPiece piece)
+    public void ReplaceExistingLine(AssemblyLine currentLine, AssemblyLine newLine, ITransportable piece)
     {
         connectingAssemblyLines.Remove(currentLine);
         connectingAssemblyLines.Add(newLine);
@@ -186,22 +186,22 @@ public class AssemblyLine
 
     private void UpdateStartEndPieces()
     {
-        foreach(AssemblyPiece piece in pieces)
+        foreach(ITransportable piece in pieces)
         {
-            if(piece.nextPiece == null || !pieces.Contains(piece.nextPiece))
+            if(piece.NextPiece == null || !pieces.Contains(piece.NextPiece))
             {
                 endPiece = piece;
             }
-            if(piece.previousPiece == null || !pieces.Contains(piece.previousPiece))
+            if(piece.PreviousPiece == null || !pieces.Contains(piece.PreviousPiece))
             {
                 startPiece = piece;
             }
         }
     }
-    public AssemblyLine GetIntersectedAssemblyLine(Vector2Int coords, out AssemblyPiece intersectedPiece)
+    public AssemblyLine GetIntersectedAssemblyLine(Vector2Int coords, out ITransportable intersectedPiece)
     {
         AssemblyLine foundLine = null;
-        foreach(AssemblyPiece piece in pieces)
+        foreach(ITransportable piece in pieces)
         {
             if(piece.GetGridCoords() == coords)
             {
@@ -246,7 +246,7 @@ public class AssemblyLine
         }
     }
 
-    private string DebugConnectingLine(AssemblyLine line, AssemblyPiece connectingPiece, int depth)
+    private string DebugConnectingLine(AssemblyLine line, ITransportable connectingPiece, int depth)
     {
         string connectingLineStr = "Connecting Line at depth " + depth + " at connecting piece: "+ connectingPiece.GetGridCoords() + "\n";
         connectingLineStr += FormatLineString(line);
@@ -266,7 +266,7 @@ public class AssemblyLine
     {
         string lineStr = "";
         lineStr += line.GetStartPiece().GetGridCoords() + " -> ";
-        foreach (AssemblyPiece piece in line.pieces)
+        foreach (ITransportable piece in line.pieces)
         {
             if (piece == line.GetStartPiece() || piece == line.GetEndPiece())
             {

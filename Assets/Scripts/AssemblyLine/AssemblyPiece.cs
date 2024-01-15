@@ -4,10 +4,13 @@ using UnityEngine;
 
 public abstract class AssemblyPiece : IGridInteractable, ITransportable
 {
-    public Facing facing = default;
+    private Facing facing = default;
+    public Facing Facing { get => facing; }
     protected Vector2Int cellCoords;
-    public AssemblyPiece nextPiece;
-    public AssemblyPiece previousPiece;
+    private ITransportable nextPiece;
+    private ITransportable previousPiece;
+    public ITransportable NextPiece { get => nextPiece; private set => nextPiece = value;}
+    public ITransportable PreviousPiece { get => previousPiece; private set => previousPiece = value;}
     private TransportState state = TransportState.Available;
     private int distance;
     private AssemblyTravelingObject travelingObject;
@@ -25,6 +28,26 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         if (coords == cellCoords)
             return this;
         return null;
+    }
+
+    public void SetPreiousPiece(ITransportable previousPiece)
+    {
+        PreviousPiece = previousPiece;
+    }
+
+    public void SetNextPiece(ITransportable nextPiece)
+    {
+        NextPiece = nextPiece;
+    }
+
+    public Vector2Int GetNextCellCoords()
+    {
+        return cellCoords + Movement();
+    }
+
+    public TransportState GetState()
+    {
+        return state;
     }
 
     public Vector2Int GetGridCoords()
@@ -62,7 +85,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         {
             return;
         }
-        if(nextPiece != null && nextPiece.state == TransportState.Available)
+        if(nextPiece != null && NextPiece.GetState() == TransportState.Available)
         {
             SendObject();   
         }
@@ -76,8 +99,9 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
 
     public void SendObject()
     {
-        travelingObject.MoveToPiece(GetWorldPosition(), nextPiece.GetWorldPosition());
+        state = TransportState.Available;
         nextPiece.ReceivedObject(travelingObject);
+        travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
     }
 
     public void RemoveFromGrid(Grid grid)
@@ -111,15 +135,13 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
-        AssemblyLineSystem.Instance.PlaceAssemblyPiece(this);
+        AssemblyLineSystem.Instance.PlaceTransportablePiece(this);
     }
-}
-public enum Facing
-{
-    North = 0,
-    East = 10,
-    South = 20,
-    West = 30
+
+    public void SetPreviousPiece(ITransportable previousPiece)
+    {
+        PreviousPiece = previousPiece;
+    }
 }
 
 
