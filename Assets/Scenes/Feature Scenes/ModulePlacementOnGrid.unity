@@ -16725,7 +16725,6 @@ GameObject:
   m_Component:
   - component: {fileID: 857417368}
   - component: {fileID: 857417367}
-  - component: {fileID: 857417366}
   - component: {fileID: 857417369}
   m_Layer: 0
   m_Name: Grid
@@ -16734,22 +16733,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &857417366
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 857417365}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c7de8e335d8e1240abe02b859a061a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mouseInput: {fileID: 48113247}
-  indicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
-    type: 3}
-  modulePlacer: {fileID: 799729829}
 --- !u!114 &857417367
 MonoBehaviour:
   m_ObjectHideFlags: 0

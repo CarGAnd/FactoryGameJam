@@ -60,7 +60,12 @@ public class ClickAndDragPlacer : IPlacementStrategy {
                 //If no path is found, we cannot place modules
                 return;
             }
-            modulePlacer.PlaceModulesAlongPath(currentModule, path);
+            if(path.GetPositions().Count == 1) {
+                modulePlacer.TryPlaceModule(currentModule, endDragPos, modulePlacer.CurrentPlacementRotation);
+            }
+            else {
+                modulePlacer.PlaceModulesAlongPath(currentModule, path);
+            }            
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
