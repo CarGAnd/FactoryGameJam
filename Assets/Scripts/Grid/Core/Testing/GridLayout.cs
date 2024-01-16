@@ -95,10 +95,6 @@ public class GridLayout : MonoBehaviour
         return positions;
     }
 
-    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
-        return layout.GetCellNeighbors(cellCoord);
-    }
-
     public void MoveGrid(Vector3 newOrigin) {
         Origin = newOrigin;
     }

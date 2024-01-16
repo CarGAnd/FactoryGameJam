@@ -13,7 +13,7 @@ public class PortLayout
     [SerializeField] private int[] inputs;
     [SerializeField] private int[] outputs;
 
-    private List<PortSettings> GetPorts(int[] portSettings, int numRotations = 0) {
+    private List<PortSettings> GetPorts(int[] portSettings) {
         List<PortSettings> ports = new List<PortSettings>();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
