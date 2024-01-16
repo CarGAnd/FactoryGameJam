@@ -26,7 +26,7 @@ public class ClickPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
             modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentPlacementRotation);
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
@@ -48,11 +48,11 @@ public class ClickAndDragPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
-        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
             startDragPos = grid.GetCellCoords(mousePosOnGrid);
             isDragging = true;
         }
-        if (Input.GetKeyUp(KeyCode.Mouse1) && isDragging) {
+        if (Input.GetKeyUp(KeyCode.Mouse0) && isDragging) {
             isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
             Path path = grid.FindPath(startDragPos, endDragPos);
