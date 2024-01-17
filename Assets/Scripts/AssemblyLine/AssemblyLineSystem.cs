@@ -34,7 +34,7 @@ public class AssemblyLineSystem : MonoBehaviour
         if(currentTick >= tickRate)
         {
             TransportTick.Invoke();
-            currentTick = 0f;
+            currentTick -= tickRate;
         }
     }
     [Button]

@@ -21,38 +21,25 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
         inputStorage = new List<AssemblyTravelingObject>();
         outputStorage = new List<AssemblyTravelingObject>();
+    }
+
+    private void CreatePorts() {
         inputPorts = new List<Port>();
         outputPorts = new List<Port>();
 
         List<PortSettings> inputSettings = moduleSettings.GetInputs(numRotations);
         List<PortSettings> outputSettings = moduleSettings.GetOutputs(numRotations);
 
-        foreach(PortSettings ps in inputSettings) {
+        foreach (PortSettings ps in inputSettings) {
+            ps.position += originCell;
             Port port = new Port(ps);
             inputPorts.Add(port);
         }
-        foreach(PortSettings ps in outputSettings) {
+        foreach (PortSettings ps in outputSettings) {
+            ps.position += originCell;
             Port port = new Port(ps);
             outputPorts.Add(port);
         }
-    }
-
-    public Port GetInputAtPosition(Vector2Int gridPosition) {
-        foreach(Port ps in inputPorts) {
-            if(ps.position + originCell == gridPosition) {
-                return ps;
-            }
-        }
-        return null;
-    }   
-    
-    public Port GetOutputAtPosition(Vector2Int gridPosition) {
-        foreach(Port ps in outputPorts) {
-            if(ps.position + originCell == gridPosition) {
-                return ps;
-            }
-        }
-        return null;
     }
 
     public AssemblyTravelingObject ReceiveFromInput() {
@@ -70,7 +57,19 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         outputStorage.Add(aObject);
     }
 
+    private void Update() {
+        if(this.grid == null) {
+            return;
+        }
+        Tick();
+    }
+
     private void Tick() {
+        if(inputStorage.Count > 0) {
+            outputStorage.Add(inputStorage[0]);
+            inputStorage.RemoveAt(0);
+        }
+        
         foreach(Port p in inputPorts) {
             if(p.GetState() == TransportState.Occupied) {
                 inputStorage.Add(p.ReceiveFromPort());
@@ -79,24 +78,30 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
         foreach(Port p in outputPorts) {
             if(p.GetState() == TransportState.Available && outputStorage.Count > 0) {
-                p.SendToPort(outputStorage[0]);
+                p.ReceivedObject(outputStorage[0]);
                 outputStorage.RemoveAt(0);
-                p.Tick();
             }
         }
     }
 
     private void PlacePorts() {
+        foreach (Port p in inputPorts) {
+            AssemblyLineSystem.Instance.PlaceTransportablePiece(p);
+        }
 
+        foreach (Port p in outputPorts) {
+            AssemblyLineSystem.Instance.PlaceTransportablePiece(p);
+        }
     }
 
-    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
+    private void RemovePorts() {
+
     }
 
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.originCell = startCell;
         this.grid = grid;
+        CreatePorts();
         PlacePorts();
     }
 
@@ -105,11 +110,8 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     public void RemoveFromGrid(Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public List<Vector2Int> GetShapeLayout() {
-        throw new System.NotImplementedException();
+        RemovePorts();
+        grid.RemoveObject(originCell);
     }
 
     #region Debug
@@ -117,33 +119,34 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         if(grid == null) {
             return;
         }
-        List<Vector2Int> positions = grid.GetPositionsInSubgrid(originCell, new Vector2Int(moduleSettings.Width, moduleSettings.Height));
-        foreach(Vector2Int position in positions) {
-            Port input = GetInputAtPosition(position);
-            Port output = GetOutputAtPosition(position);
-            if (input != null) {
-                Gizmos.color = Color.green;
-                Vector2Int facingDirection = input.direction.GetIntDirection();
-                Gizmos.DrawWireCube(grid.GetCellCenter(position - facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+  
+        foreach(Port p in inputPorts) {
+            Gizmos.color = Color.green;
+            Vector2Int facingDirection = p.direction.GetIntDirection();
+            Gizmos.DrawWireCube(grid.GetCellCenter(p.position - facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+        }
 
-            }
-            else if (output != null) {
-                Gizmos.color = Color.red;
-                Vector2Int facingDirection = output.direction.GetIntDirection();
-                Gizmos.DrawWireCube(grid.GetCellCenter(position + facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
-            }
+        foreach(Port p in outputPorts) {
+            Gizmos.color = Color.red;
+            Vector2Int facingDirection = p.direction.GetIntDirection();
+            Gizmos.DrawWireCube(grid.GetCellCenter(p.position + facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));    
         }
     }
     #endregion
 }
 
-public class Port
+public class Port : ITransportable
 {
     public Vector2Int position;
     public Facing direction;
     private Vector2Int connectedPosition;
     private ITransportable connectedObject;
     private AssemblyTravelingObject currentObject;
+
+    private LinkedListNode<ITransportable> node;
+    private AssemblyLine parentLine;
+
+    public Facing Facing => direction;
 
     public Port(Vector2Int position, Facing facing) {
         this.position = position;
@@ -155,28 +158,42 @@ public class Port
         
     }
 
-    public void Tick() {
-        if(connectedObject != null) {
-            connectedObject.ReceivedObject(ReceiveFromPort());
-        }
-    }
-    
-    public void SendToPort(AssemblyTravelingObject aObject) {
-        currentObject = aObject;
-    }
-
     public AssemblyTravelingObject ReceiveFromPort() {
         AssemblyTravelingObject obj = currentObject;
         currentObject = null;
         return obj;
+    }
+    
+    public void ReceivedObject(AssemblyTravelingObject aObject) {
+        currentObject = aObject;
+    }
+
+    public void SendObject() {
+        connectedObject.ReceivedObject(currentObject);
+        currentObject = null;
     }
 
     public TransportState GetState() {
         return currentObject == null ? TransportState.Available : TransportState.Occupied;
     }
 
-    public void OutputTo(ITransportable transportable) {
-        this.connectedObject = transportable;
+    public void TransportTick() {
+        this.connectedObject = parentLine.GetNextPiece(node);
+        if(connectedObject != null && connectedObject.GetState() == TransportState.Available && GetState() == TransportState.Occupied) {
+            SendObject();
+        }
     }
 
+    public Vector2Int GetNextCellCoords() {
+        return connectedPosition;
+    }
+
+    public Vector2Int GetGridCoords() {
+        return position;
+    }
+
+    public void SetAssemblyLine(AssemblyLine parentAssemblyLine, LinkedListNode<ITransportable> node) {
+        this.node = node;
+        this.parentLine = parentAssemblyLine;
+    }
 }
