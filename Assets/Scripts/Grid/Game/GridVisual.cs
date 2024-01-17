@@ -48,10 +48,14 @@ public class GridVisual : MonoBehaviour
     }
 
     private void OnModuleChanged(GridObjectSO newBuilding) {
+        Destroy(placementPreview);
+        if(newBuilding == null) {
+            return;
+        }
+
         selectedObjectData = newBuilding;
         buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         
-        Destroy(placementPreview);
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
     
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
@@ -92,8 +96,10 @@ public class GridVisual : MonoBehaviour
     }
 
     private void UpdatePreviewPositions(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
-        Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
-        placementPreview.transform.position = subgridCenter;
+        if(placementPreview != null) {
+            Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
+            placementPreview.transform.position = subgridCenter;
+        }
 
         List<Vector2Int> hoveredPositions = modulePlacer.GetHoveredPositions();
         UpdateIndicatorCount(hoveredPositions.Count);
