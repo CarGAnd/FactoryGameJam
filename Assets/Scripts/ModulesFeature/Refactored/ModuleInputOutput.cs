@@ -18,26 +18,25 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     public void Initialize(ModuleSO moduleSettings, int numRotations) {
         this.moduleSettings = moduleSettings;
         this.numRotations = numRotations;
+    }
 
+    private void Awake() {
         inputStorage = new List<AssemblyTravelingObject>();
         outputStorage = new List<AssemblyTravelingObject>();
+        inputPorts = new List<Port>();
+        outputPorts = new List<Port>();
     }
 
     private void CreatePorts() {
-        inputPorts = new List<Port>();
-        outputPorts = new List<Port>();
-
         List<PortSettings> inputSettings = moduleSettings.GetInputs(numRotations);
         List<PortSettings> outputSettings = moduleSettings.GetOutputs(numRotations);
 
         foreach (PortSettings ps in inputSettings) {
-            ps.position += originCell;
-            Port port = new Port(ps);
+            Port port = new Port(ps.position + originCell, ps.direction);
             inputPorts.Add(port);
         }
         foreach (PortSettings ps in outputSettings) {
-            ps.position += originCell;
-            Port port = new Port(ps);
+            Port port = new Port(ps.position + originCell, ps.direction);
             outputPorts.Add(port);
         }
     }
@@ -64,21 +63,16 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         Tick();
     }
 
-    private void Tick() {
-        if(inputStorage.Count > 0) {
-            outputStorage.Add(inputStorage[0]);
-            inputStorage.RemoveAt(0);
-        }
-        
+    private void Tick() { 
         foreach(Port p in inputPorts) {
-            if(p.GetState() == TransportState.Occupied) {
+            if(p.HasInput()) {
                 inputStorage.Add(p.ReceiveFromPort());
             }
         }
 
         foreach(Port p in outputPorts) {
-            if(p.GetState() == TransportState.Available && outputStorage.Count > 0) {
-                p.ReceivedObject(outputStorage[0]);
+            if(!p.HasOutput() && outputStorage.Count > 0) {
+                p.SendToPort(outputStorage[0]);
                 outputStorage.RemoveAt(0);
             }
         }
@@ -135,13 +129,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     #endregion
 }
 
+[System.Serializable]
 public class Port : ITransportable
 {
     public Vector2Int position;
     public Facing direction;
     private Vector2Int connectedPosition;
     private ITransportable connectedObject;
-    private AssemblyTravelingObject currentObject;
+    private AssemblyTravelingObject outputObject;
+    private AssemblyTravelingObject inputObject;
 
     private LinkedListNode<ITransportable> node;
     private AssemblyLine parentLine;
@@ -159,27 +155,44 @@ public class Port : ITransportable
     }
 
     public AssemblyTravelingObject ReceiveFromPort() {
-        AssemblyTravelingObject obj = currentObject;
-        currentObject = null;
+        AssemblyTravelingObject obj = inputObject;
+        inputObject = null;
         return obj;
+    }
+
+    public void SendToPort(AssemblyTravelingObject obj) {
+        outputObject = obj;
     }
     
     public void ReceivedObject(AssemblyTravelingObject aObject) {
-        currentObject = aObject;
+        inputObject = aObject;
     }
 
     public void SendObject() {
-        connectedObject.ReceivedObject(currentObject);
-        currentObject = null;
+        connectedObject.ReceivedObject(outputObject);
+        outputObject = null;
+    }
+
+    public bool HasInput() {
+        return inputObject != null;
+    }
+
+    public bool HasOutput() {
+        return outputObject != null;
     }
 
     public TransportState GetState() {
-        return currentObject == null ? TransportState.Available : TransportState.Occupied;
+        return HasInput() ? TransportState.Occupied : TransportState.Available;
     }
 
     public void TransportTick() {
+        if(!HasOutput()) {
+            return;
+        }
+        
         this.connectedObject = parentLine.GetNextPiece(node);
-        if(connectedObject != null && connectedObject.GetState() == TransportState.Available && GetState() == TransportState.Occupied) {
+
+        if(connectedObject != null && connectedObject.GetState() == TransportState.Available) {
             SendObject();
         }
     }

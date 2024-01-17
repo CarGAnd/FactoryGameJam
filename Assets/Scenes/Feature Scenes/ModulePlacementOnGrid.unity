@@ -548,7 +548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 857417367}
-  tickRate: 0.5
+  tickRate: 1
   travelingObjectPrefab: {fileID: 4658651359471943187, guid: 66d344736d67233438995f1d9da07df7,
     type: 3}
 --- !u!4 &17596881

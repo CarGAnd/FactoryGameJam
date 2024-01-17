@@ -11,6 +11,14 @@ public abstract class Module : MonoBehaviour
         inputOutput = GetComponent<ModuleInputOutput>();
     }
 
+    protected void SendObjectOut(AssemblyTravelingObject obj) {
+        inputOutput.SendToOutput(obj);
+    }
+
+    protected AssemblyTravelingObject GetObjectIn() {
+        return inputOutput.ReceiveFromInput();
+    }
+
     public void DestroyModule() {
         inputOutput.Destroy();
         Destroy(gameObject);

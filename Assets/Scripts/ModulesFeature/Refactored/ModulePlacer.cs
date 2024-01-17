@@ -17,10 +17,12 @@ public class ModulePlacer : MonoBehaviour
 
     private IPlacementStrategy placementHandler;
 
+    private void Awake() {
+        placementHandler = new NoPlacement();
+    }
+
     private void Update() {
-        if(placementHandler != null) {
-            placementHandler.UpdateInput(grid, mouseInput.LastGroundHitPoint, this);
-        }
+        placementHandler.UpdateInput(grid, mouseInput.LastGroundHitPoint, this);
     }
 
     public void RotateModuleClockwise() {
@@ -32,19 +34,17 @@ public class ModulePlacer : MonoBehaviour
     }
 
     public List<Vector2Int> GetHoveredPositions() {
-        if(placementHandler != null) {
-            return placementHandler.GetHoveredPositions(grid, mouseInput.LastGroundHitPoint, this);
-        }
-        else {
-            return new List<Vector2Int>();
-        }
+        return placementHandler.GetHoveredPositions(grid, mouseInput.LastGroundHitPoint, this);
     }
 
     private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
         moduleChanged?.Invoke(newBuilding);
+
         if(newBuilding == null) {
+            placementHandler = new NoPlacement();
             return;
         }
+
         placementHandler = newBuilding.GetPlacementHandler();
         placementHandler.SetModule(newBuilding);
         SetModuleRotation(0);

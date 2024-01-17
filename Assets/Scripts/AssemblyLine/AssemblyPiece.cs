@@ -69,6 +69,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     {
         nextPiece.ReceivedObject(travelingObject);
         travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
+        travelingObject = null;
     }
     public Vector2Int GetNextCellCoords()
     {

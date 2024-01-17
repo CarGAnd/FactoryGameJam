@@ -49,6 +49,7 @@ public class GridVisual : MonoBehaviour
 
     private void OnModuleChanged(GridObjectSO newBuilding) {
         Destroy(placementPreview);
+
         if(newBuilding == null) {
             return;
         }
@@ -61,7 +62,7 @@ public class GridVisual : MonoBehaviour
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
 
-    private void UpdateIndicatorCount(int newCount) {
+    private void SetActiveIndicatorCount(int newCount) {
         while (indicatorObjects.Count < newCount) {
             CreateIndicatorObject();
         }
@@ -96,13 +97,15 @@ public class GridVisual : MonoBehaviour
     }
 
     private void UpdatePreviewPositions(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
-        if(placementPreview != null) {
-            Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
-            placementPreview.transform.position = subgridCenter;
-        }
+        UpdatePreviewBuilding(buildingOriginCoord, buildingDimensions);
+        UpdateGroundIndicators();
+        
+        lastOriginCoord = buildingOriginCoord;
+    }
 
+    private void UpdateGroundIndicators() {
         List<Vector2Int> hoveredPositions = modulePlacer.GetHoveredPositions();
-        UpdateIndicatorCount(hoveredPositions.Count);
+        SetActiveIndicatorCount(hoveredPositions.Count);
         for(int i = 0; i < hoveredPositions.Count; i++) {
             Vector2Int buildPosition = hoveredPositions[i];
             bool isOccupied = buildGrid.PositionIsOccupied(buildPosition);
@@ -111,8 +114,13 @@ public class GridVisual : MonoBehaviour
             color = new Vector4(color.r, color.g, color.b, 0.6f);
             indicatorObjects[i].GetComponent<MeshRenderer>().material.color = color;
         }
+    }
 
-        lastOriginCoord = buildingOriginCoord;
+    private void UpdatePreviewBuilding(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
+        if(placementPreview != null) {
+            Vector3 subgridCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
+            placementPreview.transform.position = subgridCenter;
+        }
     }
 
     private void CreateIndicatorObject() {

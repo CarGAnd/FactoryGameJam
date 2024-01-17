@@ -91,3 +91,17 @@ public class ClickAndDragPlacer : IPlacementStrategy {
     }
 }
 
+public class NoPlacement : IPlacementStrategy {
+    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };    
+    }
+
+    public void SetModule(GridObjectSO newModule) {
+        
+    }
+
+    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        
+    }
+}
+
