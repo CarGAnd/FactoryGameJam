@@ -11,7 +11,6 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private AssemblyLine parentAssemblyLine;
     private LinkedListNode<ITransportable> node;
     private ITransportable nextPiece;
-    private TransportState state = TransportState.Available;
     private int distance;
     private AssemblyTravelingObject travelingObject;
     private Grid grid;
@@ -50,7 +49,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     }
     public void TransportTick()
     {
-        if(state == TransportState.Available)
+        if(GetState() == TransportState.Available)
         {
             return;
         }
@@ -63,13 +62,11 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
 
     public void ReceivedObject(AssemblyTravelingObject travelingObject)
     {
-        state = TransportState.Occupied;
         this.travelingObject = travelingObject;
     }
 
     public void SendObject()
     {
-        state = TransportState.Available;
         nextPiece.ReceivedObject(travelingObject);
         travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
     }
@@ -80,7 +77,8 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
 
     public TransportState GetState()
     {
-        return state;
+        //return the state, if there's no traveling object then it's available
+        return travelingObject == null ? TransportState.Available : TransportState.Occupied;
     }
 
     public Vector2Int GetGridCoords()

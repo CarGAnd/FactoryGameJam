@@ -14,14 +14,6 @@ public class AssemblyLine
         connectingAssemblyLines = new();
         AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
     }
-    public AssemblyLine(IEnumerable<ITransportable> assemblyPieces)
-    {
-        pieces = new LinkedList<ITransportable>(assemblyPieces);
-        connectingAssemblyLines = new();
-
-        UpdateStartEndPieces();
-        AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
-    }
     public List<AssemblyLine> GetAllConnections()
     {
         return new List<AssemblyLine>(connectingAssemblyLines.Keys);
@@ -60,13 +52,6 @@ public class AssemblyLine
         else
         {
             return null;
-        }
-    }
-    public void AddConnectingAssemblyLine(List<AssemblyLine> lines, ITransportable connectingPiece)
-    {
-        foreach(AssemblyLine line in lines)
-        {
-            AddConnectingAssemblyLine(line, connectingPiece);
         }
     }
     private ITransportable GetConnectingPiece(AssemblyLine line)

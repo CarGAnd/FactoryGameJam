@@ -25,9 +25,8 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Vector3 start = grid.GetCellWorldPosition(line.GetStartPiece().GetGridCoords());
         Vector3 end = grid.GetCellWorldPosition(line.GetEndPiece().GetGridCoords());
 
-        Facing facing = line.GetStartPiece().Facing;
         float heightOffset = 1f;
-        AdjustLinePosition(ref start, ref end, facing, grid.CellSize, heightOffset);
+        AdjustLinePosition(ref start, ref end, grid.CellSize, heightOffset, line.GetStartPiece().Facing);
         Color newColor = GetUniqueColor(line);
         Gizmos.color = newColor;
         Gizmos.DrawLine(start, end);
@@ -36,7 +35,9 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Gizmos.DrawSphere(start, 0.75f);
 
         // Draw triangle at end
-        DrawTriangle(end, Quaternion.LookRotation(end - start), 2.0f);
+        //We need to split this up into the case where end and start are the same location to avoid "Look rotation viewing vector is zero"
+        //We're fixing it in AdjustLinePosition
+        DrawTriangle(end, Quaternion.LookRotation(end - start), 1.25f);
 
         foreach(AssemblyLine connectingLine in line.GetAllConnections())
         {
@@ -60,9 +61,8 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Vector3 start = grid.GetCellWorldPosition(line.GetStartPiece().GetGridCoords());
         Vector3 end = grid.GetCellWorldPosition(line.GetEndPiece().GetGridCoords());
 
-        Facing facing = line.GetStartPiece().Facing;
         float heightOffset = 1f;
-        AdjustLinePosition(ref start, ref end, facing, grid.CellSize, heightOffset);
+        AdjustLinePosition(ref start, ref end, grid.CellSize, heightOffset, line.GetStartPiece().Facing);
         Gizmos.color = color;
         Gizmos.DrawLine(start, end);
 
@@ -99,12 +99,49 @@ public class AssemblyLineVisualizer : MonoBehaviour
         Gizmos.DrawLine(vertex2, vertex3);
         Gizmos.DrawLine(vertex3, vertex1);
     }
-    private void AdjustLinePosition(ref Vector3 start, ref Vector3 end, Facing facing, Vector2 cellSize, float heightOffset)
+    private void AdjustLinePosition(ref Vector3 start, ref Vector3 end, Vector2 cellSize, float heightOffset, Facing facing)
     {
-        start.z += cellSize.y / 2;
-        end.z += cellSize.y / 2;
-        start.x += cellSize.x / 2;
-        end.x += cellSize.x / 2;
+        if(start == end)
+        {
+            switch(facing)
+            {
+                case Facing.North:
+                {
+                    start.x += cellSize.x / 2;
+                    end.x += cellSize.x / 2;
+                    end.z += cellSize.y;
+                    break;
+                }
+                case Facing.East:
+                {
+                    start.z += cellSize.y / 2;
+                    end.z += cellSize.y / 2;
+                    end.x += cellSize.x;
+                    break;
+                }
+                case Facing.West:
+                {
+                    start.z += cellSize.y / 2;
+                    end.z += cellSize.y / 2;
+                    start.x += cellSize.x;
+                    break;
+                }
+                case Facing.South:
+                {
+                    start.x += cellSize.x / 2;
+                    end.x += cellSize.x / 2;
+                    start.z += cellSize.y;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            start.z += cellSize.y / 2;
+            end.z += cellSize.y / 2;
+            start.x += cellSize.x / 2;
+            end.x += cellSize.x / 2;
+        }
 
         // Apply height offset for all directions
         start.y = heightOffset;
