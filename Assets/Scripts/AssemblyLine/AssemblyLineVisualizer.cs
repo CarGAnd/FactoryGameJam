@@ -46,6 +46,17 @@ public class AssemblyLineVisualizer : MonoBehaviour
 
     private void DrawConnectingLine(AssemblyLine line, Color color)
     {
+        HashSet<AssemblyLine> visitedLines = new HashSet<AssemblyLine>();
+        RecursiveDrawConnectingLine(line, color, visitedLines);
+    }
+
+    private void RecursiveDrawConnectingLine(AssemblyLine line, Color color, HashSet<AssemblyLine> visitedLines)
+    {
+        if (visitedLines.Contains(line))
+            return;
+
+        visitedLines.Add(line);
+
         Vector3 start = grid.GetCellWorldPosition(line.GetStartPiece().GetGridCoords());
         Vector3 end = grid.GetCellWorldPosition(line.GetEndPiece().GetGridCoords());
 
@@ -60,9 +71,10 @@ public class AssemblyLineVisualizer : MonoBehaviour
 
         // Draw triangle at end
         DrawTriangle(end, Quaternion.LookRotation(end - start), 1.25f);
-        foreach(AssemblyLine connectingLine in line.GetAllConnections())
+
+        foreach (AssemblyLine connectingLine in line.GetAllConnections())
         {
-            DrawConnectingLine(connectingLine, color);
+            RecursiveDrawConnectingLine(connectingLine, color, visitedLines);
         }
     }
 

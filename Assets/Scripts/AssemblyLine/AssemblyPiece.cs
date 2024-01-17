@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 public abstract class AssemblyPiece : IGridInteractable, ITransportable
@@ -7,10 +8,9 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private Facing facing = default;
     public Facing Facing { get => facing; }
     protected Vector2Int cellCoords;
+    private AssemblyLine parentAssemblyLine;
+    private LinkedListNode<ITransportable> node;
     private ITransportable nextPiece;
-    private ITransportable previousPiece;
-    public ITransportable NextPiece { get => nextPiece; private set => nextPiece = value;}
-    public ITransportable PreviousPiece { get => previousPiece; private set => previousPiece = value;}
     private TransportState state = TransportState.Available;
     private int distance;
     private AssemblyTravelingObject travelingObject;
@@ -22,43 +22,6 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         this.facing = data.Facing;
         this.distance = data.movementDistance;
     }
-
-    public AssemblyPiece GetPieceFromCoords(Vector2Int coords)
-    {
-        if (coords == cellCoords)
-            return this;
-        return null;
-    }
-
-    public void SetPreiousPiece(ITransportable previousPiece)
-    {
-        PreviousPiece = previousPiece;
-    }
-
-    public void SetNextPiece(ITransportable nextPiece)
-    {
-        NextPiece = nextPiece;
-    }
-
-    public Vector2Int GetNextCellCoords()
-    {
-        return cellCoords + Movement();
-    }
-
-    public TransportState GetState()
-    {
-        return state;
-    }
-
-    public Vector2Int GetGridCoords()
-    {
-        return cellCoords;
-    }
-
-    public Vector3 GetWorldPosition() {
-        return grid.GetCellCenter(cellCoords);
-    }
-
     public Vector2Int Movement()
     {
         Vector2Int movement = Vector2Int.zero;
@@ -79,13 +42,20 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         }
         return movement * distance;
     }
+///////////////////////////// ITransportable /////////////////////////////
+    public void SetAssemblyLine(AssemblyLine parentAssemblyLine, LinkedListNode<ITransportable> node)
+    {
+        this.parentAssemblyLine = parentAssemblyLine;
+        this.node = node;
+    }
     public void TransportTick()
     {
         if(state == TransportState.Available)
         {
             return;
         }
-        if(nextPiece != null && NextPiece.GetState() == TransportState.Available)
+        nextPiece = parentAssemblyLine.GetNextPiece(node);
+        if(nextPiece != null && nextPiece.GetState() == TransportState.Available)
         {
             SendObject();   
         }
@@ -103,16 +73,32 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         nextPiece.ReceivedObject(travelingObject);
         travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
     }
+    public Vector2Int GetNextCellCoords()
+    {
+        return cellCoords + Movement();
+    }
 
+    public TransportState GetState()
+    {
+        return state;
+    }
+
+    public Vector2Int GetGridCoords()
+    {
+        return cellCoords;
+    }
+
+///////////////////////////// IGridObject /////////////////////////////
     public void RemoveFromGrid(Grid grid)
     {
         throw new System.NotImplementedException();
     }
-    public List<Vector2Int> GetShapeLayout()
-    {
-        throw new System.NotImplementedException();
+    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
+        this.cellCoords = startCell;
+        this.grid = grid;
+        AssemblyLineSystem.Instance.PlaceTransportablePiece(this);
     }
-
+///////////////////////////// IGridInteractable /////////////////////////////
     public bool IsPlaced()
     {
         throw new System.NotImplementedException();
@@ -126,21 +112,6 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     public void OnSelected()
     {
         throw new System.NotImplementedException();
-    }
-
-    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
-        this.cellCoords = startCell;
-        this.grid = grid;
-        AssemblyLineSystem.Instance.PlaceTransportablePiece(this);
-    }
-
-    public void SetPreviousPiece(ITransportable previousPiece)
-    {
-        PreviousPiece = previousPiece;
     }
 }
 

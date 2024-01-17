@@ -113,8 +113,8 @@ public class AssemblyLineManager
         {
             if(LoopDetected(line, intersectedLine))
             {
-                line.GetEndPiece().SetNextPiece(piece);
                 loopingEndLine = line;
+                intersectedLine.HandleLoop(line, piece);
                 break;
             }
         }
@@ -130,7 +130,7 @@ public class AssemblyLineManager
 
         if(LoopDetected(newLine, intersectedLine))
         {
-            piece.SetNextPiece(intersectedPiece);
+            intersectedLine.HandleLoop(newLine, intersectedPiece);
             return;
         }
         //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
@@ -146,7 +146,7 @@ public class AssemblyLineManager
 
         if(LoopDetected(correctEndLine, intersectedLine))
         {
-            piece.SetNextPiece(intersectedPiece);
+            intersectedLine.HandleLoop(correctEndLine, intersectedPiece);
             return;
         }
 
@@ -165,9 +165,10 @@ public class AssemblyLineManager
         {
             if(LoopDetected(line, resultingLine))
             {
-                line.GetEndPiece().SetNextPiece(piece);
                 resultingLine.RemoveConnection(line);
                 assemblyLines.Add(line);
+                GetIntersectedAssemblyLine(line.GetEndPiece(), out ITransportable i);
+                resultingLine.HandleLoop(line, i);
                 break;
             }
         }
@@ -217,46 +218,28 @@ public class AssemblyLineManager
 
     private AssemblyLine MergeLines(AssemblyLine startLine, AssemblyLine endLine, ITransportable piece)
     {
+        // Add the connecting piece to the endLine (which will now be the start of the merged line).
         startLine.AddPiece(piece);
-        startLine.GetStartPiece().SetPreviousPiece(endLine.GetEndPiece());
-        endLine.GetEndPiece().SetNextPiece(startLine.GetStartPiece());
+        //Moves all nodes from startLine to endLine
+        startLine.AppendLine(endLine);
+        //Moves all connecting lines from startLine to endLine
+        startLine.MoveConnectingLines(endLine);
 
-        List<ITransportable> combinedPieces = new();
-        combinedPieces.AddRange(endLine.AddAllPieces());
-        combinedPieces.AddRange(startLine.AddAllPieces());
-        //We create a new AssemblyLine using these pieces. We also need to make sure we're moving the connecting lines.
-
-        
-        AssemblyLine newLine = new AssemblyLine(combinedPieces);
-
-        startLine.MoveConnectingLines(newLine);
-        endLine.MoveConnectingLines(newLine);
-        AssemblyLine nextLine = GetIntersectedAssemblyLine(startLine.GetEndPiece(), out ITransportable i);
-        if(nextLine != null)
+        AssemblyLine nextLine = GetIntersectedAssemblyLine(endLine.GetEndPiece(), out ITransportable i);
+        if (nextLine != null)
         {
-            if(LoopDetected(endLine, startLine))
+            if (LoopDetected(startLine, endLine))
             {
-                nextLine.RemoveConnection(startLine);
-                assemblyLines.Add(newLine);
+                assemblyLines.Add(nextLine);
             }
-            else
-            {
-                nextLine.ReplaceExistingLine(startLine, newLine, i);
-            }
+            nextLine.ReplaceExistingLine(startLine, endLine, i);
+            assemblyLines.Remove(endLine);
         }
-        else
-        {
-            assemblyLines.Add(newLine);
-        }
-        
-
-        //We ensure the new lines are recorded and the old ones are disposed of.
-
         RemoveAssemblyLine(startLine);
-        RemoveAssemblyLine(endLine);
-
-        return newLine;
+        return endLine;
     }
+
+    
 
     private void HandleConnectingLines(AssemblyLine mainLine, List<AssemblyLine> connectingLines, ITransportable connectingPiece)
     {

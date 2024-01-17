@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class AssemblyLineSystem : MonoBehaviour
 {
-    public static AssemblyLineSystem Instance;
+    public static AssemblyLineSystem Instance { get; private set; }
     private UnityEvent TransportTick;
     [SerializeField] private Grid grid;
     [SerializeField] private float tickRate = 0.200f;
@@ -19,7 +19,10 @@ public class AssemblyLineSystem : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if(Instance == null)
+        {
+            Instance = this;
+        }
         assemblyLines = new List<AssemblyLine>();
         TransportTick = new UnityEvent();
         assemblyLineManager = new AssemblyLineManager(assemblyLines);
@@ -50,20 +53,26 @@ public class AssemblyLineSystem : MonoBehaviour
     [Button]
     public void AddTravelingAssemblyPiece()
     {
+        HashSet<AssemblyLine> visitedLines = new HashSet<AssemblyLine>();
         foreach(AssemblyLine line in assemblyLines)
         {
-            SpawnAtAllConnectingLines(line);
+            visitedLines.Clear();
+            SpawnAtAllConnectingLines(line, visitedLines);
         }
 
     }
 
-    private void SpawnAtAllConnectingLines(AssemblyLine line)
+    private void SpawnAtAllConnectingLines(AssemblyLine line, HashSet<AssemblyLine> visitedLines)
     {
+        if (visitedLines.Contains(line))
+            return;
+
+        visitedLines.Add(line);
         List<AssemblyLine> connectingLines = line.GetAllConnections();
 
         foreach(AssemblyLine connectingLine in connectingLines)
         {
-            SpawnAtAllConnectingLines(connectingLine);
+            SpawnAtAllConnectingLines(connectingLine, visitedLines);
         }
 
         SpawnTravelingPieceAtPiece(line.GetStartPiece());
