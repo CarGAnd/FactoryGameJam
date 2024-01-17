@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-public class GridPrePlacer : OdinEditorWindow {
+/*public class GridPrePlacer : OdinEditorWindow {
 
     [MenuItem("Grid/Snapping")]
     private static void OpenWindow() {
@@ -101,4 +101,4 @@ public class GridPrePlacer : OdinEditorWindow {
         CENTER,
         CORNER
     }
-}
+}*/

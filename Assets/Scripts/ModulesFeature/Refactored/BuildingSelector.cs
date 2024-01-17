@@ -27,6 +27,9 @@ public class BuildingSelector : MonoBehaviour
                 SetObjectSelection(placeableObjects[keyPressed]);
             }
         }
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            SetObjectSelection(null);
+        }
     }
 
     private int GetNumberKeyPressed() {

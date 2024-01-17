@@ -42,6 +42,9 @@ public class ModulePlacer : MonoBehaviour
 
     private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
         moduleChanged?.Invoke(newBuilding);
+        if(newBuilding == null) {
+            return;
+        }
         placementHandler = newBuilding.GetPlacementHandler();
         placementHandler.SetModule(newBuilding);
         SetModuleRotation(0);

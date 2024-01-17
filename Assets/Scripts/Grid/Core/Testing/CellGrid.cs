@@ -12,10 +12,10 @@ public class CellGrid<T> : ISearchable
     public CellGrid(int numColumns, int numRows) {
         this.Columns = numColumns;
         this.Rows = numRows;
-        CreateGrid();
+        CreateGrid(numColumns, numRows);
     }
 
-     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
+    // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
     public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
         List<GenericCell<T>> sharedCells = new List<GenericCell<T>>();
         
@@ -156,10 +156,10 @@ public class CellGrid<T> : ISearchable
         return cells[coord.y, coord.x];
     }
 
-    private void CreateGrid() {
-        cells = new GenericCell<T>[Rows, Columns];
-        for (int y = 0; y < cells.GetLength(0); y++) {
-            for (int x = 0; x < cells.GetLength(1); x++) {
+    private void CreateGrid(int columns, int rows) {
+        cells = new GenericCell<T>[rows, columns];
+        for (int y = 0; y < rows; y++) {
+            for (int x = 0; x < columns; x++) {
                 cells[y, x] = new GenericCell<T>(y, x, this);
             }
         }
