@@ -83,6 +83,6 @@ public abstract class GridObjectSO : ScriptableObject
         return new ClickPlacer();
     }
 
-    public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations);
+    public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem);
 }
 

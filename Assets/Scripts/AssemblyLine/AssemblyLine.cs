@@ -5,14 +5,16 @@ public class AssemblyLine
     private LinkedList<ITransportable> pieces;
     private ITransportable startPiece;
     private ITransportable endPiece;
+    private AssemblyLineSystem assemblyLineSystem;
 
     private Dictionary<AssemblyLine, ITransportable> connectingAssemblyLines;
     public AssemblyLine ParentLine { get; private set; }
-    public AssemblyLine()
+    public AssemblyLine(AssemblyLineSystem assemblyLineSystem)
     {
+        this.assemblyLineSystem = assemblyLineSystem;
         pieces = new();
         connectingAssemblyLines = new();
-        AssemblyLineSystem.Instance.SubscribeToTransportTick(OnTransportTick);
+        assemblyLineSystem.SubscribeToTransportTick(OnTransportTick);
     }
     public List<AssemblyLine> GetAllConnections()
     {
@@ -48,7 +50,7 @@ public class AssemblyLine
 
     public void RemoveLineFromTick()
     {
-        AssemblyLineSystem.Instance.UnsubscribeFromTransportTick(OnTransportTick);
+        assemblyLineSystem.UnsubscribeFromTransportTick(OnTransportTick);
     }
 
     public ITransportable GetEndPiece()

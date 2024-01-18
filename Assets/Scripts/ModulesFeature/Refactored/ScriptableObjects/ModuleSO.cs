@@ -25,10 +25,10 @@ public class ModuleSO : GridObjectSO
         return portSettings;
     }
 
-    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations) {
+    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem) {
         GameObject g = Instantiate(ModulePrefab, position, rotation);
         ModuleInputOutput inputOutput = g.GetComponent<ModuleInputOutput>();
-        inputOutput.Initialize(this, numRotations);
+        inputOutput.Initialize(this, numRotations, assemblyLineSystem);
         return inputOutput;
     }
 }

@@ -7,10 +7,10 @@ public class AssemblyPieceData : GridObjectSO
     public int cost;
     public AssemblyPieceType type;
     public Facing Facing { get; private set; }
-    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations) {
+    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem) {
         SetFacing(rotation);
         Instantiate(ModulePrefab, position, rotation);
-        AssemblyPiece assemblyPiece = AssemblyLineSystem.Instance.CreateAssemblyPiece(this);
+        AssemblyPiece assemblyPiece = assemblyLineSystem.CreateAssemblyPiece(this);
         return assemblyPiece;
     }
 

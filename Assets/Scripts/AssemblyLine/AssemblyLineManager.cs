@@ -7,9 +7,11 @@ using UnityEngine;
 public class AssemblyLineManager
 {
     private List<AssemblyLine> assemblyLines;
-    public AssemblyLineManager(List<AssemblyLine> assemblyLines)
+    private AssemblyLineSystem assemblyLineSystem;
+    public AssemblyLineManager(List<AssemblyLine> assemblyLines, AssemblyLineSystem assemblyLineSystem)
     {
         this.assemblyLines = assemblyLines;
+        this.assemblyLineSystem = assemblyLineSystem;
     }
     public void PlaceTransportablePiece(ITransportable newPiece)
     {
@@ -91,18 +93,18 @@ public class AssemblyLineManager
                 endLines.Remove(correctEndLine);
                 CombineOppositeFacingLines(piece, intersectedPiece, correctEndLine, intersectedLine, endLines);
             }
-            //In which case we first need to see if the new piece is part of an existing endline.
+            //Second case is that the new piece is facing the same way as an end line, but not the intersected line.
             else if (correctEndLine != null)
             {
                 endLines.Remove(correctEndLine);
                 CombineEndLineFacingPiece(piece, intersectedPiece, intersectedLine, endLines, correctEndLine);
             }
-            //However the new piece might still face the same way as the intersected line.
+            //However the new piece might still face the same way as the intersected line, without having a same facing end line.
             else if(piece.Facing == intersectedPiece.Facing)
             {
                 CombineEndLinesWithIntersectedLine(piece, intersectedLine, endLines);
             }
-            //In case they don't face the same way as the piece, and the piece doesn't face the same way as the line..
+            //In case they don't face the same way as the piece, and the piece doesn't face the same way as the line.
             else
             {
                 CombineEndLinesFacingDifferentThanPiece(piece, intersectedPiece, intersectedLine, endLines);
@@ -227,7 +229,7 @@ public class AssemblyLineManager
 
     private AssemblyLine CreateNewLine(ITransportable piece)
     {
-        AssemblyLine newLine = new AssemblyLine();
+        AssemblyLine newLine = new AssemblyLine(assemblyLineSystem);
         newLine.AddPiece(piece);
         assemblyLines.Add(newLine);
         return newLine;

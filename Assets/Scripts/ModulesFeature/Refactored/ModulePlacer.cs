@@ -11,6 +11,7 @@ public class ModulePlacer : MonoBehaviour
     [SerializeField] private Grid grid;
     [SerializeField] private MouseInput mouseInput;
     [SerializeField] private BuildingSelector buildingSelector;
+    [SerializeField] private AssemblyLineSystem assemblyLineSystem;
 
     public Quaternion CurrentPlacementRotation { get; private set; }
     public int NumRotations { get; private set; }
@@ -83,7 +84,7 @@ public class ModulePlacer : MonoBehaviour
 
     private void PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft, Quaternion rotation) {
         Vector3 spawnPos = grid.GetSubgridCenter(lowerLeft, moduleData.GetLayoutShapeDimensions(NumRotations));
-        IGridObject gridObject = moduleData.CreateInstance(spawnPos, rotation, NumRotations);
+        IGridObject gridObject = moduleData.CreateInstance(spawnPos, rotation, NumRotations, assemblyLineSystem);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
         gridObject.OnPlacedOnGrid(lowerLeft, grid);
     }

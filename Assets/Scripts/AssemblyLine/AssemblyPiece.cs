@@ -12,12 +12,14 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private int distance;
     private AssemblyTravelingObject travelingObject;
     private Grid grid;
+    private AssemblyLineSystem assemblyLineSystem;
     public abstract override string ToString();
 
-    protected AssemblyPiece(AssemblyPieceData data)
+    protected AssemblyPiece(AssemblyPieceData data, AssemblyLineSystem assemblyLineSystem)
     {
         this.facing = data.Facing;
         this.distance = data.movementDistance;
+        this.assemblyLineSystem = assemblyLineSystem;
     }
     public Vector2Int Movement()
     {
@@ -91,7 +93,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
-        AssemblyLineSystem.Instance.PlaceTransportablePiece(this);
+        assemblyLineSystem.PlaceTransportablePiece(this);
     }
 ///////////////////////////// IGridInteractable /////////////////////////////
     public bool IsPlaced()

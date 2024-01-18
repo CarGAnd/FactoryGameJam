@@ -14,10 +14,12 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
     private List<AssemblyTravelingObject> inputStorage;
     private List<AssemblyTravelingObject> outputStorage;
+    private AssemblyLineSystem assemblyLineSystem;
 
-    public void Initialize(ModuleSO moduleSettings, int numRotations) {
+    public void Initialize(ModuleSO moduleSettings, int numRotations, AssemblyLineSystem assemblyLineSystem) {
         this.moduleSettings = moduleSettings;
         this.numRotations = numRotations;
+        this.assemblyLineSystem = assemblyLineSystem;
     }
 
     private void Awake() {
@@ -80,11 +82,11 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
     private void PlacePorts() {
         foreach (Port p in inputPorts) {
-            AssemblyLineSystem.Instance.PlaceTransportablePiece(p);
+            assemblyLineSystem.PlaceTransportablePiece(p);
         }
 
         foreach (Port p in outputPorts) {
-            AssemblyLineSystem.Instance.PlaceTransportablePiece(p);
+            assemblyLineSystem.PlaceTransportablePiece(p);
         }
     }
 

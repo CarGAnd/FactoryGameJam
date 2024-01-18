@@ -5,7 +5,6 @@ using UnityEngine.Events;
 
 public class AssemblyLineSystem : MonoBehaviour
 {
-    public static AssemblyLineSystem Instance { get; private set; }
     private UnityEvent TransportTick;
     [SerializeField] private Grid grid;
     [SerializeField] private float tickRate = 0.200f;
@@ -19,13 +18,9 @@ public class AssemblyLineSystem : MonoBehaviour
 
     private void Awake()
     {
-        if(Instance == null)
-        {
-            Instance = this;
-        }
         assemblyLines = new List<AssemblyLine>();
         TransportTick = new UnityEvent();
-        assemblyLineManager = new AssemblyLineManager(assemblyLines);
+        assemblyLineManager = new AssemblyLineManager(assemblyLines, this);
     }
     // This tick could probably be moved to a GameManager.
     private void Update()
@@ -92,7 +87,7 @@ public class AssemblyLineSystem : MonoBehaviour
         switch (type)
         {
             case AssemblyPieceType.ConveyerBelt:
-                newPiece = new ConveyerBelt(assemblyPieceData);
+                newPiece = new ConveyerBelt(assemblyPieceData, this);
                 break;
             case AssemblyPieceType.Cannon:
                 //newPiece = new Cannon(data);

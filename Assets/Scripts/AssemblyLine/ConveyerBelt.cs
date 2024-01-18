@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ConveyerBelt : AssemblyPiece
 {
-    public ConveyerBelt(AssemblyPieceData data) : base(data)
+    public ConveyerBelt(AssemblyPieceData data, AssemblyLineSystem assemblyLineSystem) : base(data, assemblyLineSystem)
     {
 
     }

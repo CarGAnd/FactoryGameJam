@@ -5,17 +5,21 @@ using UnityEngine;
 public class AssemblyLineVisualizer : MonoBehaviour
 {
     public Grid grid;
+    public AssemblyLineSystem assemblyLineSystem;
     private void OnDrawGizmos()
     {
-        if(AssemblyLineSystem.Instance != null)
+        if(assemblyLineSystem != null)
         DrawAssemblyLines();
     }
 
     private void DrawAssemblyLines()
     {
-        foreach (var line in AssemblyLineSystem.Instance.AssemblyLines)
+        if(UnityEngine.Application.isPlaying)
         {
-            DrawLine(line);
+            foreach (var line in assemblyLineSystem.AssemblyLines)
+            {
+                DrawLine(line);
+            }
         }
     }
 
@@ -80,7 +84,7 @@ public class AssemblyLineVisualizer : MonoBehaviour
 
     private Color GetUniqueColor(AssemblyLine line)
     {
-        int index = AssemblyLineSystem.Instance.AssemblyLines.IndexOf(line);
+        int index = assemblyLineSystem.AssemblyLines.IndexOf(line);
         float hue = index * 0.618033988749895f % 1; // The golden ratio conjugate is used for better distribution
         return Color.HSVToRGB(hue, 0.7f, 0.9f); // Adjust saturation and value as needed
     }
