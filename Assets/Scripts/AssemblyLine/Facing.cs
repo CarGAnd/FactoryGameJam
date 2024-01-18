@@ -50,4 +50,21 @@ public static class FacingExtentions {
 
         return facingMap[newNumRotations];
     }
+
+    public static Facing GetOppositeFacing(Facing facing)
+    {
+        switch (facing)
+        {
+            case Facing.North:
+                return Facing.South;
+            case Facing.East:
+                return Facing.West;
+            case Facing.South:
+                return Facing.North;
+            case Facing.West:
+                return Facing.East;
+            default:
+                return Facing.North;
+        }
+    }
 }

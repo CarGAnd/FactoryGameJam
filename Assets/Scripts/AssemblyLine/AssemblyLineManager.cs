@@ -84,12 +84,18 @@ public class AssemblyLineManager
         //Alright we assume the endlines do not face the same way as the intersected line. 
         else
         {
-            //In which case we first need to see if the new piece is part of an existing endline.
             correctEndLine = FindCorrectEndLine(endLines, piece);
-            if (correctEndLine != null)
+            //First case is that the two lines are facing each other. 
+            if(correctEndLine != null && FacingExtentions.GetOppositeFacing(piece.Facing) == intersectedPiece.Facing)
             {
+                endLines.Remove(correctEndLine);
+                CombineOppositeFacingLines(piece, intersectedPiece, correctEndLine, intersectedLine, endLines);
+            }
+            //In which case we first need to see if the new piece is part of an existing endline.
+            else if (correctEndLine != null)
+            {
+                endLines.Remove(correctEndLine);
                 CombineEndLineFacingPiece(piece, intersectedPiece, intersectedLine, endLines, correctEndLine);
-                return;
             }
             //However the new piece might still face the same way as the intersected line.
             else if(piece.Facing == intersectedPiece.Facing)
@@ -103,7 +109,51 @@ public class AssemblyLineManager
             }
         }
     }
+    private void CombineLinesFacingSameWay(ITransportable piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
+    {
+        //We merge the two lines. The first part of loop detection happens in MergeLines
+        AssemblyLine resultingLine = MergeLines(intersectedLine, correctEndLine, piece);
+        HandleConnectingLines(resultingLine, endLines.Except(new[] { correctEndLine }).ToList(), piece);
+        //Now we have the next loop scenario, if one of the connecting lines that was added piece results in a loop.
+        foreach(AssemblyLine line in resultingLine.GetAllConnections())
+        {
+            if(LoopDetected(line, resultingLine))
+            {
+                resultingLine.RemoveConnection(line);
+                assemblyLines.Add(line);
+                GetIntersectedAssemblyLine(line.GetEndPiece(), out ITransportable i);
+                resultingLine.HandleLoop(line, i);
+                break;
+            }
+        }
+    }
+    private void CombineOppositeFacingLines(ITransportable piece, ITransportable intersectedPiece, AssemblyLine correctEndLine, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
+    {
+        correctEndLine.AddPiece(piece);
+        //The two lines should become connecting lines of each other without removing from AssemblyLines.
+        intersectedLine.AddConnectingAssemblyLine(correctEndLine, intersectedPiece);
+        correctEndLine.AddConnectingAssemblyLine(intersectedLine, piece);
+        //We add the endlines as connecting lines to the line with the piece being placed.
+        HandleConnectingLines(correctEndLine, endLines, piece);
+        //This can't possibly loop. 
+    }
+    private void CombineEndLineFacingPiece(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
+    {
+        //We add the piece to our end line.
+        correctEndLine.AddPiece(piece);
+        //And now we need to ensure that all endlines are connecting lines to this line.
+        HandleConnectingLines(correctEndLine, endLines, piece);
 
+        if(LoopDetected(correctEndLine, intersectedLine))
+        {
+            intersectedLine.HandleLoop(correctEndLine, intersectedPiece);
+            return;
+        }
+
+        //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
+        HandleConnectingLines(intersectedLine, new List<AssemblyLine> { correctEndLine }, intersectedPiece);
+        return;
+    }
     private void CombineEndLinesWithIntersectedLine(ITransportable piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines)
     {
         intersectedLine.AddPiece(piece);
@@ -137,42 +187,9 @@ public class AssemblyLineManager
         HandleConnectingLines(intersectedLine, new List<AssemblyLine> { newLine }, intersectedPiece);
     }
 
-    private void CombineEndLineFacingPiece(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
-    {
-        //We add the piece to our end line.
-        correctEndLine.AddPiece(piece);
-        //And now we need to ensure that all endlines are connecting lines to this line.
-        HandleConnectingLines(correctEndLine, endLines.Except(new[] { correctEndLine }).ToList(), piece);
+    
 
-        if(LoopDetected(correctEndLine, intersectedLine))
-        {
-            intersectedLine.HandleLoop(correctEndLine, intersectedPiece);
-            return;
-        }
-
-        //And now we need to add this line as a connecting line to the intersected line, at intersected piece.
-        HandleConnectingLines(intersectedLine, new List<AssemblyLine> { correctEndLine }, intersectedPiece);
-        return;
-    }
-
-    private void CombineLinesFacingSameWay(ITransportable piece, AssemblyLine intersectedLine, List<AssemblyLine> endLines, AssemblyLine correctEndLine)
-    {
-        //We merge the two lines. The first part of loop detection happens in MergeLines
-        AssemblyLine resultingLine = MergeLines(intersectedLine, correctEndLine, piece);
-        HandleConnectingLines(resultingLine, endLines.Except(new[] { correctEndLine }).ToList(), piece);
-        //Now we have the next loop scenario, if one of the connecting lines that was added piece results in a loop.
-        foreach(AssemblyLine line in resultingLine.GetAllConnections())
-        {
-            if(LoopDetected(line, resultingLine))
-            {
-                resultingLine.RemoveConnection(line);
-                assemblyLines.Add(line);
-                GetIntersectedAssemblyLine(line.GetEndPiece(), out ITransportable i);
-                resultingLine.HandleLoop(line, i);
-                break;
-            }
-        }
-    }
+    
 
     private AssemblyLine GetIntersectedAssemblyLine(ITransportable piece, out ITransportable intersectedPiece)
     {
