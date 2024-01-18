@@ -139,8 +139,14 @@ public class AssemblyLine
         }
         newLine.UpdateStartEndPieces();
     }
-    public AssemblyLine GetIntersectedAssemblyLine(Vector2Int coords, out ITransportable intersectedPiece)
+    public AssemblyLine GetIntersectedAssemblyLine(Vector2Int coords, HashSet<AssemblyLine> visitedLines, out ITransportable intersectedPiece)
     {
+        if(visitedLines.Contains(this))
+        {
+            intersectedPiece = null;
+            return null;
+        }
+        visitedLines.Add(this);
         AssemblyLine foundLine = null;
         foreach(ITransportable piece in pieces)
         {
@@ -152,7 +158,7 @@ public class AssemblyLine
         }
         foreach(AssemblyLine line in connectingAssemblyLines.Keys)
         {
-            foundLine = line.GetIntersectedAssemblyLine(coords, out intersectedPiece);
+            foundLine = line.GetIntersectedAssemblyLine(coords, visitedLines,  out intersectedPiece);
             if(foundLine != null)
             {
                 return foundLine;

@@ -189,15 +189,13 @@ public class AssemblyLineManager
         HandleConnectingLines(intersectedLine, new List<AssemblyLine> { newLine }, intersectedPiece);
     }
 
-    
-
-    
-
     private AssemblyLine GetIntersectedAssemblyLine(ITransportable piece, out ITransportable intersectedPiece)
     {
+        HashSet<AssemblyLine> visited = new HashSet<AssemblyLine>();
         foreach(AssemblyLine line in assemblyLines)
         {
-            AssemblyLine intersectedLine = RecursiveIntersectionSearch(line, piece, out intersectedPiece);
+            visited.Clear();
+            AssemblyLine intersectedLine = RecursiveIntersectionSearch(line, piece, visited, out intersectedPiece);
             if(intersectedLine != null)
             {
                 return intersectedLine;
@@ -206,24 +204,14 @@ public class AssemblyLineManager
         intersectedPiece = null;
         return null;
     }
-    private AssemblyLine RecursiveIntersectionSearch(AssemblyLine line, ITransportable piece, out ITransportable intersectedPiece)
+    private AssemblyLine RecursiveIntersectionSearch(AssemblyLine line, ITransportable piece, HashSet<AssemblyLine> visited, out ITransportable intersectedPiece)
     {
         //if the current line is intersected
-        AssemblyLine intersectedLine = line.GetIntersectedAssemblyLine(piece.GetNextCellCoords(), out intersectedPiece);
+        AssemblyLine intersectedLine = line.GetIntersectedAssemblyLine(piece.GetNextCellCoords(), visited, out intersectedPiece);
         if(intersectedLine != null)
         {
             return intersectedLine;
         }
-        //Checking this line's connecting lines:
-        foreach(AssemblyLine connectingLine in line.GetAllConnections())
-        {
-            intersectedLine = RecursiveIntersectionSearch(connectingLine, piece, out intersectedPiece);
-            if(intersectedLine != null)
-            {
-                return intersectedLine;
-            }
-        }
-
         return null;
     }
 
