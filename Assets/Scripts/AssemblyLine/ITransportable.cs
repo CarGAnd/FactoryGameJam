@@ -12,7 +12,7 @@ public interface ITransportable
     Vector2Int GetNextCellCoords();
     Vector2Int GetGridCoords();
     TransportState GetState();
-    void SetAssemblyLine(AssemblyLine parentAssemblyLine, LinkedListNode<ITransportable> node);
+    void SetNextTransportable(ITransportable nextTransportable);
 
 }
 public enum TransportState

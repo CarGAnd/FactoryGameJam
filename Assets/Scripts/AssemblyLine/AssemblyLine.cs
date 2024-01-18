@@ -34,36 +34,7 @@ public class AssemblyLine
         {
             connectingAssemblyLines.Add(line, endPiece);
         }
-    }
-    public ITransportable GetNextPiece(LinkedListNode<ITransportable> node)
-    {
-        if(node.List != pieces)
-        {
-            return null;
-        }
-        if(node.Value == endPiece && ParentLine != null)
-        {
-            return ParentLine.GetConnectingPiece(this);
-        }
-        if(node.Next != null)
-        {
-            return node.Next.Value;
-        }
-        else
-        {
-            return null;
-        }
-    }
-    private ITransportable GetConnectingPiece(AssemblyLine line)
-    {
-        if(connectingAssemblyLines.ContainsKey(line))
-        {
-            return connectingAssemblyLines[line];
-        }
-        else
-        {
-            return null;
-        }
+        line.GetEndPiece().SetNextTransportable(endPiece);
     }
     public void OnTransportTick()
     {
@@ -118,15 +89,16 @@ public class AssemblyLine
         }
         else if (isEnd)
         {
+            endPiece.SetNextTransportable(piece);
             endPiece = piece;
             pieces.AddLast(piece);
         }
         else if (isStart)
         {
+            piece.SetNextTransportable(startPiece);
             startPiece = piece;
             pieces.AddFirst(piece);
         }
-        piece.SetAssemblyLine(this, pieces.Find(piece));
     }
     public void MoveConnectingLines(AssemblyLine newLine)
     {
@@ -160,8 +132,8 @@ public class AssemblyLine
     {
         foreach (var node in pieces)
         {
+            newLine.pieces.Last.Value.SetNextTransportable(node);
             newLine.pieces.AddLast(node);
-            node.SetAssemblyLine(newLine, newLine.pieces.Last);
         }
         newLine.UpdateStartEndPieces();
     }

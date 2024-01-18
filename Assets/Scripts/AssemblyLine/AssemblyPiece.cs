@@ -8,8 +8,6 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private Facing facing = default;
     public Facing Facing { get => facing; }
     protected Vector2Int cellCoords;
-    private AssemblyLine parentAssemblyLine;
-    private LinkedListNode<ITransportable> node;
     private ITransportable nextPiece;
     private int distance;
     private AssemblyTravelingObject travelingObject;
@@ -42,10 +40,9 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         return movement * distance;
     }
 ///////////////////////////// ITransportable /////////////////////////////
-    public void SetAssemblyLine(AssemblyLine parentAssemblyLine, LinkedListNode<ITransportable> node)
+    public void SetNextTransportable(ITransportable nextTransportable)
     {
-        this.parentAssemblyLine = parentAssemblyLine;
-        this.node = node;
+        this.nextPiece = nextTransportable;
     }
     public void TransportTick()
     {
@@ -53,7 +50,6 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         {
             return;
         }
-        nextPiece = parentAssemblyLine.GetNextPiece(node);
         if(nextPiece != null && nextPiece.GetState() == TransportState.Available)
         {
             SendObject();   

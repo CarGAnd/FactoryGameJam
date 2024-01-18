@@ -139,9 +139,6 @@ public class Port : ITransportable
     private AssemblyTravelingObject outputObject;
     private AssemblyTravelingObject inputObject;
 
-    private LinkedListNode<ITransportable> node;
-    private AssemblyLine parentLine;
-
     public Facing Facing => direction;
 
     public Port(Vector2Int position, Facing facing) {
@@ -189,8 +186,6 @@ public class Port : ITransportable
         if(!HasOutput()) {
             return;
         }
-        
-        this.connectedObject = parentLine.GetNextPiece(node);
 
         if(connectedObject != null && connectedObject.GetState() == TransportState.Available) {
             SendObject();
@@ -205,8 +200,7 @@ public class Port : ITransportable
         return position;
     }
 
-    public void SetAssemblyLine(AssemblyLine parentAssemblyLine, LinkedListNode<ITransportable> node) {
-        this.node = node;
-        this.parentLine = parentAssemblyLine;
+    public void SetNextTransportable(ITransportable nextTransportable) {
+        this.connectedObject = nextTransportable;
     }
 }
