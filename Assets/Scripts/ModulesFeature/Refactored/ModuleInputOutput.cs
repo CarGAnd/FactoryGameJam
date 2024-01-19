@@ -34,11 +34,11 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         List<PortSettings> outputSettings = moduleSettings.GetOutputs(numRotations);
 
         foreach (PortSettings ps in inputSettings) {
-            Port port = new Port(ps.position + originCell, ps.direction);
+            Port port = new Port(ps.relativePosition + originCell, ps.direction);
             inputPorts.Add(port);
         }
         foreach (PortSettings ps in outputSettings) {
-            Port port = new Port(ps.position + originCell, ps.direction);
+            Port port = new Port(ps.relativePosition + originCell, ps.direction);
             outputPorts.Add(port);
         }
     }
@@ -147,10 +147,6 @@ public class Port : ITransportable
         this.position = position;
         this.direction = facing;
         this.connectedPosition = position + facing.GetIntDirection();
-    }
-
-    public Port(PortSettings settings) : this(settings.position, settings.direction) {
-        
     }
 
     public AssemblyTravelingObject ReceiveFromPort() {

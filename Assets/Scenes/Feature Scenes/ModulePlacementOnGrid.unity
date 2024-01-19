@@ -579,6 +579,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 857417367}
+  assemblyLineSystem: {fileID: 0}
 --- !u!1 &19306010
 GameObject:
   m_ObjectHideFlags: 0
@@ -14788,6 +14789,7 @@ MonoBehaviour:
   grid: {fileID: 857417367}
   mouseInput: {fileID: 48113247}
   buildingSelector: {fileID: 799729830}
+  assemblyLineSystem: {fileID: 17596880}
 --- !u!114 &799729830
 MonoBehaviour:
   m_ObjectHideFlags: 0

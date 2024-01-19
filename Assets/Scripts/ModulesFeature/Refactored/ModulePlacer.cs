@@ -24,6 +24,10 @@ public class ModulePlacer : MonoBehaviour
 
     private void Update() {
         placementHandler.UpdateInput(grid, mouseInput.LastGroundHitPoint, this);
+        if (Input.GetKeyDown(KeyCode.Mouse1)) {
+            Vector2Int mouseGridPos = grid.GetCellCoords(mouseInput.LastGroundHitPoint);
+            RemoveModule(mouseGridPos);
+        }
     }
 
     public void RotateModuleClockwise() {
@@ -89,13 +93,21 @@ public class ModulePlacer : MonoBehaviour
         gridObject.OnPlacedOnGrid(lowerLeft, grid);
     }
 
+    public void RemoveModule(Vector2Int gridPosition) {
+        IGridObject gridObject = grid.GetObjectAt(gridPosition);
+        gridObject.RemoveFromGrid(grid);
+    }
+
     public void PlaceModulesAlongPath(GridObjectSO moduleData, Path path) {
         List<Vector2Int> pathPositions = path.GetPositions();
         List<Vector2Int> pathDirections = path.GetDirections();
-        for(int i = 0; i < pathPositions.Count; i++) {
+        //The first n-1 modules are rotated to match the path
+        for(int i = 0; i < pathPositions.Count - 1; i++) {
             //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
             TryPlaceModule(moduleData, pathPositions[i], RotationFromDirection(pathDirections[i]));
-        }    
+        }
+        //The last module is rotated according to the user input
+        TryPlaceModule(moduleData, pathPositions[pathPositions.Count - 1], CurrentPlacementRotation);
     }
 
     private Quaternion RotationFromDirection(Vector2Int direction) {

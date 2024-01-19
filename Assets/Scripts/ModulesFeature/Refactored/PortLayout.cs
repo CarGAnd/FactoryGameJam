@@ -26,7 +26,7 @@ public class PortLayout
                 arrayValue -= 1;
                 PortSettings newPort = new PortSettings()
                 {
-                    position = new Vector2Int(x, y),
+                    relativePosition = new Vector2Int(x, y),
                     direction = directionMap[arrayValue]
                 };
                 ports.Add(newPort);
@@ -45,6 +45,6 @@ public class PortLayout
 }
 
 public class PortSettings {
-    public Vector2Int position;
+    public Vector2Int relativePosition;
     public Facing direction;
 }
