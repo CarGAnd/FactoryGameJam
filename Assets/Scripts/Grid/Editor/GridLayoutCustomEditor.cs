@@ -11,34 +11,10 @@ public class GridLayoutCustomEditor : Editor
     private SerializedProperty gridRotation;
     private SerializedProperty gridOrigin;
     
-    private SerializedProperty showGridLines;
-    private SerializedProperty debugGridSize;
-
-    private bool showDebug;
-    
     private void OnEnable() {
         targetGridLayout = (GridLayout)target;
         gridRotation = serializedObject.FindProperty("<Rotation>k__BackingField");
         gridOrigin = serializedObject.FindProperty("<Origin>k__BackingField");
-        showGridLines = serializedObject.FindProperty("showGridLines");
-        debugGridSize = serializedObject.FindProperty("debugGridSize");
-    }
-
-    public override void OnInspectorGUI() {
-        DrawDefaultInspector();      
-        showDebug = EditorGUILayout.Foldout(showDebug, "Debug");
-        if (showDebug) {
-            EditorGUI.indentLevel += 1;
-            showGridLines.boolValue = EditorGUILayout.Toggle("Show Grid lines", showGridLines.boolValue);
-            if (targetGridLayout.GetComponent<GridSize>() != null) {
-                EditorGUILayout.HelpBox("Grid size is determined by GridSize component", MessageType.Info);
-            }
-            else {
-                debugGridSize.vector2IntValue = EditorGUILayout.Vector2IntField("Debug grid size", debugGridSize.vector2IntValue);
-            }
-            EditorGUI.indentLevel -= 1;
-        }
-        serializedObject.ApplyModifiedProperties();
     }
 
     private void OnSceneGUI() {
@@ -53,8 +29,6 @@ public class GridLayoutCustomEditor : Editor
                 gridRotation.quaternionValue = newRotation;
                 break;
         }
-
         serializedObject.ApplyModifiedProperties();
     }
-
 }

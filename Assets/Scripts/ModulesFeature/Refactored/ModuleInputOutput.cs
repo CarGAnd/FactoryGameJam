@@ -107,7 +107,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
     public void RemoveFromGrid(Grid grid) {
         RemovePorts();
-        grid.RemoveObject(originCell);
+        grid.RemoveObject(originCell + moduleSettings.GetLayoutShape(numRotations)[0]);
     }
 
     #region Debug

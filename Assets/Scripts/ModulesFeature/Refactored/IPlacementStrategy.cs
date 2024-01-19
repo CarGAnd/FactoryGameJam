@@ -3,13 +3,16 @@ using UnityEngine;
 
 public interface IPlacementStrategy {
     void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
-    void SetModule(GridObjectSO newModule);
     List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
 }
 
 public class ClickPlacer : IPlacementStrategy {
 
     private GridObjectSO currentModule;
+
+    public ClickPlacer(GridObjectSO obj) {
+        this.currentModule = obj;
+    }
 
     public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.NumRotations);
@@ -19,10 +22,6 @@ public class ClickPlacer : IPlacementStrategy {
             buildingPositions[i] += gridPosition;
         }
         return buildingPositions;
-    }
-
-    public void SetModule(GridObjectSO newModule) {
-        this.currentModule = newModule;
     }
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
@@ -43,8 +42,9 @@ public class ClickAndDragPlacer : IPlacementStrategy {
     private Vector2Int startDragPos;
     private bool isDragging;
 
-    public void SetModule(GridObjectSO newModule) {
-        currentModule = newModule;
+
+    public ClickAndDragPlacer(GridObjectSO obj) {
+        this.currentModule = obj;
     }
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
@@ -64,7 +64,7 @@ public class ClickAndDragPlacer : IPlacementStrategy {
                 modulePlacer.TryPlaceModule(currentModule, endDragPos, modulePlacer.CurrentPlacementRotation);
             }
             else {
-                modulePlacer.PlaceModulesAlongPath(currentModule, path);
+                PlaceModulesAlongPath(currentModule, path, modulePlacer);
             }            
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
@@ -89,15 +89,38 @@ public class ClickAndDragPlacer : IPlacementStrategy {
             }
         }
     }
+
+    public void PlaceModulesAlongPath(GridObjectSO moduleData, Path path, ModulePlacer modulePlacer) {
+        List<Vector2Int> pathPositions = path.GetPositions();
+        List<Vector2Int> pathDirections = path.GetDirections();
+        //The first n-1 modules are rotated to match the path
+        for(int i = 0; i < pathPositions.Count - 1; i++) {
+            //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
+            modulePlacer.TryPlaceModule(moduleData, pathPositions[i], RotationFromDirection(pathDirections[i]));
+        }
+        //The last module is rotated according to the user input
+        modulePlacer.TryPlaceModule(moduleData, pathPositions[pathPositions.Count - 1], modulePlacer.CurrentPlacementRotation);
+    }
+
+    private Quaternion RotationFromDirection(Vector2Int direction) {
+        if(direction == Vector2Int.left) {
+            return Quaternion.Euler(new Vector3(0, 0, 0));
+        }
+        else if(direction == Vector2Int.up) {
+            return Quaternion.Euler(new Vector3(0, 90, 0));
+        }
+        else if(direction == Vector2Int.right) {
+            return Quaternion.Euler(new Vector3(0, 180, 0));
+        }
+        else {
+            return Quaternion.Euler(new Vector3(0, 270, 0));
+        }
+    }
 }
 
 public class NoPlacement : IPlacementStrategy {
     public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };    
-    }
-
-    public void SetModule(GridObjectSO newModule) {
-        
     }
 
     public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {

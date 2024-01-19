@@ -15,7 +15,7 @@ public class AssemblyPieceData : GridObjectSO
     }
 
     public override IPlacementStrategy GetPlacementHandler() {
-        return new ClickAndDragPlacer();
+        return new ClickAndDragPlacer(this);
     }
 
     private void SetFacing(Quaternion rotation) {

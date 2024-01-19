@@ -34,4 +34,12 @@ public class MouseInput : MonoBehaviour {
             }
         }
     }
+
+    public bool LeftMouseButtonPressed() {
+        return Mouse.current.leftButton.wasPressedThisFrame;
+    }
+
+    public bool RightMouseButtonPressed() {
+        return Mouse.current.rightButton.wasPressedThisFrame;
+    }
 }

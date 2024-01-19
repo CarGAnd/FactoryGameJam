@@ -106,34 +106,4 @@ public class GridLayout : MonoBehaviour
     public void AdjustCellSize(float length, float width) {
         CellSize = new Vector2(width, length);
     }
-
-    #region Debug
-    [SerializeField, HideInInspector] private bool showGridLines;
-    [SerializeField, HideInInspector] private Vector2Int debugGridSize;
-
-    private void OnDrawGizmos() {
-        int numRows = debugGridSize.y;
-        int numColumns = debugGridSize.x;
-        GridSize gridSize = GetComponent<GridSize>();
-        if(gridSize != null) {
-            numRows = gridSize.Rows;
-            numColumns = gridSize.Columns;
-        }
-
-        if (showGridLines) {
-            Gizmos.color = Color.green;
-            for (int y = 0; y < numRows + 1; y++) {
-                Vector3 start = GetCellWorldPosition(new Vector2Int(0, y));
-                Vector3 end = GetCellWorldPosition(new Vector2Int(numColumns, y));
-                Gizmos.DrawLine(start, end);
-            }
-
-            for (int x = 0; x < numColumns + 1; x++) {
-                Vector3 start = GetCellWorldPosition(new Vector2Int(x, 0));
-                Vector3 end = GetCellWorldPosition(new Vector2Int(x, numRows));
-                Gizmos.DrawLine(start, end);
-            }
-        }
-    }
-    #endregion
 }
