@@ -8,6 +8,9 @@ public interface IGridObject {
 
     // Removes the object from the grid.
     void RemoveFromGrid(Grid grid);
+    
+    // Destroy the gridObject and any associated prefab
+    void DestroyObject();
 }
 
 public interface IGridInteractable : IGridObject {

@@ -4,23 +4,24 @@ using UnityEngine;
 using System;
 using Newtonsoft.Json;
 
-public class GridSerializer
+public class GridSerializer<T> where T : ISaveable
 {
-    private List<SavedObjectPlacement> SaveGrid(Grid grid, Func<IGridObject,string> getID) {
+    private List<SavedObjectData> SaveGrid(CellGrid<T> grid, Func<T, string> getID) {
         HashSet<Vector2Int> visitedPositions = new HashSet<Vector2Int>();
-        List<SavedObjectPlacement> savedObjects = new List<SavedObjectPlacement>();
+        List<SavedObjectData> savedObjects = new List<SavedObjectData>();
         for(int x = 0; x < grid.Columns; x++) {
             for(int y = 0; y < grid.Rows; y++) {
                 Vector2Int coord = new Vector2Int(x, y);
                 if (grid.PositionIsOccupied(coord) && !visitedPositions.Contains(coord)) {
-                    IGridObject obj = grid.GetObjectAt(coord);
+                    T obj = grid.GetObjectAt(coord);
                     string id = getID(obj);
                     Vector2Int originPosition = grid.GetObjectOriginCoord(coord);
-                    SavedObjectPlacement savedObject = new SavedObjectPlacement
+                    SavedObjectData savedObject = new SavedObjectData
                     {
                         id = id,
                         xPosition = originPosition.x,
-                        yPosition = originPosition.y
+                        yPosition = originPosition.y,
+                        objectJsonData = obj.Serialize()
                     };
                     savedObjects.Add(savedObject);
 
@@ -34,35 +35,36 @@ public class GridSerializer
         return savedObjects;
     }    
 
-    private void LoadGrid(List<SavedObjectPlacement> savedObjects, Action<string, Vector2Int> placeObject) {
-        foreach(SavedObjectPlacement savedObject in savedObjects) {
-            placeObject(savedObject.id, new Vector2Int(savedObject.xPosition, savedObject.yPosition));
-        }
-    }
-
-    private string SerializeSavedObjects(List<SavedObjectPlacement> savedObjects) {
+    private string SerializeSavedObjects(List<SavedObjectData> savedObjects) {
         return JsonConvert.SerializeObject(savedObjects);
     }
 
-    private List<SavedObjectPlacement> DeserializeSavedObjects(string jsonData) {
-        return JsonConvert.DeserializeObject<List<SavedObjectPlacement>>(jsonData);
+    private List<SavedObjectData> DeserializeSavedObjects(string jsonData) {
+        return JsonConvert.DeserializeObject<List<SavedObjectData>>(jsonData);
     }
 
-    public string GridToJson(Grid grid, Func<IGridObject,string> getID) {
-        List<SavedObjectPlacement> savedObjects = SaveGrid(grid, getID);
+    public string GridToJson(CellGrid<T> grid, Func<T,string> getID) {
+        List<SavedObjectData> savedObjects = SaveGrid(grid, getID);
         return SerializeSavedObjects(savedObjects);
     }
 
-    public void JsonToGrid(string jsonData, Action<string, Vector2Int> placeObjects) {
-        List<SavedObjectPlacement> savedObjects = DeserializeSavedObjects(jsonData);
-        LoadGrid(savedObjects, placeObjects);
+    public List<SavedObjectData> JsonToGrid(string jsonData) {
+        List<SavedObjectData> savedObjects = DeserializeSavedObjects(jsonData);
+        return savedObjects;
     }
+}
 
-    [System.Serializable]
-    private struct SavedObjectPlacement {
-        public string id;
-        public int xPosition;
-        public int yPosition;
-    }
+[System.Serializable]
+public struct SavedObjectData {
+    public string id;
+    public int xPosition;
+    public int yPosition;
+    public object objectJsonData;
+}
+
+
+public interface ISaveable {
+    object Serialize();
+    void Deserialize(object data);
 }
 

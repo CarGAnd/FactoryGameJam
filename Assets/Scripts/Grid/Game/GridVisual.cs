@@ -126,8 +126,9 @@ public class GridVisual : MonoBehaviour
     private void CreateIndicatorObject() {
         GameObject newIndicatorObject = Instantiate(indicatorPrefab);
         newIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
-        Vector3 oldRot = newIndicatorObject.transform.rotation.eulerAngles;
-        newIndicatorObject.transform.rotation = Quaternion.Euler(oldRot.x, buildGrid.Rotation.eulerAngles.y, oldRot.z);
+        Quaternion oldRot = newIndicatorObject.transform.rotation;
+        newIndicatorObject.transform.rotation = buildGrid.Rotation * oldRot;
+        newIndicatorObject.transform.parent = transform;
         indicatorObjects.Add(newIndicatorObject);
     }
 }

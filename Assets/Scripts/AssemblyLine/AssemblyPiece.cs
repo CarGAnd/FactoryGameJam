@@ -95,6 +95,10 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         this.grid = grid;
         assemblyLineSystem.PlaceTransportablePiece(this);
     }
+
+    public void DestroyObject() {
+
+    }
 ///////////////////////////// IGridInteractable /////////////////////////////
     public bool IsPlaced()
     {

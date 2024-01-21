@@ -18,9 +18,4 @@ public abstract class Module : MonoBehaviour
     protected AssemblyTravelingObject GetObjectIn() {
         return inputOutput.ReceiveFromInput();
     }
-
-    public void DestroyModule() {
-        inputOutput.Destroy();
-        Destroy(gameObject);
-    }
 }

@@ -101,8 +101,9 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         PlacePorts();
     }
 
-    public void Destroy() {
+    public void DestroyObject() {
         RemoveFromGrid(grid);
+        Destroy(gameObject);
     }
 
     public void RemoveFromGrid(Grid grid) {
