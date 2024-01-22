@@ -92,26 +92,3 @@ public class HexGridLayout : IGridLayout {
         throw new System.NotImplementedException();
     }
 }
-
-public class StairCaseLayout : IGridLayout {
-
-    public Vector3 CalculateCellPosition(Vector2Int cellCoord) {
-        return new Vector3(cellCoord.x + cellCoord.y, 0, cellCoord.y);
-    }
-
-    public Vector3 GetCellCenter(Vector2Int cellCoord) {
-        throw new System.NotImplementedException();
-    }
-
-    public Vector2Int GetCellCoordinate(Vector3 normalizedPosition) {
-        int gridX = (int)normalizedPosition.x;
-        int gridY = (int)normalizedPosition.z;
-
-        int column = gridX + gridY;
-        return new Vector2Int(column, gridY);
-    }
-
-    public List<Vector2Int> GetCellNeighbors(Vector2Int cellCoord) {
-        throw new System.NotImplementedException();
-    }
-}

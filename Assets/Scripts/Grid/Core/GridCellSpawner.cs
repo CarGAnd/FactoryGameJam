@@ -12,6 +12,8 @@ public class GridCellSpawner : MonoBehaviour
     [SerializeField] private SpawnType spawnType;
 
     [SerializeField, HideInInspector] private bool[] customSpawnMask;
+    [SerializeField, HideInInspector] private int currentWidth;
+    [SerializeField, HideInInspector] private int currentHeight;
 
     private Grid grid;
     private GameObject[,] cells;
@@ -45,6 +47,17 @@ public class GridCellSpawner : MonoBehaviour
         return cells[coord.y, coord.x] != null;
     }
 
+    public void SetMaskValue(int x, int y, bool value) {
+        if (!IsWithingBounds(x, y)) {
+            return;
+        }
+        customSpawnMask[y * currentWidth + x] = value;
+    }
+
+    private bool IsWithingBounds(int x, int y) {
+        return x >= 0 && x < currentWidth && y >= 0 && y < currentHeight; 
+    }
+
     [Button("Destroy Prefabs", ButtonSizes.Medium)]
     private void DestroyCells() {
         for (int i = cellParent.childCount - 1; i >= 0; i--) {
@@ -56,17 +69,37 @@ public class GridCellSpawner : MonoBehaviour
     [Button("Create Prefabs", ButtonSizes.Medium)]
     private void CreateCells() {
         DestroyCells();
-        FillGridWithPrefabs();
+        grid = GetComponent<Grid>();
+        cells = new GameObject[grid.Rows, grid.Columns];
+
+        if(spawnType == SpawnType.FillGrid) {
+            FillGridWithPrefabs();
+        }
+        else if(spawnType == SpawnType.Custom) {
+            MaskGridWithPrefabs();
+        }
     }
 
     private void FillGridWithPrefabs() {
-        grid = GetComponent<Grid>();
-        cells = new GameObject[grid.Rows, grid.Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
             for (int x = 0; x < cells.GetLength(1); x++) {
                 CreateObjectAt(new Vector2Int(x, y));
             }
         }
+    }
+
+    private void MaskGridWithPrefabs() {
+        for (int y = 0; y < cells.GetLength(0); y++) {
+            for (int x = 0; x < cells.GetLength(1); x++) {
+                if (GetMaskValue(x, y)) {
+                    CreateObjectAt(new Vector2Int(x,y));
+                }
+            }
+        }
+    }
+
+    private bool GetMaskValue(int x, int y) {
+        return customSpawnMask[y * currentWidth + x];
     }
 
     private enum SpawnType {
@@ -75,7 +108,33 @@ public class GridCellSpawner : MonoBehaviour
     }
 
     private void OnValidate() {
-        
+        grid = GetComponent<Grid>();
+        if(grid.Rows != currentHeight || grid.Columns != currentWidth) {
+            bool[] newMask = new bool[grid.Rows * grid.Columns];
+            for(int y = 0; y < Mathf.Min(currentHeight, grid.Rows); y++) {
+                for(int x = 0; x < Mathf.Min(currentWidth, grid.Columns); x++) {
+                    newMask[y * grid.Columns + x] = GetMaskValue(x, y);
+                }
+            }
+            customSpawnMask = newMask;
+            currentWidth = grid.Columns;
+            currentHeight = grid.Rows;
+        }    
+    }
+
+    [SerializeField] private bool showCustomLayout;
+
+    private void OnDrawGizmosSelected() {
+        if(spawnType == SpawnType.Custom && showCustomLayout) {
+            for(int y = 0; y < currentHeight; y++) {
+                for(int x = 0; x < currentWidth; x++) {
+                    Color c = GetMaskValue(x, y) ? Color.green : Color.red;
+                    c.a = 0.5f;
+                    Gizmos.color = c;
+                    Gizmos.DrawCube(grid.GetCellCenter(new Vector2Int(x, y)), new Vector3(grid.CellSize.x, 0.1f, grid.CellSize.y));
+                }
+            }
+        }
     }
 }
 

@@ -91,7 +91,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     private void RemovePorts() {
-
+        
     }
 
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
