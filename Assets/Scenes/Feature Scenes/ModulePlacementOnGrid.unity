@@ -565,7 +565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 857417367}
-  assemblyLineSystem: {fileID: 0}
+  assemblyLineSystem: {fileID: 17596880}
 --- !u!1 &19306010
 GameObject:
   m_ObjectHideFlags: 0

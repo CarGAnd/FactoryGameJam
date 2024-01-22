@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using UnityEngine;
 using System.Linq;
-using Codice.CM.Client.Differences;
 
 public class AssemblyLineManager
 {
@@ -117,7 +117,7 @@ public class AssemblyLineManager
         //Now we have the next loop scenario, if one of the connecting lines that was added piece results in a loop.
         foreach(AssemblyLine line in resultingLine.GetAllConnections())
         {
-            if(LoopDetected(line, resultingLine))
+            if(PrePlaceLoopDetection(line, resultingLine))
             {
                 resultingLine.RemoveConnection(line);
                 assemblyLines.Add(line);
@@ -144,7 +144,7 @@ public class AssemblyLineManager
         //And now we need to ensure that all endlines are connecting lines to this line.
         HandleConnectingLines(correctEndLine, endLines, piece);
 
-        if(LoopDetected(correctEndLine, intersectedLine))
+        if(PrePlaceLoopDetection(correctEndLine, intersectedLine))
         {
             intersectedLine.HandleLoop(correctEndLine, intersectedPiece);
             return;
@@ -161,7 +161,7 @@ public class AssemblyLineManager
         AssemblyLine loopingEndLine = null;
         foreach(AssemblyLine line in endLines)
         {
-            if(LoopDetected(line, intersectedLine))
+            if(PrePlaceLoopDetection(line, intersectedLine))
             {
                 loopingEndLine = line;
                 intersectedLine.HandleLoop(line, piece);
@@ -178,7 +178,7 @@ public class AssemblyLineManager
         //We add the endlines as connecting lines to this line
         HandleConnectingLines(newLine, endLines, piece);
 
-        if(LoopDetected(newLine, intersectedLine))
+        if(PrePlaceLoopDetection(newLine, intersectedLine))
         {
             intersectedLine.HandleLoop(newLine, intersectedPiece);
             return;
@@ -233,7 +233,7 @@ public class AssemblyLineManager
         AssemblyLine nextLine = GetIntersectedAssemblyLine(endLine.GetEndPiece(), out ITransportable i);
         if (nextLine != null)
         {
-            if (LoopDetected(startLine, endLine))
+            if (PrePlaceLoopDetection(startLine, endLine))
             {
                 assemblyLines.Add(nextLine);
             }
@@ -269,8 +269,8 @@ public class AssemblyLineManager
     {
         return endLines.FirstOrDefault(line => line.GetEndPiece().Facing == intersectedPiece.Facing);
     }
-
-    private bool LoopDetected(AssemblyLine correctEndLine, AssemblyLine intersectedLine)
+    //This is to be used before lines are actually connected.
+    private bool PrePlaceLoopDetection(AssemblyLine correctEndLine, AssemblyLine intersectedLine)
     {
         HashSet<AssemblyLine> visited = new HashSet<AssemblyLine>();
         return CheckForLoop(correctEndLine, intersectedLine, visited);
@@ -295,47 +295,183 @@ public class AssemblyLineManager
 
         return false;
     }
-
+    //This is to be used once the lines are connected.
+    private bool PostPlaceLoopDetection(AssemblyLine line)
+    {
+        HashSet<AssemblyLine> visited = new HashSet<AssemblyLine>();
+        return DetectLoop(line, visited);
+    }
+    private bool DetectLoop(AssemblyLine targetLine, HashSet<AssemblyLine> visited)
+    {
+        if (visited.Contains(targetLine))
+        {
+            return true;
+        }
+        visited.Add(targetLine);
+        foreach (AssemblyLine line in targetLine.GetAllConnections())
+        {
+            if (DetectLoop(line, visited))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public void RemoveTransportablePiece(ITransportable piece)
     {
-        AssemblyLine lineContainingPiece = null;
-        foreach(AssemblyLine line in assemblyLines)
+        AssemblyLine lineContainingPiece = FindLineContainingPiece(piece);
+        if (lineContainingPiece != null)
         {
-            lineContainingPiece = line.ContainsPiece(piece);
-            if(lineContainingPiece != null)
+            // Handle removal based on the location of the piece in the line
+            if (piece == lineContainingPiece.GetStartPiece() && piece == lineContainingPiece.GetEndPiece())
             {
-                if(piece == lineContainingPiece.GetStartPiece() || piece == lineContainingPiece.GetEndPiece())
-                {
-                    //Find if any connecting lines connect to this piece.
-                    List<AssemblyLine> connectingLines = lineContainingPiece.FindConnectingLines(piece);
-                    foreach(AssemblyLine connectingLine in connectingLines)
-                    {
-                        lineContainingPiece.RemoveConnection(connectingLine);
-                    }
-                    AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out ITransportable intersectedPiece);
-                    if(intersectedLine != null && intersectedLine != lineContainingPiece)
-                    {
-                        intersectedLine.RemoveConnection(lineContainingPiece);
-                    }
-                    lineContainingPiece.RemovePiece(piece);
-                }
-                else
-                {
-                    SplitLineAt(piece, lineContainingPiece);
-                }
-                break;
+                RemoveSinglePieceLine(lineContainingPiece, piece);
+            }
+            else if (piece == lineContainingPiece.GetEndPiece())
+            {
+                RemoveEndPiece(lineContainingPiece, piece);
+            }
+            else if (piece == lineContainingPiece.GetStartPiece())
+            {
+                RemoveStartPiece(lineContainingPiece, piece);
+            }
+            else
+            {
+                SplitLineAt(lineContainingPiece, piece);
             }
         }
     }
-    private void SplitLineAt(ITransportable piece, AssemblyLine oldLine)
-    {  
+
+    // Finds the line containing the specific piece
+    private AssemblyLine FindLineContainingPiece(ITransportable piece)
+    {
+        HashSet<AssemblyLine> visitedLines = new HashSet<AssemblyLine>();
+        foreach (AssemblyLine line in assemblyLines)
+        {
+            AssemblyLine lineContainingPiece = line.ContainsPiece(piece, visitedLines);
+            if (lineContainingPiece != null)
+            {
+                return lineContainingPiece;
+            }
+        }
+        return null;
+    }
+
+
+    // Handles removal when the piece is the only piece in the line
+    private void RemoveSinglePieceLine(AssemblyLine lineContainingPiece, ITransportable piece)
+    {
+        //GetIntersectedAssemblyLine iterates through all AssemblyLine in assemblyLines. therefore ensure we don't remove any before checking intersection. 
+        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out ITransportable intersectedPiece);
+        //Check Loop. Break removes a line from assemblyLines.
+        if (PostPlaceLoopDetection(lineContainingPiece))
+        {
+            BreakLoop(lineContainingPiece);
+        }
+        //Check intersection        
+        intersectedLine?.RemoveConnection(lineContainingPiece);
+        //Check connections
+        foreach(AssemblyLine line in lineContainingPiece.GetAllConnections())
+        {
+            assemblyLines.Add(line);
+            lineContainingPiece.RemoveConnection(line);
+        }
+        //Removal
+        assemblyLines.Remove(lineContainingPiece);
+        lineContainingPiece.RemovePiece(piece);
+    }
+
+    // Handles removal when the piece is at the start of a line
+    private void RemoveStartPiece(AssemblyLine lineContainingPiece, ITransportable piece)
+    {
+        if(PostPlaceLoopDetection(lineContainingPiece))
+        {
+            BreakLoop(lineContainingPiece);
+        }
+        List<AssemblyLine> connectingLines = lineContainingPiece.FindConnectingLines(piece);
+        foreach(AssemblyLine connectingLine in connectingLines)
+        {
+            lineContainingPiece.RemoveConnection(connectingLine);
+            assemblyLines.Add(connectingLine);
+        }
+        lineContainingPiece.RemovePiece(piece);
+    }
+
+    private void RemoveEndPiece(AssemblyLine lineContainingPiece, ITransportable piece)
+    {
+        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out ITransportable intersectedPiece);
+        if (PostPlaceLoopDetection(lineContainingPiece))
+        {
+            BreakLoop(lineContainingPiece);
+        }
+        if(intersectedLine != null)
+        {
+            intersectedLine.RemoveConnection(lineContainingPiece);
+            assemblyLines.Add(lineContainingPiece);
+        }
+        List<AssemblyLine> connectingLines = lineContainingPiece.FindConnectingLines(piece);
+        foreach (AssemblyLine connectingLine in connectingLines)
+        {
+            lineContainingPiece.RemoveConnection(connectingLine);
+            assemblyLines.Add(connectingLine);
+        }
+        lineContainingPiece.RemovePiece(piece);
+    }
+
+    // Splits the line at the specified piece
+    private void SplitLineAt(AssemblyLine lineContainingPiece, ITransportable piece)
+    {
+        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(lineContainingPiece.GetEndPiece(), out ITransportable intersectedPiece);
+        List<AssemblyLine> connectedLines = lineContainingPiece.FindConnectingLines(piece);
+        if (PostPlaceLoopDetection(lineContainingPiece))
+        {
+            BreakLoop(lineContainingPiece);
+        }
+        foreach (AssemblyLine line in connectedLines)
+        {
+            lineContainingPiece.RemoveConnection(line);
+            assemblyLines.Add(line);
+        }
         AssemblyLine lineBeforeSplit = new AssemblyLine(assemblyLineSystem);
         AssemblyLine lineAfterSplit = new AssemblyLine(assemblyLineSystem);
+        lineContainingPiece.Split(lineBeforeSplit, lineAfterSplit, piece);
+        if(intersectedLine != null)
+        {
+            intersectedLine.ReplaceExistingLine(lineContainingPiece, lineAfterSplit, intersectedPiece);
+        }
+        else
+        {
+            assemblyLines.Add(lineAfterSplit);
+        }
 
-        oldLine.Split(lineBeforeSplit, lineAfterSplit, piece);
         assemblyLines.Add(lineBeforeSplit);
-        assemblyLines.Add(lineAfterSplit);
-        RemoveAssemblyLine(oldLine);
+        RemoveAssemblyLine(lineContainingPiece);
+    }
+
+    // Breaks a loop in the assembly line system
+    private void BreakLoop(AssemblyLine loopingLine)
+    {
+        HashSet<AssemblyLine> visited = new HashSet<AssemblyLine>();
+        RecursiveBreakLoop(loopingLine, visited);
+    }
+    private void RecursiveBreakLoop (AssemblyLine currentLine, HashSet<AssemblyLine> visited)
+    {
+        if (visited.Contains(currentLine))
+        {
+            return;
+        }
+        visited.Add(currentLine);
+        if(assemblyLines.Contains(currentLine))
+        {
+            assemblyLines.Remove(currentLine);
+        }
+        else
+        {
+            foreach(AssemblyLine line in currentLine.GetAllConnections())
+            {
+                RecursiveBreakLoop(line, visited);
+            }
+        }
     }
     private void RemoveAssemblyLine(AssemblyLine line)
     {

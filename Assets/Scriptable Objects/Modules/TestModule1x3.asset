@@ -20,3 +20,8 @@ MonoBehaviour:
     <Width>k__BackingField: 1
     <Height>k__BackingField: 3
     values: 010101
+  portLayout:
+    width: 1
+    height: 3
+    inputs: 000000000000000000000000
+    outputs: 000000000000000000000000

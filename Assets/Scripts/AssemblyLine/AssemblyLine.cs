@@ -127,7 +127,6 @@ public class AssemblyLine
         LinkedListNode<ITransportable> node = pieces.Find(splitPiece);
         if(node == null)
         {
-            Debug.LogError("Split piece not found in line");
             return;
         }
 
@@ -165,8 +164,6 @@ public class AssemblyLine
         beforeSplit.UpdateStartEndPieces();
         afterSplit.UpdateStartEndPieces();
         beforeSplit.GetEndPiece().SetNextTransportable(null);
-        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(afterSplit.GetEndPiece().GetNextCellCoords(), new HashSet<AssemblyLine>(), out ITransportable i);
-        intersectedLine?.ReplaceExistingLine(this, afterSplit, i);
         
     }
     public void MoveConnectingLines(AssemblyLine newLine)
@@ -182,6 +179,7 @@ public class AssemblyLine
         RemoveConnection(currentLine);
         connectingAssemblyLines.Add(newLine, piece);
         newLine.ParentLine = this;
+        newLine.GetEndPiece().SetNextTransportable(piece);
     }
 
     public void RemoveConnection(AssemblyLine line)
@@ -242,8 +240,14 @@ public class AssemblyLine
         AddConnectingAssemblyLine(line, piece);
     }
 
-    public AssemblyLine ContainsPiece(ITransportable piece)
+    public AssemblyLine ContainsPiece(ITransportable piece, HashSet<AssemblyLine> visitedLines)
     {
+        if(visitedLines.Contains(this))
+        {
+            return null;
+        }
+        visitedLines.Add(this);
+        
         if(pieces.Contains(piece))
         {
             return this;
@@ -252,14 +256,16 @@ public class AssemblyLine
         {
             foreach(var kvp in connectingAssemblyLines)
             {
-                if(kvp.Key.ContainsPiece(piece) != null)
+                AssemblyLine lineWithPiece = kvp.Key.ContainsPiece(piece, visitedLines);
+                if(lineWithPiece != null)
                 {
-                    return kvp.Key;
+                    return lineWithPiece;
                 }
             }
             return null;
         }
     }
+
     public List<AssemblyLine> FindConnectingLines(ITransportable piece)
     {
         List<AssemblyLine> connectingLines = new List<AssemblyLine>();
