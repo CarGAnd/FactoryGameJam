@@ -102,6 +102,73 @@ public class AssemblyLine
             pieces.AddFirst(piece);
         }
     }
+    public void RemovePiece(ITransportable piece)
+    {
+        LinkedListNode<ITransportable> node = pieces.Find(piece);
+        if(piece == startPiece && piece == endPiece)
+        {
+            CleanUp();
+        }
+        else if(piece == startPiece)
+        {
+            startPiece = node.Next.Value;
+            pieces.RemoveFirst();
+        }
+        else if(piece == endPiece)
+        {
+            endPiece = node.Previous.Value;
+            endPiece.SetNextTransportable(null);
+            pieces.RemoveLast();
+        }
+    }
+
+    public void Split(AssemblyLine beforeSplit, AssemblyLine afterSplit, ITransportable splitPiece)
+    {
+        LinkedListNode<ITransportable> node = pieces.Find(splitPiece);
+        if(node == null)
+        {
+            Debug.LogError("Split piece not found in line");
+            return;
+        }
+
+        bool isAfterSplit = false;
+        foreach(ITransportable piece in pieces)
+        {
+            if(piece == splitPiece)
+            {
+                isAfterSplit = true;
+                continue;
+            }
+            if(isAfterSplit)
+            {
+                afterSplit.pieces.AddLast(piece);
+                foreach(var kvp in connectingAssemblyLines)
+                {
+                    if(kvp.Value == piece)
+                    {
+                        afterSplit.AddConnectingAssemblyLine(kvp.Key, kvp.Value);
+                    }
+                }
+            }
+            else
+            {
+                beforeSplit.pieces.AddLast(piece);
+                foreach(var kvp in connectingAssemblyLines)
+                {
+                    if(kvp.Value == piece)
+                    {
+                        beforeSplit.AddConnectingAssemblyLine(kvp.Key, kvp.Value);
+                    }
+                }
+            }
+        }
+        beforeSplit.UpdateStartEndPieces();
+        afterSplit.UpdateStartEndPieces();
+        beforeSplit.GetEndPiece().SetNextTransportable(null);
+        AssemblyLine intersectedLine = GetIntersectedAssemblyLine(afterSplit.GetEndPiece().GetNextCellCoords(), new HashSet<AssemblyLine>(), out ITransportable i);
+        intersectedLine?.ReplaceExistingLine(this, afterSplit, i);
+        
+    }
     public void MoveConnectingLines(AssemblyLine newLine)
     {
         foreach(var kvp in connectingAssemblyLines)
@@ -120,6 +187,7 @@ public class AssemblyLine
     public void RemoveConnection(AssemblyLine line)
     {
         connectingAssemblyLines.Remove(line);
+        line.GetEndPiece().SetNextTransportable(null);
     }
 
     private void UpdateStartEndPieces()
@@ -132,10 +200,12 @@ public class AssemblyLine
     }
     public void AppendLine(AssemblyLine newLine)
     {
-        foreach (var node in pieces)
+        var node = pieces.First;
+        while(node != null)
         {
-            newLine.pieces.Last.Value.SetNextTransportable(node);
-            newLine.pieces.AddLast(node);
+            newLine.pieces.Last.Value.SetNextTransportable(node.Value);
+            newLine.pieces.AddLast(node.Value);
+            node = node.Next;
         }
         newLine.UpdateStartEndPieces();
     }
@@ -170,6 +240,37 @@ public class AssemblyLine
     public void HandleLoop(AssemblyLine line, ITransportable piece)
     {
         AddConnectingAssemblyLine(line, piece);
+    }
+
+    public AssemblyLine ContainsPiece(ITransportable piece)
+    {
+        if(pieces.Contains(piece))
+        {
+            return this;
+        }
+        else
+        {
+            foreach(var kvp in connectingAssemblyLines)
+            {
+                if(kvp.Key.ContainsPiece(piece) != null)
+                {
+                    return kvp.Key;
+                }
+            }
+            return null;
+        }
+    }
+    public List<AssemblyLine> FindConnectingLines(ITransportable piece)
+    {
+        List<AssemblyLine> connectingLines = new List<AssemblyLine>();
+        foreach(var kvp in connectingAssemblyLines)
+        {
+            if(kvp.Value == piece)
+            {
+                connectingLines.Add(kvp.Key);
+            }
+        }
+        return connectingLines;
     }
     public void CleanUp()
     {

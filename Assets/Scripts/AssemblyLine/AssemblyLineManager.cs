@@ -1,8 +1,6 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using Codice.CM.Client.Differences;
 
 public class AssemblyLineManager
 {
@@ -298,6 +296,47 @@ public class AssemblyLineManager
         return false;
     }
 
+    public void RemoveTransportablePiece(ITransportable piece)
+    {
+        AssemblyLine lineContainingPiece = null;
+        foreach(AssemblyLine line in assemblyLines)
+        {
+            lineContainingPiece = line.ContainsPiece(piece);
+            if(lineContainingPiece != null)
+            {
+                if(piece == lineContainingPiece.GetStartPiece() || piece == lineContainingPiece.GetEndPiece())
+                {
+                    //Find if any connecting lines connect to this piece.
+                    List<AssemblyLine> connectingLines = lineContainingPiece.FindConnectingLines(piece);
+                    foreach(AssemblyLine connectingLine in connectingLines)
+                    {
+                        lineContainingPiece.RemoveConnection(connectingLine);
+                    }
+                    AssemblyLine intersectedLine = GetIntersectedAssemblyLine(piece, out ITransportable intersectedPiece);
+                    if(intersectedLine != null && intersectedLine != lineContainingPiece)
+                    {
+                        intersectedLine.RemoveConnection(lineContainingPiece);
+                    }
+                    lineContainingPiece.RemovePiece(piece);
+                }
+                else
+                {
+                    SplitLineAt(piece, lineContainingPiece);
+                }
+                break;
+            }
+        }
+    }
+    private void SplitLineAt(ITransportable piece, AssemblyLine oldLine)
+    {  
+        AssemblyLine lineBeforeSplit = new AssemblyLine(assemblyLineSystem);
+        AssemblyLine lineAfterSplit = new AssemblyLine(assemblyLineSystem);
+
+        oldLine.Split(lineBeforeSplit, lineAfterSplit, piece);
+        assemblyLines.Add(lineBeforeSplit);
+        assemblyLines.Add(lineAfterSplit);
+        RemoveAssemblyLine(oldLine);
+    }
     private void RemoveAssemblyLine(AssemblyLine line)
     {
         line.CleanUp();

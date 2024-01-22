@@ -51,20 +51,27 @@ public static class FacingExtentions {
         return facingMap[newNumRotations];
     }
 
-    public static Facing GetOppositeFacing(Facing facing)
+    public static Facing GetOppositeFacing(this Facing facing)
     {
-        switch (facing)
+        return facing switch
         {
-            case Facing.North:
-                return Facing.South;
-            case Facing.East:
-                return Facing.West;
-            case Facing.South:
-                return Facing.North;
-            case Facing.West:
-                return Facing.East;
-            default:
-                return Facing.North;
-        }
+            Facing.North => Facing.South,
+            Facing.East => Facing.West,
+            Facing.South => Facing.North,
+            Facing.West => Facing.East,
+            _ => Facing.North,
+        };
+    }
+
+    public static Quaternion GetRotationFromFacing(this Facing facing)
+    {
+        return facing switch
+        {
+            Facing.North => Quaternion.Euler(0, 90, 0),
+            Facing.East => Quaternion.Euler(0, 180, 0),
+            Facing.South => Quaternion.Euler(0, 270, 0),
+            Facing.West => Quaternion.Euler(0, 0, 0),
+            _ => Quaternion.Euler(0, 0, 0),
+        };
     }
 }

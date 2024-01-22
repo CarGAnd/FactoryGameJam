@@ -101,6 +101,11 @@ public class AssemblyLineSystem : MonoBehaviour
         assemblyLineManager.PlaceTransportablePiece(piece);
     }
 
+    public void RemoveTransportablePiece(ITransportable piece)
+    {
+        assemblyLineManager.RemoveTransportablePiece(piece);
+    }
+
     public void SubscribeToTransportTick(UnityAction action)
     {
         TransportTick.AddListener(action);

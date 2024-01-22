@@ -13,13 +13,15 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private AssemblyTravelingObject travelingObject;
     private Grid grid;
     private AssemblyLineSystem assemblyLineSystem;
+    private GameObject gameObject;
     public abstract override string ToString();
 
     protected AssemblyPiece(AssemblyPieceData data, AssemblyLineSystem assemblyLineSystem)
     {
-        this.facing = data.Facing;
+        this.facing = data.ObjectFacing;
         this.distance = data.movementDistance;
         this.assemblyLineSystem = assemblyLineSystem;
+        this.gameObject = data.ModulePrefab;
     }
     public Vector2Int Movement()
     {
@@ -88,12 +90,15 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
 ///////////////////////////// IGridObject /////////////////////////////
     public void RemoveFromGrid(Grid grid)
     {
-        throw new System.NotImplementedException();
+        assemblyLineSystem.RemoveTransportablePiece(this);
+        grid.RemoveObject(cellCoords);
+        MonoBehaviour.Destroy(gameObject);
     }
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
         assemblyLineSystem.PlaceTransportablePiece(this);
+        MonoBehaviour.Instantiate(gameObject, grid.GetCellCenter(cellCoords), grid.Rotation * facing.GetRotationFromFacing());
     }
 ///////////////////////////// IGridInteractable /////////////////////////////
     public bool IsPlaced()

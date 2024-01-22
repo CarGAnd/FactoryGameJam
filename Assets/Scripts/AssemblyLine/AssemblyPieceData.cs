@@ -6,10 +6,14 @@ public class AssemblyPieceData : GridObjectSO
     public int movementDistance;
     public int cost;
     public AssemblyPieceType type;
-    public Facing Facing { get; private set; }
+    public Facing ObjectFacing { get; private set; }
+    public Vector3 Position { get; private set; }
+    public Quaternion Rotation { get; private set; }
     public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem) {
         SetFacing(rotation);
-        Instantiate(ModulePrefab, position, rotation);
+        Position = position;
+        Rotation = rotation;
+        
         AssemblyPiece assemblyPiece = assemblyLineSystem.CreateAssemblyPiece(this);
         return assemblyPiece;
     }
@@ -23,16 +27,16 @@ public class AssemblyPieceData : GridObjectSO
         switch(yRotation)
         {
             case 90:
-                Facing = Facing.North;
+                ObjectFacing = Facing.North;
                 break;
             case 0:
-                Facing = Facing.West;
+                ObjectFacing = Facing.West;
                 break;
             case 270:
-                Facing = Facing.South;
+                ObjectFacing = Facing.South;
                 break;
             case 180:
-                Facing = Facing.East;
+                ObjectFacing = Facing.East;
                 break;
             default:
                 Debug.LogError("Invalid rotation");
