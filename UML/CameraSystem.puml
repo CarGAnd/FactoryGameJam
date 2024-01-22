@@ -1,0 +1,40 @@
+@startuml CameraSystem
+
+class CameraSystem {
+    - virtualCamera: CinemachineVirtualCamera
+    - confiner: CinemachineConfiner
+    - zoomSettings: ZoomSettings
+    - movementSettings: MovementSettings
+    + UpdateCameraPosition(delta : float): void
+    + UpdateCameraZoom(delta : float): void
+    + ApplyCameraBounds(): void
+}
+
+class ZoomSettings {
+    - minZoom: float
+    - maxZoom: float
+    - zoomSpeed: float
+}
+
+class MovementSettings {
+    - moveSpeed
+    - dampeningCurve: AnimationCurve
+    - isometricMovement: bool
+}
+
+class InputManager {
+    + GetMovementInput(): Vector3
+    + GetZoomInput(): float
+}
+
+class CinemachineVirtualCamera {}
+
+class CinemachineConfiner {}
+
+CameraSystem "1" -- "1" CinemachineVirtualCamera : uses >
+CameraSystem "1" -- "1" CinemachineConfiner : uses >
+CameraSystem "1" -- "1" InputManager : delegates input handling to >
+CameraSystem "1" -- "1" ZoomSettings : configures zoom with >
+CameraSystem "1" -- "1" MovementSettings : configures movement with >
+
+@enduml
