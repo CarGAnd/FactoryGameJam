@@ -6,7 +6,7 @@ using UnityEngine.Events;
 public class AssemblyLineSystem : MonoBehaviour
 {
     private UnityEvent TransportTick;
-    [SerializeField] private Grid grid;
+    [SerializeField] private FactoryGrid grid;
     [SerializeField] private float tickRate = 0.200f;
     private float currentTick = 0f;
     private List<AssemblyLine> assemblyLines;

@@ -11,7 +11,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     private ITransportable nextPiece;
     private int distance;
     private AssemblyTravelingObject travelingObject;
-    private Grid grid;
+    private FactoryGrid grid;
     private AssemblyLineSystem assemblyLineSystem;
     private GameObject gameObject;
     public abstract override string ToString();
@@ -88,13 +88,13 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     }
 
 ///////////////////////////// IGridObject /////////////////////////////
-    public void RemoveFromGrid(Grid grid)
+    public void RemoveFromGrid(FactoryGrid grid)
     {
         assemblyLineSystem.RemoveTransportablePiece(this);
         grid.RemoveObject(cellCoords);
         
     }
-    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
+    public void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
         assemblyLineSystem.PlaceTransportablePiece(this);

@@ -1,22 +1,22 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cell {
-    private Grid grid;
+public class GenericCell<T> 
+{
     private int row;
     private int column;
     private CellState state;
-    private IGridObject occupyingObject;
+    private T occupyingObject;
     //The list of cells that has the same occupying object
-    private List<Cell> sharedCells;
+    private List<GenericCell<T>> sharedCells;
     private Vector2Int occupyingObjectOrigin;
 
-    public Cell(int row, int column, Grid grid, CellState state = CellState.EMPTY)
+    public GenericCell(int row, int column, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;
         this.state = state;
-        this.grid = grid;
     }
 
     public CellState GetState() 
@@ -24,12 +24,12 @@ public class Cell {
         return state;
     }
 
-    public IGridObject GetOccupyingObject() 
+    public T GetOccupyingObject() 
     {
         return occupyingObject;
     }
 
-    public void SetOccupyingObject(IGridObject occupyingObject, Vector2Int objectOriginCell, List<Cell> sharedCells = null) 
+    public void SetOccupyingObject(T occupyingObject, Vector2Int objectOriginCell, List<GenericCell<T>> sharedCells = null) 
     {
         if(occupyingObject != null) 
         {
@@ -44,11 +44,11 @@ public class Cell {
         }
     }
 
-    public void SetOccupyingObject(IGridObject occupyingObject) {
+    public void SetOccupyingObject(T occupyingObject) {
         SetOccupyingObject(occupyingObject, new Vector2Int(column, row), null);
     }
 
-    public List<Cell> GetSharedCells() {
+    public List<GenericCell<T>> GetSharedCells() {
         return sharedCells;
     }
 
@@ -62,7 +62,7 @@ public class Cell {
 
     public void RemoveOccupyingObject() 
     {
-        occupyingObject = null;
+        occupyingObject = default(T);
         sharedCells = null;
         state = CellState.EMPTY;
     }

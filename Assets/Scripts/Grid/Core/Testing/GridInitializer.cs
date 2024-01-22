@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Grid))]
+[RequireComponent(typeof(FactoryGrid))]
 public class GridInitializer : MonoBehaviour
 {
     [SerializeField] private bool showGizmos;
-    private Grid grid;
+    private FactoryGrid grid;
     [SerializeField] public List<GameObject> prePlacedObjects;
     
 
     // Start is called before the first frame update
     void Start()
     {
-        grid = GetComponent<Grid>();
+        grid = GetComponent<FactoryGrid>();
         foreach(GameObject g in prePlacedObjects) {
             IGridObject gridObject = new TestGridObject();
             grid.PlaceObject(gridObject, grid.GetCellCoords(g.transform.position));
@@ -25,7 +25,7 @@ public class GridInitializer : MonoBehaviour
             return;
         }
 
-        grid = GetComponent<Grid>();
+        grid = GetComponent<FactoryGrid>();
         Gizmos.color = Color.yellow;
         foreach(GameObject g in prePlacedObjects) {
             Vector3 pos = grid.GetCellCenter(g.transform.position);
@@ -39,11 +39,11 @@ public class TestGridObject : IGridObject {
         throw new System.NotImplementedException();
     }
 
-    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
+    public void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
         throw new System.NotImplementedException();
     }
 
-    public void RemoveFromGrid(Grid grid) {
+    public void RemoveFromGrid(FactoryGrid grid) {
         throw new System.NotImplementedException();
     }
 }

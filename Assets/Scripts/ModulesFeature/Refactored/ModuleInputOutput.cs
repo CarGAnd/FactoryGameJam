@@ -6,7 +6,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 {
     private ModuleSO moduleSettings;
     private Vector2Int originCell;
-    private Grid grid;
+    private FactoryGrid grid;
     private int numRotations;
 
     private List<Port> inputPorts;
@@ -100,7 +100,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         }
     }
 
-    public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
+    public void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
         this.originCell = startCell;
         this.grid = grid;
         CreatePorts();
@@ -112,7 +112,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         Destroy(gameObject);
     }
 
-    public void RemoveFromGrid(Grid grid) {
+    public void RemoveFromGrid(FactoryGrid grid) {
         RemovePorts();
         grid.RemoveObject(originCell + moduleSettings.GetLayoutShape(numRotations)[0]);
     }

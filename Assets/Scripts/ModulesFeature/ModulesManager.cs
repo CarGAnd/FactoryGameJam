@@ -32,7 +32,7 @@ public class ModulesManager : MonoBehaviour
     [SerializeField] private float checkRadius = 0.65f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask moduleLayer;
-    [field: SerializeField] public Grid BuildGrid { get; private set; }
+    [field: SerializeField] public FactoryGrid BuildGrid { get; private set; }
     private bool isModuleSelected = false;
     public static ModulesManager Instance { get; private set; }
     public bool ShowGizmos {get; private set;}

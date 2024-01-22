@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Grid))]
+[RequireComponent(typeof(FactoryGrid))]
 public class GridCellSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject cellPrefab;
@@ -15,7 +15,7 @@ public class GridCellSpawner : MonoBehaviour
     [SerializeField, HideInInspector] private int currentWidth;
     [SerializeField, HideInInspector] private int currentHeight;
 
-    private Grid grid;
+    private FactoryGrid grid;
     private GameObject[,] cells;
 
     private void Awake() {
@@ -69,7 +69,7 @@ public class GridCellSpawner : MonoBehaviour
     [Button("Create Prefabs", ButtonSizes.Medium)]
     private void CreateCells() {
         DestroyCells();
-        grid = GetComponent<Grid>();
+        grid = GetComponent<FactoryGrid>();
         cells = new GameObject[grid.Rows, grid.Columns];
 
         if(spawnType == SpawnType.FillGrid) {
@@ -108,7 +108,7 @@ public class GridCellSpawner : MonoBehaviour
     }
 
     private void OnValidate() {
-        grid = GetComponent<Grid>();
+        grid = GetComponent<FactoryGrid>();
         if(grid.Rows != currentHeight || grid.Columns != currentWidth) {
             bool[] newMask = new bool[grid.Rows * grid.Columns];
             for(int y = 0; y < Mathf.Min(currentHeight, grid.Rows); y++) {

@@ -4,10 +4,10 @@ using UnityEngine;
 
 public interface IGridObject {
     // Places the object on the grid starting from a specified cell.
-    void OnPlacedOnGrid(Vector2Int startCell, Grid grid);
+    void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid);
 
     // Removes the object from the grid.
-    void RemoveFromGrid(Grid grid);
+    void RemoveFromGrid(FactoryGrid grid);
     
     // Destroy the gridObject and any associated prefab
     void DestroyObject();

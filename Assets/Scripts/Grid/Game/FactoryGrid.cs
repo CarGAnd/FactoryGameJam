@@ -125,6 +125,10 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     [SerializeField] private bool showGridLines = true;
 
     private void OnDrawGizmos() {
+        if(gridLayout == null) {
+            return;
+        }
+
         if (showOccupiedCells && placementGrid != null) {
             Gizmos.color = new Color(1, 0, 0, 0.5f);
             for (int y = 0; y < placementGrid.Rows; y++) {

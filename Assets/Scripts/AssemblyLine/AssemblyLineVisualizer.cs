@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AssemblyLineVisualizer : MonoBehaviour
 {
-    public Grid grid;
+    public FactoryGrid grid;
     public AssemblyLineSystem assemblyLineSystem;
     private void OnDrawGizmos()
     {

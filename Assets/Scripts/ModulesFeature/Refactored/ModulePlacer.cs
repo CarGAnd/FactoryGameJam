@@ -8,7 +8,7 @@ public class ModulePlacer : MonoBehaviour
     [HideInInspector] public UnityEvent moduleRotated;
     [HideInInspector] public UnityEvent<GridObjectSO> moduleChanged;
 
-    [SerializeField] private Grid grid;
+    [SerializeField] private FactoryGrid grid;
     [SerializeField] private MouseInput mouseInput;
     [SerializeField] private BuildingSelector buildingSelector;
     [SerializeField] private AssemblyLineSystem assemblyLineSystem;

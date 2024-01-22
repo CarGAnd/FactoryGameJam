@@ -160,7 +160,7 @@ public class CellGrid<T> : ISearchable
         cells = new GenericCell<T>[rows, columns];
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
-                cells[y, x] = new GenericCell<T>(y, x, this);
+                cells[y, x] = new GenericCell<T>(y, x);
             }
         }
     }

@@ -8,7 +8,7 @@ public class GridVisual : MonoBehaviour
     [SerializeField] private GameObject indicatorPrefab;
     [SerializeField] private ModulePlacer modulePlacer;
 
-    private Grid buildGrid;
+    private FactoryGrid buildGrid;
     private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
     private Vector2Int lastOriginCoord;

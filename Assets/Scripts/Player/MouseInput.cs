@@ -8,7 +8,7 @@ public class MouseInput : MonoBehaviour {
     
     [SerializeField] private Camera cam;
     [SerializeField] private LayerMask groundLayer;
-    [field: SerializeField] public Grid BuildGrid { get; private set; }
+    [field: SerializeField] public FactoryGrid BuildGrid { get; private set; }
 
     public Vector3 LastGroundHitPoint { get; private set; }
     public Vector2Int LastMouseGridPos { get; private set; }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class AssemblyTravelingObject : MonoBehaviour
 {
-    public void MoveToPiece(Vector2Int startPosition, Vector2Int endPosition, Grid grid)
+    public void MoveToPiece(Vector2Int startPosition, Vector2Int endPosition, FactoryGrid grid)
     {
         Vector3 start = grid.GetCellCenter(startPosition);
         Vector3 end = grid.GetCellCenter(endPosition);

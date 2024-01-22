@@ -2,8 +2,8 @@
 using UnityEngine;
 
 public interface IPlacementStrategy {
-    void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
-    List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
+    void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
+    List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer);
 }
 
 public class ClickPlacer : IPlacementStrategy {
@@ -14,7 +14,7 @@ public class ClickPlacer : IPlacementStrategy {
         this.currentModule = obj;
     }
 
-    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.NumRotations);
         Vector2Int gridPosition = grid.GetSubgridOriginCoord(mousePosOnGrid, buildingDimensions);
         List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.NumRotations);
@@ -24,7 +24,7 @@ public class ClickPlacer : IPlacementStrategy {
         return buildingPositions;
     }
 
-    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentPlacementRotation);
         }
@@ -46,7 +46,7 @@ public class PathPlacer : IPlacementStrategy {
         this.currentModule = obj;
     }
 
-    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             startDragPos = grid.GetCellCoords(mousePosOnGrid);
             isDragging = true;
@@ -74,7 +74,7 @@ public class PathPlacer : IPlacementStrategy {
         }
     }
 
-    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (!isDragging) {
             return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };
         }
@@ -127,7 +127,7 @@ public class BoxPlacer : IPlacementStrategy {
         this.currentModule = gridObject;
     }
 
-    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (isDragging) {
             return GetPositionsInBox(startDragPos, grid.GetCellCoords(mousePosOnGrid), grid);
         }
@@ -136,7 +136,7 @@ public class BoxPlacer : IPlacementStrategy {
         }
     }
 
-    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             isDragging = true;
             startDragPos = grid.GetCellCoords(mousePosOnGrid);
@@ -151,7 +151,7 @@ public class BoxPlacer : IPlacementStrategy {
         }
     }
 
-    private List<Vector2Int> GetPositionsInBox(Vector2Int startPos, Vector2Int endPos, Grid grid) {
+    private List<Vector2Int> GetPositionsInBox(Vector2Int startPos, Vector2Int endPos, FactoryGrid grid) {
         Vector2Int lowerLeft = new Vector2Int(Mathf.Min(startPos.x, endPos.x), Mathf.Min(startPos.y, endPos.y));
         Vector2Int upperRight = new Vector2Int(Mathf.Max(startPos.x, endPos.x), Mathf.Max(startPos.y, endPos.y));
         Vector2Int boxDimensions = upperRight - lowerLeft + Vector2Int.one;
@@ -160,11 +160,11 @@ public class BoxPlacer : IPlacementStrategy {
 }
 
 public class NoPlacement : IPlacementStrategy {
-    public List<Vector2Int> GetHoveredPositions(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };    
     }
 
-    public void UpdateInput(Grid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+    public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         
     }
 }

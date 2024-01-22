@@ -6,7 +6,7 @@ using TMPro;
 public class GridText : MonoBehaviour
 {
     [SerializeField] private MouseInput mouseInput;
-    [SerializeField] private Grid grid;
+    [SerializeField] private FactoryGrid grid;
     [SerializeField] private TextMeshPro text;
 
     private void Start() {
