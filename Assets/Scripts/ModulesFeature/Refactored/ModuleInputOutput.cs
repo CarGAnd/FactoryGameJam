@@ -91,7 +91,13 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     private void RemovePorts() {
-        
+        foreach (Port p in inputPorts) {
+            assemblyLineSystem.RemoveTransportablePiece(p);
+        }
+
+        foreach (Port p in outputPorts) {
+            assemblyLineSystem.RemoveTransportablePiece(p);
+        }
     }
 
     public void OnPlacedOnGrid(Vector2Int startCell, Grid grid) {
