@@ -5,13 +5,19 @@ using UnityEngine;
 //This is mainly just a wrapper class for GridOfObjects + GridLayout, as they are usually used together
 public class FactoryGrid : MonoBehaviour, ISearchable
 {
+    [field: SerializeField] public int Rows { get; private set; }
+    [field: SerializeField] public int Columns { get; private set; }
+
+    public Quaternion Rotation { get { return gridLayout.Rotation; } }
+    public Vector2 CellSize { get { return gridLayout.CellSize; } }
+    public Vector3 Origin { get { return gridLayout.Origin; } }
+
     [SerializeField] private GridLayout gridLayout;
 
     private CellGrid<IGridObject> placementGrid;
 
     private void Awake() {
-        GridSize gridSize = GetComponent<GridSize>();
-        placementGrid = new CellGrid<IGridObject>(gridSize.Columns, gridSize.Rows);
+        placementGrid = new CellGrid<IGridObject>(Columns, Rows);
     }
  
     public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
@@ -108,12 +114,17 @@ public class FactoryGrid : MonoBehaviour, ISearchable
         return gridLayout.GetPositionsInSubgrid(lowerLeft, subgridDimensions);
     }
 
+    public string SaveGrid() {
+        //GridSerializer<IGridObject> serializer = new GridSerializer<IGridObject>();
+        //return serializer.GridToJson(placementGrid, (IGridObject gridObject) => "1");
+        return "123";
+    }
+
     #region Debugging
     [SerializeField] private bool showOccupiedCells = true;
+    [SerializeField] private bool showGridLines = true;
 
     private void OnDrawGizmos() {
-        GridSize gridSize = GetComponent<GridSize>();
-
         if (showOccupiedCells && placementGrid != null) {
             Gizmos.color = new Color(1, 0, 0, 0.5f);
             for (int y = 0; y < placementGrid.Rows; y++) {
@@ -127,6 +138,21 @@ public class FactoryGrid : MonoBehaviour, ISearchable
                 }
             }
         } 
+
+        if (showGridLines) {
+            Gizmos.color = Color.green;
+            for (int y = 0; y < Rows + 1; y++) {
+                Vector3 start = GetCellWorldPosition(new Vector2Int(0, y));
+                Vector3 end = GetCellWorldPosition(new Vector2Int(Columns, y));
+                Gizmos.DrawLine(start, end);
+            }
+
+            for (int x = 0; x < Columns + 1; x++) {
+                Vector3 start = GetCellWorldPosition(new Vector2Int(x, 0));
+                Vector3 end = GetCellWorldPosition(new Vector2Int(x, Rows));
+                Gizmos.DrawLine(start, end);
+            }
+        }
     }
     #endregion
 }

@@ -35,11 +35,7 @@ public class GridInitializer : MonoBehaviour
 }
 
 public class TestGridObject : IGridObject {
-    public List<Vector2Int> GetOccupyingCells(Vector2Int startCell, Grid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public List<Vector2Int> GetShapeLayout() {
+    public void DestroyObject() {
         throw new System.NotImplementedException();
     }
 

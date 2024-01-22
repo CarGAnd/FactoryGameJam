@@ -10,7 +10,7 @@ public class ModuleSO : GridObjectSO
     public List<PortSettings> GetInputs(int numRotations) { 
         List<PortSettings> portSettings = portLayout.GetInputPorts();
         foreach(PortSettings ps in portSettings) {
-            ps.position = GetRotatedPosition(ps.position, numRotations);
+            ps.relativePosition = GetRotatedPosition(ps.relativePosition, numRotations);
             ps.direction = ps.direction.RotatedDirection(numRotations);
         }
         return portSettings;
@@ -19,7 +19,7 @@ public class ModuleSO : GridObjectSO
     public List<PortSettings> GetOutputs(int numRotations) {
         List<PortSettings> portSettings = portLayout.GetOutputPorts();
         foreach(PortSettings ps in portSettings) {
-            ps.position = GetRotatedPosition(ps.position, numRotations);
+            ps.relativePosition = GetRotatedPosition(ps.relativePosition, numRotations);
             ps.direction = ps.direction.RotatedDirection(numRotations);
         }
         return portSettings;

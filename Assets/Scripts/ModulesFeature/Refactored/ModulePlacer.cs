@@ -24,6 +24,10 @@ public class ModulePlacer : MonoBehaviour
 
     private void Update() {
         placementHandler.UpdateInput(grid, mouseInput.LastGroundHitPoint, this);
+        if (mouseInput.RightMouseButtonPressed()) {
+            Vector2Int mouseGridPos = grid.GetCellCoords(mouseInput.LastGroundHitPoint);
+            RemoveModule(mouseGridPos);
+        }
     }
 
     public void RotateModuleClockwise() {
@@ -42,13 +46,16 @@ public class ModulePlacer : MonoBehaviour
         moduleChanged?.Invoke(newBuilding);
 
         if(newBuilding == null) {
-            placementHandler = new NoPlacement();
+            ExitPlacementMode();
             return;
         }
 
         placementHandler = newBuilding.GetPlacementHandler();
-        placementHandler.SetModule(newBuilding);
         SetModuleRotation(0);
+    }
+
+    public void ExitPlacementMode() {
+        placementHandler = new NoPlacement();
     }
 
     private void SetModuleRotation(int numRotations) {
@@ -65,51 +72,37 @@ public class ModulePlacer : MonoBehaviour
         buildingSelector.selectedObjectChanged.RemoveListener(OnSelectedBuildingChanged);
     }
 
-    public void TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition, Quaternion rotation) {
+    public IGridObject TryPlaceModule(GridObjectSO moduleData, Vector3 mouseHitPosition, Quaternion rotation) {
         Vector2Int buildingDimensions = moduleData.GetLayoutShapeDimensions(NumRotations);
         Vector2Int gridPosition = grid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
-        TryPlaceModule(moduleData, gridPosition, rotation);
+        return TryPlaceModule(moduleData, gridPosition, rotation);
     }
 
-    public void TryPlaceModule(GridObjectSO moduleData, Vector2Int lowerLeftPosition, Quaternion rotation) {
+    public IGridObject TryPlaceModule(GridObjectSO moduleData, Vector2Int lowerLeftPosition, Quaternion rotation) {
         List<Vector2Int> buildingPositions = moduleData.GetLayoutShape(NumRotations);
         for(int i = 0; i < buildingPositions.Count; i++) {
             buildingPositions[i] += lowerLeftPosition;
         }
         bool allPositionsAreFree = grid.AllPositionsAreFree(buildingPositions);
         if (allPositionsAreFree) {
-            PlaceModule(moduleData, lowerLeftPosition, rotation);
+            IGridObject placedObject = PlaceModule(moduleData, lowerLeftPosition, rotation);
+            return placedObject;
+        }
+        else {
+            return null;
         }
     }
 
-    private void PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft, Quaternion rotation) {
+    private IGridObject PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft, Quaternion rotation) {
         Vector3 spawnPos = grid.GetSubgridCenter(lowerLeft, moduleData.GetLayoutShapeDimensions(NumRotations));
         IGridObject gridObject = moduleData.CreateInstance(spawnPos, rotation, NumRotations, assemblyLineSystem);
         grid.PlaceObject(gridObject, lowerLeft, moduleData.GetLayoutShape(NumRotations));
         gridObject.OnPlacedOnGrid(lowerLeft, grid);
+        return gridObject;
     }
 
-    public void PlaceModulesAlongPath(GridObjectSO moduleData, Path path) {
-        List<Vector2Int> pathPositions = path.GetPositions();
-        List<Vector2Int> pathDirections = path.GetDirections();
-        for(int i = 0; i < pathPositions.Count; i++) {
-            //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
-            TryPlaceModule(moduleData, pathPositions[i], RotationFromDirection(pathDirections[i]));
-        }    
-    }
-
-    private Quaternion RotationFromDirection(Vector2Int direction) {
-        if(direction == Vector2Int.left) {
-            return Quaternion.Euler(new Vector3(0, 0, 0));
-        }
-        else if(direction == Vector2Int.up) {
-            return Quaternion.Euler(new Vector3(0, 90, 0));
-        }
-        else if(direction == Vector2Int.right) {
-            return Quaternion.Euler(new Vector3(0, 180, 0));
-        }
-        else {
-            return Quaternion.Euler(new Vector3(0, 270, 0));
-        }
-    }
+    public void RemoveModule(Vector2Int gridPosition) {
+        IGridObject gridObject = grid.GetObjectAt(gridPosition);
+        gridObject.DestroyObject();
+    }    
 }

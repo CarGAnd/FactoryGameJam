@@ -343,7 +343,6 @@ GameObject:
   m_Component:
   - component: {fileID: 9661311}
   - component: {fileID: 9661312}
-  - component: {fileID: 9661309}
   - component: {fileID: 9661308}
   m_Layer: 0
   m_Name: PlacementGrid
@@ -367,22 +366,6 @@ MonoBehaviour:
   <Origin>k__BackingField: {x: -25, y: 0, z: -20}
   <Rotation>k__BackingField: {x: 0, y: 0, z: 0, w: 1}
   <CellSize>k__BackingField: {x: 3, y: 3}
-  showGridLines: 1
-  debugGridSize: {x: 0, y: 0}
---- !u!114 &9661309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9661307}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 113bb09e9e1aab044ad27c06116fa713, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  <Columns>k__BackingField: 20
-  <Rows>k__BackingField: 20
 --- !u!4 &9661311
 Transform:
   m_ObjectHideFlags: 0
@@ -410,8 +393,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a1833cc7a854b642a3038d30e9bb286, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <Rows>k__BackingField: 20
+  <Columns>k__BackingField: 20
   gridLayout: {fileID: 9661308}
   showOccupiedCells: 1
+  showGridLines: 1
 --- !u!1 &16067179
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,6 +565,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grid: {fileID: 857417367}
+  assemblyLineSystem: {fileID: 0}
 --- !u!1 &19306010
 GameObject:
   m_ObjectHideFlags: 0
@@ -14788,6 +14775,7 @@ MonoBehaviour:
   grid: {fileID: 857417367}
   mouseInput: {fileID: 48113247}
   buildingSelector: {fileID: 799729830}
+  assemblyLineSystem: {fileID: 17596880}
 --- !u!114 &799729830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17186,6 +17174,8 @@ MonoBehaviour:
     type: 3}
   spawnOffset: {x: 0, y: -0.5, z: 0}
   cellParent: {fileID: 857417368}
+  spawnType: 0
+  customSpawnMask: 
 --- !u!1 &857983088
 GameObject:
   m_ObjectHideFlags: 0

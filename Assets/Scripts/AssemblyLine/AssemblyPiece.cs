@@ -100,6 +100,10 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         assemblyLineSystem.PlaceTransportablePiece(this);
         MonoBehaviour.Instantiate(gameObject, grid.GetCellCenter(cellCoords), grid.Rotation * facing.GetRotationFromFacing());
     }
+
+    public void DestroyObject() {
+
+    }
 ///////////////////////////// IGridInteractable /////////////////////////////
     public bool IsPlaced()
     {

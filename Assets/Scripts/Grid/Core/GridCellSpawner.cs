@@ -9,6 +9,9 @@ public class GridCellSpawner : MonoBehaviour
     [SerializeField] private GameObject cellPrefab;
     [SerializeField] Vector3 spawnOffset;
     [SerializeField] private Transform cellParent;
+    [SerializeField] private SpawnType spawnType;
+
+    [SerializeField, HideInInspector] private bool[] customSpawnMask;
 
     private Grid grid;
     private GameObject[,] cells;
@@ -53,6 +56,10 @@ public class GridCellSpawner : MonoBehaviour
     [Button("Create Prefabs", ButtonSizes.Medium)]
     private void CreateCells() {
         DestroyCells();
+        FillGridWithPrefabs();
+    }
+
+    private void FillGridWithPrefabs() {
         grid = GetComponent<Grid>();
         cells = new GameObject[grid.Rows, grid.Columns];
         for (int y = 0; y < cells.GetLength(0); y++) {
@@ -61,4 +68,15 @@ public class GridCellSpawner : MonoBehaviour
             }
         }
     }
+
+    private enum SpawnType {
+        FillGrid,
+        Custom
+    }
+
+    private void OnValidate() {
+        
+    }
 }
+
+
