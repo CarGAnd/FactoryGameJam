@@ -17160,9 +17160,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseInput: {fileID: 48113247}
+  modulePlacer: {fileID: 799729829}
   indicatorPrefab: {fileID: 7828866910914181286, guid: 29d169b9a17b04d4cb4831ca0816a7c0,
     type: 3}
-  modulePlacer: {fileID: 799729829}
+  arrowPrefab: {fileID: 1671374427401102702, guid: 5fcc39b5528c4344e99afd45f51e4300,
+    type: 3}
 --- !u!1 &805623525
 GameObject:
   m_ObjectHideFlags: 0

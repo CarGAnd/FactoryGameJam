@@ -5,12 +5,14 @@ using UnityEngine;
 public class GridVisual : MonoBehaviour
 {
     [SerializeField] private MouseInput mouseInput;
-    [SerializeField] private GameObject indicatorPrefab;
     [SerializeField] private ModulePlacer modulePlacer;
+    [SerializeField] private GameObject indicatorPrefab;
+    [SerializeField] private GameObject arrowPrefab;
 
     private FactoryGrid buildGrid;
     private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
+    private GameObject arrowObject;
     private Vector2Int lastOriginCoord;
 
     private GridObjectSO selectedObjectData;
@@ -22,6 +24,7 @@ public class GridVisual : MonoBehaviour
         for(int i = 0; i < 9; i++) {
             CreateIndicatorObject();
         }
+        CreateArrowObject();
     }
 
     private void OnEnable() {
@@ -42,7 +45,7 @@ public class GridVisual : MonoBehaviour
         Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
         placementPreview.transform.rotation = newRotation;
 
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
         
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
@@ -55,7 +58,7 @@ public class GridVisual : MonoBehaviour
         }
 
         selectedObjectData = newBuilding;
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
         
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
     
@@ -99,6 +102,7 @@ public class GridVisual : MonoBehaviour
     private void UpdatePreviewPositions(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
         UpdatePreviewBuilding(buildingOriginCoord, buildingDimensions);
         UpdateGroundIndicators();
+        UpdateArrowObject(buildingOriginCoord, buildingDimensions);
         
         lastOriginCoord = buildingOriginCoord;
     }
@@ -130,5 +134,19 @@ public class GridVisual : MonoBehaviour
         newIndicatorObject.transform.rotation = buildGrid.Rotation * oldRot;
         newIndicatorObject.transform.parent = transform;
         indicatorObjects.Add(newIndicatorObject);
+    }
+
+    private void CreateArrowObject() {
+        arrowObject = Instantiate(arrowPrefab);
+        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0);
+    }
+
+    private void UpdateArrowObject(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
+        Vector3 buildingCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
+        Vector3 arrowDelta = modulePlacer.CurrentFacing.GetRotationFromFacing() * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
+        Vector3 arrowPosition = buildingCenter + arrowDelta;
+        arrowObject.transform.position = arrowPosition;
+        Quaternion moduleRot = modulePlacer.CurrentPlacementRotation;
+        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
     }
 }

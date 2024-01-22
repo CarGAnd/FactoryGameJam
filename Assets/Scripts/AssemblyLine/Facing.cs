@@ -28,27 +28,25 @@ public static class FacingExtentions {
     }
 
     public static Facing RotatedDirection(this Facing inputDirection, int numRotations) {
-        int startNumRotations = 0;
-        switch (inputDirection) {
-            case Facing.North:
-                startNumRotations = 0;
-                break;
-            case Facing.East:
-                startNumRotations = 1;
-                break;
-            case Facing.South:
-                startNumRotations = 2;
-                break;
-            case Facing.West:
-                startNumRotations = 3;
-                break;
-        }
+        int startNumRotations = inputDirection.GetNumRotations();
         int newNumRotations = (startNumRotations + numRotations) % 4;
         if(newNumRotations < 0) {
             newNumRotations += 4;
         }
 
         return facingMap[newNumRotations];
+    }
+
+    public static int GetNumRotations(this Facing inputFacing) {
+        return inputFacing switch
+        {
+            Facing.North => 0,
+            Facing.East => 1,
+            Facing.South => 2,
+            Facing.West => 3,
+            _ => 0,
+        };
+
     }
 
     public static Facing GetOppositeFacing(this Facing facing)

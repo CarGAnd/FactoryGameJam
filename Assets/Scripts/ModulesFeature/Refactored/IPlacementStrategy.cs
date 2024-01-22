@@ -15,9 +15,9 @@ public class ClickPlacer : IPlacementStrategy {
     }
 
     public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
-        Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.NumRotations);
+        Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
         Vector2Int gridPosition = grid.GetSubgridOriginCoord(mousePosOnGrid, buildingDimensions);
-        List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.NumRotations);
+        List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.CurrentFacing.GetNumRotations());
         for(int i = 0; i < buildingPositions.Count; i++) {
             buildingPositions[i] += gridPosition;
         }
@@ -26,7 +26,7 @@ public class ClickPlacer : IPlacementStrategy {
 
     public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
-            modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentPlacementRotation);
+            modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentFacing);
         }
         if (Input.mouseScrollDelta.y > 0.1f) {
             modulePlacer.RotateModuleCounterClockwise();
@@ -60,7 +60,7 @@ public class PathPlacer : IPlacementStrategy {
                 return;
             }
             if(path.GetPositions().Count == 1) {
-                modulePlacer.TryPlaceModule(currentModule, endDragPos, modulePlacer.CurrentPlacementRotation);
+                modulePlacer.TryPlaceModule(currentModule, endDragPos, modulePlacer.CurrentFacing);
             }
             else {
                 PlaceModulesAlongPath(currentModule, path, modulePlacer);
@@ -95,24 +95,24 @@ public class PathPlacer : IPlacementStrategy {
         //The first n-1 modules are rotated to match the path
         for(int i = 0; i < pathPositions.Count - 1; i++) {
             //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
-            modulePlacer.TryPlaceModule(moduleData, pathPositions[i], RotationFromDirection(pathDirections[i]));
+            modulePlacer.TryPlaceModule(moduleData, pathPositions[i], FacingFromDirection(pathDirections[i]));
         }
         //The last module is rotated according to the user input
-        modulePlacer.TryPlaceModule(moduleData, pathPositions[pathPositions.Count - 1], modulePlacer.CurrentPlacementRotation);
+        modulePlacer.TryPlaceModule(moduleData, pathPositions[pathPositions.Count - 1], modulePlacer.CurrentFacing);
     }
 
-    private Quaternion RotationFromDirection(Vector2Int direction) {
+    private Facing FacingFromDirection(Vector2Int direction) {
         if(direction == Vector2Int.left) {
-            return Quaternion.Euler(new Vector3(0, 0, 0));
+            return Facing.West;
         }
         else if(direction == Vector2Int.up) {
-            return Quaternion.Euler(new Vector3(0, 90, 0));
+            return Facing.North;
         }
         else if(direction == Vector2Int.right) {
-            return Quaternion.Euler(new Vector3(0, 180, 0));
+            return Facing.East;
         }
         else {
-            return Quaternion.Euler(new Vector3(0, 270, 0));
+            return Facing.South;
         }
     }
 }
@@ -146,7 +146,7 @@ public class BoxPlacer : IPlacementStrategy {
             Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
             List<Vector2Int> draggedSubgrid = GetPositionsInBox(startDragPos, endDragPos, grid);
             foreach(Vector2Int pos in draggedSubgrid) {
-                modulePlacer.TryPlaceModule(currentModule, pos, modulePlacer.CurrentPlacementRotation);
+                modulePlacer.TryPlaceModule(currentModule, pos, modulePlacer.CurrentFacing);
             }
         }
     }
