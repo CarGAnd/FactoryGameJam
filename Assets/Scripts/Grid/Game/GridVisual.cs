@@ -52,8 +52,10 @@ public class GridVisual : MonoBehaviour
 
     private void OnModuleChanged(GridObjectSO newBuilding) {
         Destroy(placementPreview);
+        arrowObject.SetActive(newBuilding != null);
 
         if(newBuilding == null) {
+            UpdateGroundIndicators();
             return;
         }
 
@@ -81,10 +83,10 @@ public class GridVisual : MonoBehaviour
     }
 
     private void Update() {
-        UpdateIndicatorPosition();
+        UpdatePreview();
     }
 
-    private void UpdateIndicatorPosition() {
+    private void UpdatePreview() {
         if(selectedObjectData == null) {
             return;
         }
@@ -128,6 +130,15 @@ public class GridVisual : MonoBehaviour
         }
     }
 
+    private void UpdateArrowObject(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
+        Vector3 buildingCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
+        Vector3 arrowDelta = modulePlacer.CurrentFacing.GetRotationFromFacing() * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
+        Vector3 arrowPosition = buildingCenter + arrowDelta;
+        arrowObject.transform.position = arrowPosition;
+        Quaternion moduleRot = modulePlacer.CurrentPlacementRotation;
+        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
+    }
+
     private void CreateIndicatorObject() {
         GameObject newIndicatorObject = Instantiate(indicatorPrefab);
         newIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
@@ -140,14 +151,5 @@ public class GridVisual : MonoBehaviour
     private void CreateArrowObject() {
         arrowObject = Instantiate(arrowPrefab);
         arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0);
-    }
-
-    private void UpdateArrowObject(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
-        Vector3 buildingCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
-        Vector3 arrowDelta = modulePlacer.CurrentFacing.GetRotationFromFacing() * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
-        Vector3 arrowPosition = buildingCenter + arrowDelta;
-        arrowObject.transform.position = arrowPosition;
-        Quaternion moduleRot = modulePlacer.CurrentPlacementRotation;
-        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
     }
 }

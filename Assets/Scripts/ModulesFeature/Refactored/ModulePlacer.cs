@@ -44,14 +44,14 @@ public class ModulePlacer : MonoBehaviour
     }
 
     private void OnSelectedBuildingChanged(GridObjectSO newBuilding) {
-        moduleChanged?.Invoke(newBuilding);
-
         if(newBuilding == null) {
             ExitPlacementMode();
-            return;
+        }
+        else {
+            placementHandler = newBuilding.GetPlacementHandler();
         }
 
-        placementHandler = newBuilding.GetPlacementHandler();
+        moduleChanged?.Invoke(newBuilding);
     }
 
     public void ExitPlacementMode() {
