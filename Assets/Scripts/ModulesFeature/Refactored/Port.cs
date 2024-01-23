@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 [System.Serializable]
 public class Port : ITransportable
@@ -69,5 +71,9 @@ public class Port : ITransportable
 
     public void SetNextTransportable(ITransportable nextTransportable) {
         this.connectedObject = nextTransportable;
+    }
+
+    public List<Facing> GetInputDirections() {
+        throw new NotImplementedException();
     }
 }

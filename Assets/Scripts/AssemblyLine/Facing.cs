@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum Facing
 {
@@ -57,7 +58,19 @@ public static class FacingExtentions {
             Facing.East => Facing.West,
             Facing.South => Facing.North,
             Facing.West => Facing.East,
-            _ => Facing.North,
+            _ => Facing.East,
+        };
+    }
+
+    public static List<Facing> GetPerpendicularFacings(this Facing facing)
+    {
+        return facing switch
+        {
+            Facing.North => new List<Facing> { Facing.East, Facing.West },
+            Facing.East => new List<Facing> { Facing.North, Facing.South },
+            Facing.South => new List<Facing> { Facing.East, Facing.West },
+            Facing.West => new List<Facing> { Facing.North, Facing.South },
+            _ => new List<Facing> { Facing.North, Facing.South },
         };
     }
 

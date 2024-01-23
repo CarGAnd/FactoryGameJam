@@ -61,7 +61,7 @@ public class AssemblyLineManager
     private void HandleSingleIntersection(ITransportable piece, ITransportable intersectedPiece, AssemblyLine intersectedLine)
     {
         //The case where the new piece is just the new start of an intersected line.
-        if (intersectedPiece.Facing == piece.Facing)
+        if (intersectedPiece.GetInputDirections().Contains(piece.Facing) && intersectedPiece.Facing == piece.Facing)
         {
             intersectedLine.AddPiece(piece);
         }
@@ -98,7 +98,7 @@ public class AssemblyLineManager
                 CombineEndLineFacingPiece(piece, intersectedPiece, intersectedLine, endLines, correctEndLine);
             }
             //However the new piece might still face the same way as the intersected line, without having a same facing end line.
-            else if(piece.Facing == intersectedPiece.Facing)
+            else if(piece.Facing == intersectedPiece.Facing && intersectedPiece.GetInputDirections().Contains(piece.Facing))
             {
                 CombineEndLinesWithIntersectedLine(piece, intersectedLine, endLines);
             }
@@ -231,7 +231,7 @@ public class AssemblyLineManager
         startLine.MoveConnectingLines(endLine);
 
         AssemblyLine nextLine = GetIntersectedAssemblyLine(endLine.GetEndPiece(), out ITransportable i);
-        if (nextLine != null)
+        if (nextLine != null && i.GetInputDirections().Contains(endLine.GetEndPiece().Facing))
         {
             if (PrePlaceLoopDetection(startLine, endLine))
             {
@@ -250,8 +250,11 @@ public class AssemblyLineManager
     {
         foreach(AssemblyLine line in connectingLines)
         {
-            mainLine.AddConnectingAssemblyLine(line, connectingPiece);
-            assemblyLines.Remove(line);
+            if(connectingPiece.GetInputDirections().Contains(line.GetEndPiece().Facing))
+            {
+                mainLine.AddConnectingAssemblyLine(line, connectingPiece);
+                assemblyLines.Remove(line);
+            }
         }
     }
     private List<AssemblyLine> FindLinesPieceIsEndOf(ITransportable piece)
@@ -262,7 +265,7 @@ public class AssemblyLineManager
 
     private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, ITransportable intersectedPiece, ITransportable newPiece)
     {
-        return endLines.FirstOrDefault(line => line.GetEndPiece().Facing == intersectedPiece.Facing && line.GetEndPiece().Facing == newPiece.Facing);
+        return endLines.FirstOrDefault(line => line.GetEndPiece().Facing == intersectedPiece.Facing && newPiece.GetInputDirections().Contains(line.GetEndPiece().Facing) && intersectedPiece.GetInputDirections().Contains(newPiece.Facing) && newPiece.Facing == line.GetEndPiece().Facing);
     }
 
     private AssemblyLine FindCorrectEndLine(List<AssemblyLine> endLines, ITransportable intersectedPiece)
@@ -295,6 +298,7 @@ public class AssemblyLineManager
 
         return false;
     }
+    #region Removal of Assembly Pieces
     //This is to be used once the lines are connected.
     private bool PostPlaceLoopDetection(AssemblyLine line)
     {
@@ -368,8 +372,11 @@ public class AssemblyLineManager
         {
             BreakLoop(lineContainingPiece);
         }
-        //Check intersection        
-        intersectedLine?.RemoveConnection(lineContainingPiece);
+        //Check intersection
+        if(intersectedLine != null && intersectedLine.HasConnection(lineContainingPiece))
+        {
+            intersectedLine.RemoveConnection(lineContainingPiece);
+        }        
         //Check connections
         foreach(AssemblyLine line in lineContainingPiece.GetAllConnections())
         {
@@ -404,7 +411,7 @@ public class AssemblyLineManager
         {
             BreakLoop(lineContainingPiece);
         }
-        if(intersectedLine != null)
+        if(intersectedLine != null && intersectedLine.HasConnection(lineContainingPiece))
         {
             intersectedLine.RemoveConnection(lineContainingPiece);
             assemblyLines.Add(lineContainingPiece);
@@ -435,7 +442,7 @@ public class AssemblyLineManager
         AssemblyLine lineBeforeSplit = new AssemblyLine(assemblyLineSystem);
         AssemblyLine lineAfterSplit = new AssemblyLine(assemblyLineSystem);
         lineContainingPiece.Split(lineBeforeSplit, lineAfterSplit, piece);
-        if(intersectedLine != null)
+        if(intersectedLine != null && intersectedLine.HasConnection(lineContainingPiece))
         {
             intersectedLine.ReplaceExistingLine(lineContainingPiece, lineAfterSplit, intersectedPiece);
         }
@@ -473,6 +480,7 @@ public class AssemblyLineManager
             }
         }
     }
+    #endregion
     private void RemoveAssemblyLine(AssemblyLine line)
     {
         line.CleanUp();

@@ -122,6 +122,11 @@ public class AssemblyLine
         }
     }
 
+    public bool HasConnection(AssemblyLine line)
+    {
+        return connectingAssemblyLines.ContainsKey(line);
+    }
+
     public void Split(AssemblyLine beforeSplit, AssemblyLine afterSplit, ITransportable splitPiece)
     {
         LinkedListNode<ITransportable> node = pieces.Find(splitPiece);

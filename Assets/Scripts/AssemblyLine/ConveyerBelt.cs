@@ -8,7 +8,6 @@ public class ConveyerBelt : AssemblyPiece
     {
 
     }
-
     public override string ToString()
     {
         return "Conveyer Belt at : " + cellCoords;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -56,20 +57,15 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         }
         if(nextPiece != null && nextPiece.GetState() == TransportState.Available)
         {
-            SendObject();   
+            nextPiece.ReceivedObject(travelingObject);
+            travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
+            travelingObject = null;   
         }
     }
 
     public void ReceivedObject(AssemblyTravelingObject travelingObject)
     {
         this.travelingObject = travelingObject;
-    }
-
-    public void SendObject()
-    {
-        nextPiece.ReceivedObject(travelingObject);
-        travelingObject.MoveToPiece(cellCoords, nextPiece.GetGridCoords(), grid);
-        travelingObject = null;
     }
     public Vector2Int GetNextCellCoords()
     {
@@ -85,6 +81,12 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     public Vector2Int GetGridCoords()
     {
         return cellCoords;
+    }
+
+    public virtual List<Facing> GetInputDirections()
+    {
+        List<Facing> perpendicularFacings = facing.GetPerpendicularFacings();
+        return new List<Facing> { facing, perpendicularFacings[0], perpendicularFacings[1] };
     }
 
 ///////////////////////////// IGridObject /////////////////////////////
