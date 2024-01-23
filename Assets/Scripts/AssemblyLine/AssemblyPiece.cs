@@ -49,7 +49,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     {
         this.nextPiece = nextTransportable;
     }
-    public void TransportTick()
+    public virtual void TransportTick()
     {
         if(GetState() == TransportState.Available)
         {
@@ -63,18 +63,17 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         }
     }
 
-    public void ReceivedObject(AssemblyTravelingObject travelingObject)
+    public virtual void ReceivedObject(AssemblyTravelingObject travelingObject)
     {
         this.travelingObject = travelingObject;
     }
-    public Vector2Int GetNextCellCoords()
+    public virtual Vector2Int GetNextCellCoords()
     {
         return cellCoords + Movement();
     }
 
     public TransportState GetState()
     {
-        //return the state, if there's no traveling object then it's available
         return travelingObject == null ? TransportState.Available : TransportState.Occupied;
     }
 
