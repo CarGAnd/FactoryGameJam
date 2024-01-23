@@ -2,17 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericCell<T> 
+public class Cell<T> 
 {
     private int row;
     private int column;
     private CellState state;
     private T occupyingObject;
     //The list of cells that has the same occupying object
-    private List<GenericCell<T>> sharedCells;
+    private List<Cell<T>> sharedCells;
     private Vector2Int occupyingObjectOrigin;
 
-    public GenericCell(int row, int column, CellState state = CellState.EMPTY)
+    public Cell(int row, int column, CellState state = CellState.EMPTY)
     {
         this.row = row;
         this.column = column;
@@ -29,7 +29,7 @@ public class GenericCell<T>
         return occupyingObject;
     }
 
-    public void SetOccupyingObject(T occupyingObject, Vector2Int objectOriginCell, List<GenericCell<T>> sharedCells = null) 
+    public void SetOccupyingObject(T occupyingObject, Vector2Int objectOriginCell, List<Cell<T>> sharedCells = null) 
     {
         if(occupyingObject != null) 
         {
@@ -48,7 +48,7 @@ public class GenericCell<T>
         SetOccupyingObject(occupyingObject, new Vector2Int(column, row), null);
     }
 
-    public List<GenericCell<T>> GetSharedCells() {
+    public List<Cell<T>> GetSharedCells() {
         return sharedCells;
     }
 

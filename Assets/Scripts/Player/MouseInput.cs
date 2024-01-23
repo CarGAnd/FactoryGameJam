@@ -7,7 +7,6 @@ public class MouseInput : MonoBehaviour {
     public UnityEvent<Vector3> MouseOverGridSpace;
     
     [SerializeField] private Camera cam;
-    [SerializeField] private LayerMask groundLayer;
     [field: SerializeField] public FactoryGrid BuildGrid { get; private set; }
 
     public Vector3 LastGroundHitPoint { get; private set; }
@@ -23,15 +22,17 @@ public class MouseInput : MonoBehaviour {
 
     private void UpdateMousePosition() {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, groundLayer)) {
-            Vector3 position = hit.point;
-            Vector3 gridCellCenter = BuildGrid.GetCellCenter(position);
-            LastGroundHitPoint = position;
+        Plane gridPlane = new Plane(BuildGrid.Rotation * Vector3.up, BuildGrid.Origin);
+        gridPlane.Raycast(ray, out float distance);
+        Vector3 worldPosition = ray.GetPoint(distance);
+        Vector2Int mouseGridPosition = BuildGrid.GetCellCoords(worldPosition);
 
-            if (BuildGrid.GetCellCoords(position) != LastMouseGridPos) {
-                LastMouseGridPos = BuildGrid.GetCellCoords(position);
-                MouseOverGridSpace?.Invoke(gridCellCenter);
-            }
+        LastGroundHitPoint = worldPosition;
+
+        if (mouseGridPosition != LastMouseGridPos) {
+            Vector3 gridCellCenter = BuildGrid.GetCellCenter(mouseGridPosition);
+            LastMouseGridPos = mouseGridPosition;
+            MouseOverGridSpace?.Invoke(gridCellCenter);
         }
     }
 

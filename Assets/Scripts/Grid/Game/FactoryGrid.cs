@@ -13,6 +13,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     public Vector3 Origin { get { return gridLayout.Origin; } }
 
     [SerializeField] private GridLayout gridLayout;
+    [SerializeField] private GridCellSpawner cellSpawner;
 
     private CellGrid<IGridObject> placementGrid;
 
@@ -53,7 +54,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
-        return placementGrid.PositionIsOccupied(coord);
+        return placementGrid.PositionIsOccupied(coord) || !cellSpawner.CellHasSpawnedPrefab(coord);
     }
 
     public bool PositionIsOccupied(Vector3 worldPos) {
@@ -74,7 +75,14 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
-        return placementGrid.FindPath(startCoord, endCoord);
+        List<Vector2Int> positions = null;
+        
+        if(PositionIsOccupied(endCoord)) {
+            return new Path(positions);
+        }
+        
+        positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
+        return new Path(positions);
     }
 
     public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {

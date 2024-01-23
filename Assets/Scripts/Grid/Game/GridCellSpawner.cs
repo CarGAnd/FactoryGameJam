@@ -44,6 +44,9 @@ public class GridCellSpawner : MonoBehaviour
     }
 
     public bool CellHasSpawnedPrefab(Vector2Int coord) {
+        if (!IsWithingBounds(coord.x, coord.y)) {
+            return false;
+        }
         return cells[coord.y, coord.x] != null;
     }
 
