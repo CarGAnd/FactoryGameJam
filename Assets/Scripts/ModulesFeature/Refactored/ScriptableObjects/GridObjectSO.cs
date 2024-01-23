@@ -13,13 +13,13 @@ public abstract class GridObjectSO : ScriptableObject
     public int Width { get { return buildingLayout.Width; } }
     public int Height { get { return buildingLayout.Height; } }
 
-    public List<Vector2Int> GetLayoutShape(int numRotations) {
-        return GetFancyLayoutShape(numRotations);
+    public List<Vector2Int> GetLayoutShape(Facing facing) {
+        return GetFancyLayoutShape(facing);
     }
 
-    public List<Vector2Int> GetNormalLayoutShape(int numRotations) {
+    public List<Vector2Int> GetNormalLayoutShape(Facing facing) {
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
-        Vector2Int rotatedDimensions = GetLayoutShapeDimensions(numRotations);
+        Vector2Int rotatedDimensions = GetLayoutShapeDimensions(facing);
         int rotatedWidth = rotatedDimensions.x;
         int rotatedHeight = rotatedDimensions.y;
         for(int x = 0; x < rotatedWidth; x++) {
@@ -30,7 +30,8 @@ public abstract class GridObjectSO : ScriptableObject
         return occupiedPositions;
     }
 
-    public List<Vector2Int> GetFancyLayoutShape(int numRotations) {
+    public List<Vector2Int> GetFancyLayoutShape(Facing facing) {
+        int numRotations = facing.GetNumRotations();
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
         List<Vector2Int> positions = buildingLayout.GetTrueValues();
         foreach (Vector2Int pos in positions) {
@@ -39,7 +40,8 @@ public abstract class GridObjectSO : ScriptableObject
         return occupiedPositions;
     }
 
-    public Vector2Int GetLayoutShapeDimensions(int numRotations) {
+    public Vector2Int GetLayoutShapeDimensions(Facing facing) {
+        int numRotations = facing.GetNumRotations();
         int modRotations = numRotations % 4;
         
         if(modRotations < 0) {
@@ -83,6 +85,6 @@ public abstract class GridObjectSO : ScriptableObject
         return new ClickPlacer(this);
     }
 
-    public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem);
+    public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, Facing facing, AssemblyLineSystem assemblyLineSystem);
 }
 

@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ModuleInputOutput : MonoBehaviour, IGridObject
 {
+    public UnityEvent<AssemblyTravelingObject> receivedObject;
+
     private ModuleSO moduleSettings;
     private Vector2Int originCell;
     private FactoryGrid grid;
-    private int numRotations;
+    private Facing facing;
 
     private List<Port> inputPorts;
     private List<Port> outputPorts;
@@ -16,9 +19,9 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     private List<AssemblyTravelingObject> outputStorage;
     private AssemblyLineSystem assemblyLineSystem;
 
-    public void Initialize(ModuleSO moduleSettings, int numRotations, AssemblyLineSystem assemblyLineSystem) {
+    public void Initialize(ModuleSO moduleSettings, Facing facing, AssemblyLineSystem assemblyLineSystem) {
         this.moduleSettings = moduleSettings;
-        this.numRotations = numRotations;
+        this.facing = facing;
         this.assemblyLineSystem = assemblyLineSystem;
     }
 
@@ -30,8 +33,8 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     private void CreatePorts() {
-        List<PortSettings> inputSettings = moduleSettings.GetInputs(numRotations);
-        List<PortSettings> outputSettings = moduleSettings.GetOutputs(numRotations);
+        List<PortSettings> inputSettings = moduleSettings.GetInputs(facing);
+        List<PortSettings> outputSettings = moduleSettings.GetOutputs(facing);
 
         foreach (PortSettings ps in inputSettings) {
             Port port = new Port(ps.relativePosition + originCell, ps.direction);
@@ -68,7 +71,9 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     private void Tick() { 
         foreach(Port p in inputPorts) {
             if(p.HasInput()) {
-                inputStorage.Add(p.ReceiveFromPort());
+                AssemblyTravelingObject newObject = p.ReceiveFromPort();
+                inputStorage.Add(newObject);
+                receivedObject.Invoke(newObject);
             }
         }
 
@@ -114,7 +119,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
     public void RemoveFromGrid(FactoryGrid grid) {
         RemovePorts();
-        grid.RemoveObject(originCell + moduleSettings.GetLayoutShape(numRotations)[0]);
+        grid.RemoveObject(originCell + moduleSettings.GetLayoutShape(facing)[0]);
     }
 
     #region Debug

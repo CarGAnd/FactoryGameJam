@@ -7,28 +7,28 @@ public class ModuleSO : GridObjectSO
 {
     public PortLayout portLayout;
 
-    public List<PortSettings> GetInputs(int numRotations) { 
+    public List<PortSettings> GetInputs(Facing facing) { 
         List<PortSettings> portSettings = portLayout.GetInputPorts();
         foreach(PortSettings ps in portSettings) {
-            ps.relativePosition = GetRotatedPosition(ps.relativePosition, numRotations);
-            ps.direction = ps.direction.RotatedDirection(numRotations);
+            ps.relativePosition = GetRotatedPosition(ps.relativePosition, facing.GetNumRotations());
+            ps.direction = ps.direction.RotatedDirection(facing.GetNumRotations());
         }
         return portSettings;
     }
 
-    public List<PortSettings> GetOutputs(int numRotations) {
+    public List<PortSettings> GetOutputs(Facing facing) {
         List<PortSettings> portSettings = portLayout.GetOutputPorts();
         foreach(PortSettings ps in portSettings) {
-            ps.relativePosition = GetRotatedPosition(ps.relativePosition, numRotations);
-            ps.direction = ps.direction.RotatedDirection(numRotations);
+            ps.relativePosition = GetRotatedPosition(ps.relativePosition, facing.GetNumRotations());
+            ps.direction = ps.direction.RotatedDirection(facing.GetNumRotations());
         }
         return portSettings;
     }
 
-    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem) {
+    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, Facing facing, AssemblyLineSystem assemblyLineSystem) {
         GameObject g = Instantiate(ModulePrefab, position, rotation);
         ModuleInputOutput inputOutput = g.GetComponent<ModuleInputOutput>();
-        inputOutput.Initialize(this, numRotations, assemblyLineSystem);
+        inputOutput.Initialize(this, facing, assemblyLineSystem);
         return inputOutput;
     }
 }

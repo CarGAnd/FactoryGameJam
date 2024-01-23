@@ -45,7 +45,7 @@ public class GridVisual : MonoBehaviour
         Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
         placementPreview.transform.rotation = newRotation;
 
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing);
         
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
@@ -58,11 +58,12 @@ public class GridVisual : MonoBehaviour
         }
 
         selectedObjectData = newBuilding;
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing);
         
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
     
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
+        OnModuleRotated();
     }
 
     private void SetActiveIndicatorCount(int newCount) {

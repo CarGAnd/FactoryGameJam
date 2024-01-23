@@ -10,7 +10,7 @@ public enum Facing
 
 public static class FacingExtentions {
 
-    private static Facing[] facingMap = new Facing[] { Facing.North, Facing.East, Facing.South, Facing.West };
+    private static Facing[] facingMap = new Facing[] { Facing.West, Facing.North, Facing.East, Facing.South };
 
     public static Vector2Int GetIntDirection(this Facing facing) {
         switch (facing) {
@@ -40,10 +40,10 @@ public static class FacingExtentions {
     public static int GetNumRotations(this Facing inputFacing) {
         return inputFacing switch
         {
-            Facing.North => 0,
-            Facing.East => 1,
-            Facing.South => 2,
-            Facing.West => 3,
+            Facing.West => 0,
+            Facing.North => 1,
+            Facing.East => 2,
+            Facing.South => 3,
             _ => 0,
         };
 
@@ -65,10 +65,10 @@ public static class FacingExtentions {
     {
         return facing switch
         {
+            Facing.West => Quaternion.Euler(0, 0, 0),
             Facing.North => Quaternion.Euler(0, 90, 0),
             Facing.East => Quaternion.Euler(0, 180, 0),
             Facing.South => Quaternion.Euler(0, 270, 0),
-            Facing.West => Quaternion.Euler(0, 0, 0),
             _ => Quaternion.Euler(0, 0, 0),
         };
     }

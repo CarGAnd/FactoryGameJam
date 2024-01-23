@@ -9,8 +9,8 @@ public class AssemblyPieceData : GridObjectSO
     public Facing ObjectFacing { get; private set; }
     public Vector3 Position { get; private set; }
     public Quaternion Rotation { get; private set; }
-    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, int numRotations, AssemblyLineSystem assemblyLineSystem) {
-        SetFacing(rotation);
+    public override IGridObject CreateInstance(Vector3 position, Quaternion rotation, Facing facing, AssemblyLineSystem assemblyLineSystem) {
+        ObjectFacing = facing;
         Position = position;
         Rotation = rotation;
         

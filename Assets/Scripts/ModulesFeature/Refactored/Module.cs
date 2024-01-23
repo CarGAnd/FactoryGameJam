@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(ModuleInputOutput))]
 public abstract class Module : MonoBehaviour
 {
-    private ModuleInputOutput inputOutput;
+    protected ModuleInputOutput inputOutput;
 
     private void Start() {
         inputOutput = GetComponent<ModuleInputOutput>();

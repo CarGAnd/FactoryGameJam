@@ -15,9 +15,9 @@ public class ClickPlacer : IPlacementStrategy {
     }
 
     public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
-        Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.CurrentFacing.GetNumRotations());
+        Vector2Int buildingDimensions = currentModule.GetLayoutShapeDimensions(modulePlacer.CurrentFacing);
         Vector2Int gridPosition = grid.GetSubgridOriginCoord(mousePosOnGrid, buildingDimensions);
-        List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.CurrentFacing.GetNumRotations());
+        List<Vector2Int> buildingPositions = currentModule.GetLayoutShape(modulePlacer.CurrentFacing);
         for(int i = 0; i < buildingPositions.Count; i++) {
             buildingPositions[i] += gridPosition;
         }
