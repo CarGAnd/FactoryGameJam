@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,7 +16,7 @@ public abstract class GridObjectSO : ScriptableObject
         return GetFancyLayoutShape(facing);
     }
 
-    public List<Vector2Int> GetNormalLayoutShape(Facing facing) {
+    private List<Vector2Int> GetNormalLayoutShape(Facing facing) {
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
         Vector2Int rotatedDimensions = GetLayoutShapeDimensions(facing);
         int rotatedWidth = rotatedDimensions.x;
@@ -30,7 +29,7 @@ public abstract class GridObjectSO : ScriptableObject
         return occupiedPositions;
     }
 
-    public List<Vector2Int> GetFancyLayoutShape(Facing facing) {
+    private List<Vector2Int> GetFancyLayoutShape(Facing facing) {
         int numRotations = facing.GetNumRotations();
         List<Vector2Int> occupiedPositions = new List<Vector2Int>();
         List<Vector2Int> positions = buildingLayout.GetTrueValues();

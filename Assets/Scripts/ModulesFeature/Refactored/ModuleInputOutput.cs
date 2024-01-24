@@ -134,13 +134,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         foreach(Port p in inputPorts) {
             Gizmos.color = Color.green;
             Vector2Int facingDirection = p.direction.GetIntDirection();
-            Gizmos.DrawWireCube(grid.GetCellCenter(p.position - facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+            Vector3 cubePos = grid.GetCellCenter(p.position - facingDirection);
+            Gizmos.DrawWireCube(cubePos, new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
         }
 
         foreach(Port p in outputPorts) {
             Gizmos.color = Color.red;
             Vector2Int facingDirection = p.direction.GetIntDirection();
-            Gizmos.DrawWireCube(grid.GetCellCenter(p.position + facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));    
+            Vector3 cubePos = grid.GetCellCenter(p.position + facingDirection);
+            Gizmos.DrawWireCube(cubePos, new Vector3(grid.CellSize.x, 3, grid.CellSize.y));    
         }
     }
     #endregion
