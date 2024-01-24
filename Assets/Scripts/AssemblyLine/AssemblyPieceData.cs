@@ -13,34 +13,13 @@ public class AssemblyPieceData : GridObjectSO
         ObjectFacing = facing;
         Position = position;
         Rotation = rotation;
-        
+        //Something about referencing cost variable and adding cost to it.
+
         AssemblyPiece assemblyPiece = assemblyLineSystem.CreateAssemblyPiece(this);
         return assemblyPiece;
     }
 
     public override IPlacementStrategy GetPlacementHandler() {
         return new PathPlacer(this);
-    }
-
-    private void SetFacing(Quaternion rotation) {
-        float yRotation = rotation.eulerAngles.y;
-        switch(yRotation)
-        {
-            case 90:
-                ObjectFacing = Facing.North;
-                break;
-            case 0:
-                ObjectFacing = Facing.West;
-                break;
-            case 270:
-                ObjectFacing = Facing.South;
-                break;
-            case 180:
-                ObjectFacing = Facing.East;
-                break;
-            default:
-                Debug.LogError("Invalid rotation");
-                break;
-        }
     }
 }

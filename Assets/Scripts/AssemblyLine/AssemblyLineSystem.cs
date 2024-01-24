@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -92,6 +93,9 @@ public class AssemblyLineSystem : MonoBehaviour
             case AssemblyPieceType.Cannon:
                 //newPiece = new Cannon(data);
                 break;
+            case AssemblyPieceType.Tunnel:
+                newPiece = new Tunnel(assemblyPieceData, this);
+                break; 
         }
         return newPiece;
     }

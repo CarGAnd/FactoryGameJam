@@ -6,15 +6,15 @@ using UnityEngine;
 
 public abstract class AssemblyPiece : IGridInteractable, ITransportable
 {
-    private Facing facing = default;
+    protected Facing facing = default;
     public Facing Facing { get => facing; }
     protected Vector2Int cellCoords;
-    private ITransportable nextPiece;
-    private int distance;
-    private AssemblyTravelingObject travelingObject;
-    private FactoryGrid grid;
-    private AssemblyLineSystem assemblyLineSystem;
-    private GameObject gameObject;
+    protected ITransportable nextPiece;
+    protected int distance;
+    protected AssemblyTravelingObject travelingObject;
+    protected FactoryGrid grid;
+    protected AssemblyLineSystem assemblyLineSystem;
+    protected GameObject gameObject;
     public abstract override string ToString();
 
     protected AssemblyPiece(AssemblyPieceData data, AssemblyLineSystem assemblyLineSystem)
@@ -45,7 +45,7 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
         return movement * distance;
     }
 ///////////////////////////// ITransportable /////////////////////////////
-    public void SetNextTransportable(ITransportable nextTransportable)
+    public virtual void SetNextTransportable(ITransportable nextTransportable)
     {
         this.nextPiece = nextTransportable;
     }
@@ -89,13 +89,13 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     }
 
 ///////////////////////////// IGridObject /////////////////////////////
-    public void RemoveFromGrid(FactoryGrid grid)
+    public virtual void RemoveFromGrid(FactoryGrid grid)
     {
         assemblyLineSystem.RemoveTransportablePiece(this);
         grid.RemoveObject(cellCoords);
         
     }
-    public void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
+    public virtual void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
         assemblyLineSystem.PlaceTransportablePiece(this);

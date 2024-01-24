@@ -6,4 +6,5 @@ public enum AssemblyPieceType
 {
     ConveyerBelt = 10,
     Cannon = 20,
+    Tunnel = 30,
 }
