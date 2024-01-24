@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <ModulePrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7d4eb9430bf66794790072f0920cafcb,
     type: 3}
-  <PreviewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: 7d4eb9430bf66794790072f0920cafcb,
+  <PreviewPrefab>k__BackingField: {fileID: 2065950177910330484, guid: d63f5bdc8c8ea7e49b557a98d435466b,
     type: 3}
   buildingLayout:
     <Width>k__BackingField: 2
@@ -24,4 +24,4 @@ MonoBehaviour:
     width: 2
     height: 2
     inputs: 00000000000000000000000000000000
-    outputs: 00000000000000000000000000000000
+    outputs: 01000000000000000000000000000000

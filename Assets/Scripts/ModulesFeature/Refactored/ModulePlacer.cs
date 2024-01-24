@@ -20,7 +20,7 @@ public class ModulePlacer : MonoBehaviour
 
     private void Awake() {
         placementHandler = new NoPlacement();
-        CurrentFacing = Facing.West;
+        SetModuleRotation(Facing.West);
     }
 
     private void Update() {

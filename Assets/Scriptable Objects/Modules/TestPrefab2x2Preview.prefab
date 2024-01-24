@@ -889,10 +889,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3429554724085336372}
-  - component: {fileID: 8840507904966451918}
-  - component: {fileID: -8281789454825612952}
   m_Layer: 0
-  m_Name: TestPrefab2x2
+  m_Name: TestPrefab2x2Preview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -921,36 +919,6 @@ Transform:
   - {fileID: 8623639028169926215}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8840507904966451918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065950177910330484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ee6d62ed44acffd4984be262114ad727, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  receivedObject:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &-8281789454825612952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2065950177910330484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab9f7ad5673feff46a4b9f2e140b3602, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  timeBetweenSpawns: 1
-  objectToSpawn: {fileID: -8887647089406956734, guid: 66d344736d67233438995f1d9da07df7,
-    type: 3}
 --- !u!1 &3006380175664094282
 GameObject:
   m_ObjectHideFlags: 0

@@ -78,11 +78,11 @@ public class GridLayout : MonoBehaviour
         return worldPos;
     }
 
-    //TODO: take grid rotation into account / Check if rotation already works with this
     public Vector2Int GetSubgridOriginCoord(Vector3 subgridCenter, Vector2Int subgridDimensions) {
-        Vector3 offset = new Vector3(CellSize.x / 2f * (subgridDimensions.x - 1), 0, CellSize.y / 2f * (subgridDimensions.y - 1));
-        Vector3 offsetHitPos = subgridCenter - offset;
-        return GetCellCoords(offsetHitPos);
+        Vector3 normalizedPosition = RemoveScaleRotationOffset(subgridCenter);
+        Vector3 offset = new Vector3(1 / 2f * (subgridDimensions.x - 1), 0, 1 / 2f * (subgridDimensions.y - 1));
+        Vector3 offsetHitPos = normalizedPosition - offset;
+        return layout.GetCellCoordinate(offsetHitPos);
     }
 
     public List<Vector2Int> GetPositionsInSubgrid(Vector2Int lowerLeft, Vector2Int subgridDimensions) {

@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class ModuleInputOutput : MonoBehaviour, IGridObject
 {
-    public UnityEvent<AssemblyTravelingObject> receivedObject;
+    [HideInInspector] public UnityEvent receivedObject;
 
     private ModuleSO moduleSettings;
     private Vector2Int originCell;
@@ -50,6 +50,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         if(inputStorage.Count > 0) {
             AssemblyTravelingObject obj = inputStorage[0];
             inputStorage.RemoveAt(0);
+            obj.gameObject.SetActive(false);
             return obj;
         }
         else {
@@ -73,13 +74,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
             if(p.HasInput()) {
                 AssemblyTravelingObject newObject = p.ReceiveFromPort();
                 inputStorage.Add(newObject);
-                receivedObject.Invoke(newObject);
+                receivedObject.Invoke();
             }
         }
 
         foreach(Port p in outputPorts) {
             if(!p.HasOutput() && outputStorage.Count > 0) {
-                p.SendToPort(outputStorage[0]);
+                AssemblyTravelingObject obj = outputStorage[0];
+                p.SendToPort(obj);
+                obj.gameObject.SetActive(true);
                 outputStorage.RemoveAt(0);
             }
         }
@@ -131,13 +134,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
         foreach(Port p in inputPorts) {
             Gizmos.color = Color.green;
             Vector2Int facingDirection = p.direction.GetIntDirection();
-            Gizmos.DrawWireCube(grid.GetCellCenter(p.position - facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
+            Vector3 cubePos = grid.GetCellCenter(p.position - facingDirection);
+            Gizmos.DrawWireCube(cubePos, new Vector3(grid.CellSize.x, 3, grid.CellSize.y));
         }
 
         foreach(Port p in outputPorts) {
             Gizmos.color = Color.red;
             Vector2Int facingDirection = p.direction.GetIntDirection();
-            Gizmos.DrawWireCube(grid.GetCellCenter(p.position + facingDirection), new Vector3(grid.CellSize.x, 3, grid.CellSize.y));    
+            Vector3 cubePos = grid.GetCellCenter(p.position + facingDirection);
+            Gizmos.DrawWireCube(cubePos, new Vector3(grid.CellSize.x, 3, grid.CellSize.y));    
         }
     }
     #endregion

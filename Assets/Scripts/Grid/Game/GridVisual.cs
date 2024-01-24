@@ -132,7 +132,7 @@ public class GridVisual : MonoBehaviour
 
     private void UpdateArrowObject(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
         Vector3 buildingCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
-        Vector3 arrowDelta = modulePlacer.CurrentFacing.GetRotationFromFacing() * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
+        Vector3 arrowDelta = modulePlacer.CurrentPlacementRotation * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
         Vector3 arrowPosition = buildingCenter + arrowDelta;
         arrowObject.transform.position = arrowPosition;
         Quaternion moduleRot = modulePlacer.CurrentPlacementRotation;

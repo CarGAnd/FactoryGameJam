@@ -34,7 +34,7 @@ public class Port : ITransportable
         inputObject = aObject;
     }
 
-    public void SendObject() {
+    private void SendObject() {
         connectedObject.ReceivedObject(outputObject);
         outputObject = null;
     }
@@ -74,6 +74,6 @@ public class Port : ITransportable
     }
 
     public List<Facing> GetInputDirections() {
-        throw new NotImplementedException();
+        return new List<Facing>() { direction.GetOppositeFacing() };
     }
 }

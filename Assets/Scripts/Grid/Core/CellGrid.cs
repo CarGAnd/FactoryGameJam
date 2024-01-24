@@ -7,7 +7,7 @@ public class CellGrid<T> : ISearchable
     public int Columns { get; private set; }
     public int Rows { get; private set; }
 
-    private GenericCell<T>[,] cells;
+    private Cell<T>[,] cells;
 
     public CellGrid(int numColumns, int numRows) {
         this.Columns = numColumns;
@@ -17,37 +17,37 @@ public class CellGrid<T> : ISearchable
 
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
     public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
-        List<GenericCell<T>> sharedCells = new List<GenericCell<T>>();
+        List<Cell<T>> sharedCells = new List<Cell<T>>();
         
         if(shapeLayout != null) {
             foreach (Vector2Int deltaCoord in shapeLayout) {
                 Vector2Int coord = startCell + deltaCoord;
                 if (CellWithinBounds(coord)) {
-                    GenericCell<T> cell = GetCellAt(coord);
+                    Cell<T> cell = GetCellAt(coord);
                     sharedCells.Add(cell);
                 }
             }
         }
 
-        foreach (GenericCell<T> c in sharedCells) {
+        foreach (Cell<T> c in sharedCells) {
             c.SetOccupyingObject(gridObject, startCell, sharedCells);
         }
     }
 
     public void PlaceObject(T gridObject, Vector2Int coordinate) {
-        GenericCell<T> cell = GetCellAt(coordinate);
+        Cell<T> cell = GetCellAt(coordinate);
         cell.SetOccupyingObject(gridObject);
     }
 
     public void RemoveObject(Vector2Int coord) {
-        GenericCell<T> firstCell = GetCellAt(coord);
-        List<GenericCell<T>> sharedCells = firstCell.GetSharedCells();
+        Cell<T> firstCell = GetCellAt(coord);
+        List<Cell<T>> sharedCells = firstCell.GetSharedCells();
 
         if(sharedCells == null) {
             firstCell.RemoveOccupyingObject();
         }
         else {
-            foreach (GenericCell<T> c in sharedCells) {
+            foreach (Cell<T> c in sharedCells) {
                 c.RemoveOccupyingObject();
             }
         }
@@ -55,14 +55,14 @@ public class CellGrid<T> : ISearchable
     
     public void MoveObject(Vector2Int from, Vector2Int to) {
         T gridObject = GetObjectAt(from);
-        GenericCell<T> fromCell = GetCellAt(from);
-        List<GenericCell<T>> sharedCells = fromCell.GetSharedCells();
+        Cell<T> fromCell = GetCellAt(from);
+        List<Cell<T>> sharedCells = fromCell.GetSharedCells();
         if(sharedCells == null) {
-            sharedCells = new List<GenericCell<T>>() { fromCell };
+            sharedCells = new List<Cell<T>>() { fromCell };
         }
         Vector2Int objectOrigin = fromCell.GetOccupyingObjectOrigin();
         List<Vector2Int> objectLayout = new List<Vector2Int>();
-        foreach(GenericCell<T> c in sharedCells) {
+        foreach(Cell<T> c in sharedCells) {
             Vector2Int originDelta = c.GetCellCoordinates() - objectOrigin;
             objectLayout.Add(originDelta);
         }
@@ -91,8 +91,8 @@ public class CellGrid<T> : ISearchable
 
     public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
         List<Vector2Int> sharedPositions = new List<Vector2Int>();
-        List<GenericCell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
-        foreach(GenericCell<T> c in sharedCells) {
+        List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
+        foreach(Cell<T> c in sharedCells) {
             sharedPositions.Add(c.GetCellCoordinates());
         }
         return sharedPositions;
@@ -152,15 +152,15 @@ public class CellGrid<T> : ISearchable
         return path[path.Count - 1];
     }
 
-    private GenericCell<T> GetCellAt(Vector2Int coord) {
+    private Cell<T> GetCellAt(Vector2Int coord) {
         return cells[coord.y, coord.x];
     }
 
     private void CreateGrid(int columns, int rows) {
-        cells = new GenericCell<T>[rows, columns];
+        cells = new Cell<T>[rows, columns];
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < columns; x++) {
-                cells[y, x] = new GenericCell<T>(y, x);
+                cells[y, x] = new Cell<T>(y, x);
             }
         }
     }

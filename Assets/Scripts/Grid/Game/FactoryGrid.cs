@@ -13,6 +13,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     public Vector3 Origin { get { return gridLayout.Origin; } }
 
     [SerializeField] private GridLayout gridLayout;
+    [SerializeField] private GridCellSpawner cellSpawner;
 
     private CellGrid<IGridObject> placementGrid;
 
@@ -53,7 +54,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
-        return placementGrid.PositionIsOccupied(coord);
+        return placementGrid.PositionIsOccupied(coord) || !cellSpawner.CellHasSpawnedPrefab(coord);
     }
 
     public bool PositionIsOccupied(Vector3 worldPos) {
@@ -62,7 +63,12 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public bool AllPositionsAreFree(List<Vector2Int> positions) {
-        return placementGrid.AllPositionsAreFree(positions);    
+        foreach(Vector2Int position in positions) {
+            if (PositionIsOccupied(position)) {
+                return false;
+            }
+        }
+        return true;
     }
     
     public bool CellWithinBounds(Vector2Int cellCoord) {
@@ -74,11 +80,19 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
-        return placementGrid.FindPath(startCoord, endCoord);
+        List<Vector2Int> positions = null;
+        
+        if(PositionIsOccupied(endCoord)) {
+            return new Path(positions);
+        }
+        
+        positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
+        return new Path(positions);
     }
 
     public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {
-        return placementGrid.FindClosestUnoccupiedCell(startCoord);    
+        List<Vector2Int> path = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
+        return path[path.Count - 1];
     }
 
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
@@ -131,17 +145,23 @@ public class FactoryGrid : MonoBehaviour, ISearchable
 
         if (showOccupiedCells && placementGrid != null) {
             Gizmos.color = new Color(1, 0, 0, 0.5f);
+            Matrix4x4 rotMatrix = new Matrix4x4();
+            rotMatrix.SetTRS(Origin, Rotation, Vector3.one);
+            Gizmos.matrix = rotMatrix;
             for (int y = 0; y < placementGrid.Rows; y++) {
                 for (int x = 0; x < placementGrid.Columns; x++) {
                     Vector2Int position = new Vector2Int(x, y);
-                    if (placementGrid.PositionIsOccupied(position)) {
-                        Vector3 pos = gridLayout.GetCellCenter(position);
+                    if (PositionIsOccupied(position)) {
+                        Vector3 cellCenter = gridLayout.GetCellCenter(position);
+                        Vector3 cubePos = Quaternion.Inverse(Rotation) * (cellCenter - Origin);
                         Vector3 cubeSize = new Vector3(1, 0.01f, 1) * Mathf.Min(gridLayout.CellSize.x, gridLayout.CellSize.y);
-                        Gizmos.DrawCube(pos, cubeSize);
+                        Gizmos.DrawCube(cubePos, cubeSize);
                     }
                 }
             }
-        } 
+            Gizmos.matrix = Matrix4x4.identity;
+        }
+
 
         if (showGridLines) {
             Gizmos.color = Color.green;

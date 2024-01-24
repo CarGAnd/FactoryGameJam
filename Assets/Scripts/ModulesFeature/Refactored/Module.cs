@@ -7,7 +7,7 @@ public abstract class Module : MonoBehaviour
 {
     protected ModuleInputOutput inputOutput;
 
-    private void Start() {
+    private void Awake() {
         inputOutput = GetComponent<ModuleInputOutput>();
     }
 
@@ -17,5 +17,17 @@ public abstract class Module : MonoBehaviour
 
     protected AssemblyTravelingObject GetObjectIn() {
         return inputOutput.ReceiveFromInput();
+    }
+
+    private void OnEnable() {
+        inputOutput.receivedObject.AddListener(OnObjectReceived);
+    }
+
+    private void OnDisable() {
+        inputOutput.receivedObject.RemoveListener(OnObjectReceived);
+    }
+
+    protected virtual void OnObjectReceived() {
+
     }
 }
