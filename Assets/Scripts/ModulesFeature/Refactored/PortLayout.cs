@@ -13,38 +13,38 @@ public class PortLayout
     [SerializeField] private int[] inputs;
     [SerializeField] private int[] outputs;
 
-    private List<PortSettings> GetPorts(int[] portSettings) {
+    public List<PortSettings> GetPorts() {
         List<PortSettings> ports = new List<PortSettings>();
         for(int y = 0; y < height; y++) {
             for(int x = 0; x < width; x++) {
                 //Flip the y axis so 0 is at the bottom
                 int arrayIndex = (height - y - 1) * width + x;
-                int arrayValue = portSettings[arrayIndex];
-                if(arrayValue <= 0) {
+                int inputValue = inputs[arrayIndex];
+                int outputValue = outputs[arrayIndex];
+                if(inputValue <= 0 && outputValue <= 0) {
                     continue;
                 }
-                arrayValue -= 1;
+                inputValue -= 1;
+                outputValue -= 1;
                 PortSettings newPort = new PortSettings()
                 {
-                    relativePosition = new Vector2Int(x, y),
-                    direction = directionMap[arrayValue]
+                    gridPosition = new Vector2Int(x, y),
+                    inputDirection = inputValue >= 0 ? directionMap[inputValue] : Facing.North,
+                    outputDirection = outputValue >= 0 ? directionMap[outputValue] : Facing.North,
+                    isInput = inputValue >= 0,
+                    isOutput = outputValue >= 0
                 };
                 ports.Add(newPort);
             }
         }
         return ports;
-    }
-
-    public List<PortSettings> GetInputPorts() {
-        return GetPorts(inputs);
-    }
-
-    public List<PortSettings> GetOutputPorts() {
-        return GetPorts(outputs);
-    }
+    }    
 }
 
 public class PortSettings {
-    public Vector2Int relativePosition;
-    public Facing direction;
+    public Vector2Int gridPosition;
+    public Facing inputDirection;
+    public Facing outputDirection;
+    public bool isInput;
+    public bool isOutput;
 }

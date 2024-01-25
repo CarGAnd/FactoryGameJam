@@ -56,6 +56,7 @@ public class ModulePlacer : MonoBehaviour
 
     public void ExitPlacementMode() {
         placementHandler = new NoPlacement();
+        moduleChanged.Invoke(null);
     }
 
     private void SetModuleRotation(Facing facing) {

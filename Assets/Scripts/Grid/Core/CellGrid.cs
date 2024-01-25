@@ -17,15 +17,18 @@ public class CellGrid<T> : ISearchable
 
     // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
     public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
+        if(shapeLayout == null) {
+            PlaceObject(gridObject, startCell);
+            return;
+        }
+
         List<Cell<T>> sharedCells = new List<Cell<T>>();
         
-        if(shapeLayout != null) {
-            foreach (Vector2Int deltaCoord in shapeLayout) {
-                Vector2Int coord = startCell + deltaCoord;
-                if (CellWithinBounds(coord)) {
-                    Cell<T> cell = GetCellAt(coord);
-                    sharedCells.Add(cell);
-                }
+        foreach (Vector2Int deltaCoord in shapeLayout) {
+            Vector2Int coord = startCell + deltaCoord;
+            if (CellWithinBounds(coord)) {
+                Cell<T> cell = GetCellAt(coord);
+                sharedCells.Add(cell);
             }
         }
 

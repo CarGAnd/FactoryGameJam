@@ -27,7 +27,7 @@ public abstract class Module : MonoBehaviour
         inputOutput.receivedObject.RemoveListener(OnObjectReceived);
     }
 
-    protected virtual void OnObjectReceived() {
+    protected virtual void OnObjectReceived(AssemblyTravelingObject newObj) {
 
     }
 }

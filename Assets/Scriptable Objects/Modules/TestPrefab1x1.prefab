@@ -890,6 +890,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3429554724085336372}
   - component: {fileID: -6827395885727619019}
+  - component: {fileID: 8840507904966451918}
+  - component: {fileID: 6025649148377806924}
   m_Layer: 0
   m_Name: TestPrefab1x1
   m_TagString: Untagged
@@ -932,7 +934,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 990a56edba990de488027977f0a921ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moduleData: {fileID: 11400000, guid: 647c37da31790fe459a6b9d45fa96de4, type: 2}
+--- !u!114 &8840507904966451918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065950177910330484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee6d62ed44acffd4984be262114ad727, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  receivedObject:
+    m_PersistentCalls:
+      m_Calls: []
+  sentObject:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &6025649148377806924
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2065950177910330484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a841f52106774794bb5d7fc68502502c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputOutput: {fileID: 8840507904966451918}
 --- !u!1 &3006380175664094282
 GameObject:
   m_ObjectHideFlags: 0

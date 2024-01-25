@@ -23,5 +23,5 @@ MonoBehaviour:
   portLayout:
     width: 1
     height: 1
-    inputs: 00000000
-    outputs: 00000000
+    inputs: 02000000
+    outputs: 02000000

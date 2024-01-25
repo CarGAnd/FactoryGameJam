@@ -7,20 +7,12 @@ public class ModuleSO : GridObjectSO
 {
     public PortLayout portLayout;
 
-    public List<PortSettings> GetInputs(Facing facing) { 
-        List<PortSettings> portSettings = portLayout.GetInputPorts();
+    public List<PortSettings> GetPorts(Facing facing, Vector2Int modulePosition) {
+        List<PortSettings> portSettings = portLayout.GetPorts();
         foreach(PortSettings ps in portSettings) {
-            ps.relativePosition = GetRotatedPosition(ps.relativePosition, facing.GetNumRotations());
-            ps.direction = ps.direction.RotatedDirection(facing.GetNumRotations());
-        }
-        return portSettings;
-    }
-
-    public List<PortSettings> GetOutputs(Facing facing) {
-        List<PortSettings> portSettings = portLayout.GetOutputPorts();
-        foreach(PortSettings ps in portSettings) {
-            ps.relativePosition = GetRotatedPosition(ps.relativePosition, facing.GetNumRotations());
-            ps.direction = ps.direction.RotatedDirection(facing.GetNumRotations());
+            ps.gridPosition = GetRotatedPosition(ps.gridPosition, facing.GetNumRotations()) + modulePosition;
+            ps.inputDirection = ps.inputDirection.RotatedDirection(facing.GetNumRotations());
+            ps.outputDirection = ps.outputDirection.RotatedDirection(facing.GetNumRotations());
         }
         return portSettings;
     }

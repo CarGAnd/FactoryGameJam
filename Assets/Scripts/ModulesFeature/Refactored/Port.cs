@@ -5,19 +5,21 @@ using UnityEngine;
 [System.Serializable]
 public class Port : ITransportable
 {
-    public Vector2Int position;
-    public Facing direction;
-    private Vector2Int connectedPosition;
+    private Vector2Int position;
+    private Facing inputDirection;
+    private Facing outputDirection;
+    private Vector2Int outputPosition;
     private ITransportable connectedObject;
     private AssemblyTravelingObject outputObject;
     private AssemblyTravelingObject inputObject;
 
-    public Facing Facing => direction;
+    public Facing Facing => inputDirection;
 
-    public Port(Vector2Int position, Facing facing) {
+    public Port(Vector2Int position, Facing inputFacing, Facing outputFacing) {
         this.position = position;
-        this.direction = facing;
-        this.connectedPosition = position + facing.GetIntDirection();
+        this.inputDirection = inputFacing;
+        this.outputDirection = outputFacing;
+        this.outputPosition = position + outputDirection.GetIntDirection();
     }
 
     public AssemblyTravelingObject ReceiveFromPort() {
@@ -62,7 +64,7 @@ public class Port : ITransportable
     }
 
     public Vector2Int GetNextCellCoords() {
-        return connectedPosition;
+        return outputPosition;
     }
 
     public Vector2Int GetGridCoords() {
@@ -74,6 +76,6 @@ public class Port : ITransportable
     }
 
     public List<Facing> GetInputDirections() {
-        return new List<Facing>() { direction.GetOppositeFacing() };
+        return new List<Facing>() { inputDirection };
     }
 }
