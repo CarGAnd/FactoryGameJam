@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class Port : ITransportable
 {
+    public UnityEvent<AssemblyTravelingObject, Vector2Int, Vector2Int> sentObject;
+
     private Vector2Int position;
     private Facing inputDirection;
     private Facing outputDirection;
@@ -13,13 +16,14 @@ public class Port : ITransportable
     private AssemblyTravelingObject outputObject;
     private AssemblyTravelingObject inputObject;
 
-    public Facing Facing => inputDirection;
+    public Facing Facing => outputDirection;
 
     public Port(Vector2Int position, Facing inputFacing, Facing outputFacing) {
         this.position = position;
         this.inputDirection = inputFacing;
         this.outputDirection = outputFacing;
         this.outputPosition = position + outputDirection.GetIntDirection();
+        sentObject = new UnityEvent<AssemblyTravelingObject, Vector2Int, Vector2Int>();
     }
 
     public AssemblyTravelingObject ReceiveFromPort() {
@@ -38,6 +42,7 @@ public class Port : ITransportable
 
     private void SendObject() {
         connectedObject.ReceivedObject(outputObject);
+        sentObject.Invoke(outputObject, position, outputPosition);
         outputObject = null;
     }
 

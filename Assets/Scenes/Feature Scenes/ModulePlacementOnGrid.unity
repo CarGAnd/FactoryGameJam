@@ -14289,9 +14289,9 @@ MonoBehaviour:
       m_Calls: []
   placeableObjects:
   - {fileID: 11400000, guid: 6f310acba411845469a3ddb6f34638b0, type: 2}
-  - {fileID: 11400000, guid: 3297a09495656024e958125a9a0c3667, type: 2}
-  - {fileID: 11400000, guid: 685625752ea6769439303b2b0e775896, type: 2}
-  - {fileID: 11400000, guid: ddd93d0bd612f0446924445635749f76, type: 2}
+  - {fileID: 11400000, guid: e21d2c34657ab294fa6f76ced1ea8098, type: 2}
+  - {fileID: 11400000, guid: ce188030e522609418c7f20ffd52fcb1, type: 2}
+  - {fileID: 11400000, guid: 720df85b0f67ebe4cb620d36f842c8ae, type: 2}
   - {fileID: 11400000, guid: bba8986c598116c4d84e69d7933f8416, type: 2}
   - {fileID: 11400000, guid: 4d25e29091e62824e954bcdbda8f9222, type: 2}
 --- !u!114 &799729831

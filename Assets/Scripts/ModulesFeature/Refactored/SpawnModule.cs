@@ -22,10 +22,12 @@ public class SpawnModule : Module
     }
 
     private void SpawnObject() {
+        if (!OutputHasRoom()) {
+            return;
+        }
         GameObject obj = Instantiate(objectToSpawn.gameObject);
         AssemblyTravelingObject travelingObject = obj.GetComponent<AssemblyTravelingObject>();
         obj.SetActive(false);
         SendObjectOut(travelingObject);
     }
-
 }

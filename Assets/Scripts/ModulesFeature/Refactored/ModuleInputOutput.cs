@@ -17,8 +17,9 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     private List<Port> outputPorts;
     private List<Port> allPorts;
 
-    private List<AssemblyTravelingObject> inputStorage;
-    private List<AssemblyTravelingObject> outputStorage;
+    private int maxStorageCount = 1;
+    private ObjectStorage<AssemblyTravelingObject> inputStorage;
+    private ObjectStorage<AssemblyTravelingObject> outputStorage;
     private AssemblyLineSystem assemblyLineSystem;
 
     public void Initialize(ModuleSO moduleSettings, Facing facing, AssemblyLineSystem assemblyLineSystem) {
@@ -28,11 +29,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     private void Awake() {
-        inputStorage = new List<AssemblyTravelingObject>();
-        outputStorage = new List<AssemblyTravelingObject>();
+        inputStorage = new ObjectStorage<AssemblyTravelingObject>(maxStorageCount);
+        outputStorage = new ObjectStorage<AssemblyTravelingObject>(maxStorageCount);
         inputPorts = new List<Port>();
         outputPorts = new List<Port>();
         allPorts = new List<Port>();
+    }
+
+    public bool OutputHasRoom() {
+        return outputStorage.HasRoom();
     }
 
     private void CreatePorts() {
@@ -44,16 +49,15 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
             }
             if (ps.isOutput) {
                 outputPorts.Add(port);
+                port.sentObject.AddListener((AssemblyTravelingObject a, Vector2Int from, Vector2Int to) => sentObject.Invoke(a, from, to));
             }
             allPorts.Add(port);
         }
     }
 
     public AssemblyTravelingObject ReceiveFromInput() {
-        if(inputStorage.Count > 0) {
-            AssemblyTravelingObject obj = inputStorage[0];
-            inputStorage.RemoveAt(0);
-            return obj;
+        if(inputStorage.HasObjectsStored()) {
+            return inputStorage.GetFromStorage();
         }
         else {
             return null;
@@ -61,7 +65,9 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
     }
 
     public void SendToOutput(AssemblyTravelingObject aObject) {
-        outputStorage.Add(aObject);
+        if (outputStorage.HasRoom()) {
+            outputStorage.PutIntoStorage(aObject);
+        }
     }
 
     private void Update() {
@@ -73,19 +79,17 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
     private void Tick() { 
         foreach(Port p in inputPorts) {
-            if(p.HasInput()) {
+            if(p.HasInput() && inputStorage.HasRoom()) {
                 AssemblyTravelingObject newObject = p.ReceiveFromPort();
-                inputStorage.Add(newObject);
+                inputStorage.PutIntoStorage(newObject);
                 receivedObject.Invoke(newObject);
             }
         }
 
         foreach(Port p in outputPorts) {
-            if(!p.HasOutput() && outputStorage.Count > 0) {
-                AssemblyTravelingObject obj = outputStorage[0];
+            if(!p.HasOutput() && outputStorage.HasObjectsStored()) {
+                AssemblyTravelingObject obj = outputStorage.GetFromStorage();
                 p.SendToPort(obj);
-                outputStorage.RemoveAt(0);
-                sentObject.Invoke(obj, p.GetGridCoords(), p.GetNextCellCoords());
             }
         }
     }
@@ -130,7 +134,7 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
   
         foreach(Port p in inputPorts) {
             Gizmos.color = Color.green;
-            Vector2Int facingDirection = p.Facing.GetIntDirection();
+            Vector2Int facingDirection = p.GetInputDirections()[0].GetIntDirection();
             Vector3 cellCenter = Grid.GetCellCenter(p.GetGridCoords() - facingDirection);
             Vector3 cubePos = Quaternion.Inverse(Grid.Rotation) * (cellCenter - Grid.Origin);
             Gizmos.DrawWireCube(cubePos, new Vector3(Grid.CellSize.x, 3, Grid.CellSize.y));
@@ -138,12 +142,47 @@ public class ModuleInputOutput : MonoBehaviour, IGridObject
 
         foreach(Port p in outputPorts) {
             Gizmos.color = Color.red;
-            Vector2Int facingDirection = p.Facing.GetIntDirection();
-            Vector3 cellCenter = Grid.GetCellCenter(p.GetGridCoords() + facingDirection);
+            Vector3 cellCenter = Grid.GetCellCenter(p.GetNextCellCoords());
             Vector3 cubePos = Quaternion.Inverse(Grid.Rotation) * (cellCenter - Grid.Origin);
             Gizmos.DrawWireCube(cubePos, new Vector3(Grid.CellSize.x, 3, Grid.CellSize.y));    
         }
         Gizmos.matrix = Matrix4x4.identity;
     }
     #endregion
+}
+
+public class ObjectStorage<T> {
+
+    private int maxCount;
+    private List<T> objectStored;
+
+    public ObjectStorage(int maxCount) {
+        this.maxCount = maxCount;
+        objectStored = new List<T>();
+    }
+
+    public bool HasRoom() {
+        return objectStored.Count < maxCount;
+    }
+
+    public bool HasObjectsStored() {
+        return objectStored.Count > 0;
+    }
+
+    public void PutIntoStorage(T obj) {
+        if (HasRoom()) {
+            objectStored.Add(obj);
+        }
+    }
+
+    public T GetFromStorage() {
+        if(HasObjectsStored()) {
+            T obj = objectStored[0];
+            objectStored.RemoveAt(0);
+            return obj;
+        }
+        else {
+            return default(T);
+        }
+    }
 }
