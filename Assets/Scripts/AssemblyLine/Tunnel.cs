@@ -17,13 +17,12 @@ public class Tunnel : AssemblyPiece
 
     public override void SetNextTransportable(ITransportable nextTransportable)
     {
-        Debug.Log("We queried the tunnel with: " +nextTransportable.ToString());
         nextPiece = nextTransportable;
-        if(nextPiece is Tunnel && !IsReceiver)
+        if(connectedTunnel != null && nextPiece is Tunnel && !IsReceiver)
         {
             connectedTunnel.canReceive = false;
         }
-        if(nextPiece == null)
+        else if(nextPiece == null)
         {
             if(!IsReceiver)
             {
@@ -93,8 +92,15 @@ public class Tunnel : AssemblyPiece
                     connectedTunnel = queryTunnel;
                     queryTunnel.connectedTunnel = this;
                     nextPiece = queryTunnel;
+                        
+                    List<Facing> connectionDirections = Facing.GetPerpendicularFacings();
+                    Quaternion entryRotation = connectionDirections[0].GetRotationFromFacing()*grid.Rotation;
+                    Quaternion exitRotation = connectionDirections[1].GetRotationFromFacing()*grid.Rotation;
+                    gameObject.transform.rotation = entryRotation;
+                    queryTunnel.gameObject.transform.rotation = exitRotation;
+                
                     return true;
-                    //Rotation later
+                    
                 }
             }
         }
@@ -115,8 +121,14 @@ public class Tunnel : AssemblyPiece
                     IsReceiver = true;
                     IsConnected = true;
                     queryTunnel.SetNextTransportable(this);
+                    
+                    List<Facing> connectionDirections = Facing.GetPerpendicularFacings();
+                    Quaternion entryRotation = connectionDirections[0].GetRotationFromFacing()*grid.Rotation;
+                    Quaternion exitRotation = connectionDirections[1].GetRotationFromFacing()*grid.Rotation;
+                    gameObject.transform.rotation = exitRotation;
+                    queryTunnel.gameObject.transform.rotation = entryRotation;
+                    
                     return true;
-                    //Rotation later
                 }
             }
         }
@@ -126,7 +138,6 @@ public class Tunnel : AssemblyPiece
 
     public override void RemoveFromGrid(FactoryGrid grid)
     {
-        base.RemoveFromGrid(grid);
         if(IsConnected && !IsReceiver)
         {
             connectedTunnel.IsConnected = false;
@@ -140,5 +151,6 @@ public class Tunnel : AssemblyPiece
             connectedTunnel.connectedTunnel = null;
         }
         connectedTunnel = null;
+        base.RemoveFromGrid(grid);
     }
 }

@@ -245,29 +245,33 @@ public class AssemblyLine
         AddConnectingAssemblyLine(line, piece);
     }
 
-    public AssemblyLine ContainsPiece(ITransportable piece, HashSet<AssemblyLine> visitedLines)
+    public bool ContainsPiece(ITransportable piece, HashSet<AssemblyLine> visitedLines, out AssemblyLine containingAssemblyLine)
     {
         if(visitedLines.Contains(this))
         {
-            return null;
+            containingAssemblyLine = null;
+            return false;
         }
         visitedLines.Add(this);
         
         if(pieces.Contains(piece))
         {
-            return this;
+            containingAssemblyLine = this;
+            return true;
         }
         else
         {
             foreach(var kvp in connectingAssemblyLines)
             {
-                AssemblyLine lineWithPiece = kvp.Key.ContainsPiece(piece, visitedLines);
-                if(lineWithPiece != null)
+                AssemblyLine lineWithPiece = null;
+                if(kvp.Key.ContainsPiece(piece, visitedLines, out lineWithPiece))
                 {
-                    return lineWithPiece;
+                    containingAssemblyLine = lineWithPiece;
+                    return true;
                 }
             }
-            return null;
+            containingAssemblyLine = null;
+            return false;
         }
     }
 

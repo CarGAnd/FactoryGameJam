@@ -224,7 +224,10 @@ public class AssemblyLineManager
     private AssemblyLine MergeLines(AssemblyLine startLine, AssemblyLine endLine, ITransportable piece)
     {
         // Add the connecting piece to the endLine (which will now be the start of the merged line).
-        startLine.AddPiece(piece);
+        if(!startLine.ContainsPiece(piece, new HashSet<AssemblyLine>(), out AssemblyLine lineContainingPiece))
+        {
+            startLine.AddPiece(piece);
+        }
         //Moves all nodes from startLine to endLine
         startLine.AppendLine(endLine);
         //Moves all connecting lines from startLine to endLine
@@ -343,6 +346,7 @@ public class AssemblyLineManager
             {
                 SplitLineAt(lineContainingPiece, piece);
             }
+            CheckEndConnections();
         }
     }
 
@@ -352,8 +356,7 @@ public class AssemblyLineManager
         HashSet<AssemblyLine> visitedLines = new HashSet<AssemblyLine>();
         foreach (AssemblyLine line in assemblyLines)
         {
-            AssemblyLine lineContainingPiece = line.ContainsPiece(piece, visitedLines);
-            if (lineContainingPiece != null)
+            if(line.ContainsPiece(piece, visitedLines, out AssemblyLine lineContainingPiece))
             {
                 return lineContainingPiece;
             }
@@ -477,6 +480,32 @@ public class AssemblyLineManager
             foreach(AssemblyLine line in currentLine.GetAllConnections())
             {
                 RecursiveBreakLoop(line, visited);
+            }
+        }
+    }
+    //If after we've removed a piece a connection is now possible we connect these lines.
+    private void CheckEndConnections()
+    {
+        int startCount = assemblyLines.Count;
+        for(int i = 0; i < startCount; i++)
+        {
+            AssemblyLine intersectedLine = GetIntersectedAssemblyLine(assemblyLines[i].GetEndPiece(), out ITransportable intersectedPiece);
+            if(intersectedLine != null && intersectedPiece.GetInputDirections().Contains(assemblyLines[i].GetEndPiece().Facing))
+            {
+                int countBeforeHandle = assemblyLines.Count;
+                if(intersectedPiece.Facing == assemblyLines[i].GetEndPiece().Facing)
+                {
+                    MergeLines(intersectedLine, assemblyLines[i], intersectedPiece);
+                }
+                else
+                {
+                    HandleConnectingLines(intersectedLine, new List<AssemblyLine>{assemblyLines[i]}, intersectedPiece);
+                }
+                int countAfterHandle = assemblyLines.Count;
+
+                int itemsRemoved = countBeforeHandle - countAfterHandle;
+                i -= itemsRemoved;
+                startCount -= itemsRemoved;
             }
         }
     }

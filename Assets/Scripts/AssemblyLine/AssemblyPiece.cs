@@ -98,8 +98,8 @@ public abstract class AssemblyPiece : IGridInteractable, ITransportable
     public virtual void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
         this.cellCoords = startCell;
         this.grid = grid;
-        assemblyLineSystem.PlaceTransportablePiece(this);
         this.gameObject = MonoBehaviour.Instantiate(gameObject, grid.GetCellCenter(cellCoords), grid.Rotation * facing.GetRotationFromFacing());
+        assemblyLineSystem.PlaceTransportablePiece(this);
     }
     public void DestroyObject() {
         RemoveFromGrid(grid);
