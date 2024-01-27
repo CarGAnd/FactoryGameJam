@@ -28,12 +28,7 @@ public class ClickPlacer : IPlacementStrategy {
         if (Input.GetKeyDown(KeyCode.Mouse0)) {
             modulePlacer.TryPlaceModule(currentModule, mousePosOnGrid, modulePlacer.CurrentFacing);
         }
-        if (Input.mouseScrollDelta.y > 0.1f) {
-            modulePlacer.RotateModuleCounterClockwise();
-        }
-        if (Input.mouseScrollDelta.y < -0.1f) {
-            modulePlacer.RotateModuleClockwise();
-        }
+        modulePlacer.UpdateRotationInput();    
     }
 }
 
@@ -66,12 +61,7 @@ public class PathPlacer : IPlacementStrategy {
                 PlaceModulesAlongPath(currentModule, path, modulePlacer);
             }            
         }
-        if (Input.mouseScrollDelta.y > 0.1f) {
-            modulePlacer.RotateModuleCounterClockwise();
-        }
-        if (Input.mouseScrollDelta.y < -0.1f) {
-            modulePlacer.RotateModuleClockwise();
-        }
+        modulePlacer.UpdateRotationInput();
     }
 
     public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
@@ -94,7 +84,6 @@ public class PathPlacer : IPlacementStrategy {
         List<Vector2Int> pathDirections = path.GetDirections();
         //The first n-1 modules are rotated to match the path
         for(int i = 0; i < pathPositions.Count - 1; i++) {
-            //TODO: figure out a consistent way of managing rotations instead of using 3 different representations (int, Quaternion, Facing)
             modulePlacer.TryPlaceModule(moduleData, pathPositions[i], FacingFromDirection(pathDirections[i]));
         }
         //The last module is rotated according to the user input
@@ -156,6 +145,67 @@ public class BoxPlacer : IPlacementStrategy {
         Vector2Int upperRight = new Vector2Int(Mathf.Max(startPos.x, endPos.x), Mathf.Max(startPos.y, endPos.y));
         Vector2Int boxDimensions = upperRight - lowerLeft + Vector2Int.one;
         return grid.GetPositionsInSubgrid(lowerLeft, boxDimensions);
+    }
+}
+
+public class DragPlacer : IPlacementStrategy {
+
+    private bool isDragging;
+    private Vector2Int lastPlacedPosition;
+    private GridObjectSO gridObject;
+    private Facing lastFacing;
+    private bool lastObjectWasPlaced;
+
+    public DragPlacer(GridObjectSO gridObject) {
+        this.gridObject = gridObject;
+    }
+
+    public List<Vector2Int> GetHoveredPositions(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        return new List<Vector2Int>() { grid.GetCellCoords(mousePosOnGrid) };
+    }
+
+    public void UpdateInput(FactoryGrid grid, Vector3 mousePosOnGrid, ModulePlacer modulePlacer) {
+        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+            isDragging = true;
+            IGridObject placedObject = modulePlacer.TryPlaceModule(gridObject, grid.GetCellCoords(mousePosOnGrid), modulePlacer.CurrentFacing);
+            lastObjectWasPlaced = placedObject != null;
+            lastFacing = modulePlacer.CurrentFacing;
+            lastPlacedPosition = grid.GetCellCoords(mousePosOnGrid);
+        }    
+        if(Input.GetKeyUp(KeyCode.Mouse0) && isDragging) {
+            isDragging = false;
+        }
+        if (isDragging) {
+            Vector2Int currentMouseGridPos = grid.GetCellCoords(mousePosOnGrid);
+            if(currentMouseGridPos != lastPlacedPosition) {
+                Vector2Int dir = currentMouseGridPos - lastPlacedPosition;
+                Facing facing = FacingFromDirection(dir);
+                IGridObject placedObject = modulePlacer.TryPlaceModule(gridObject, currentMouseGridPos, facing);
+                if(facing != lastFacing && lastObjectWasPlaced) {
+                    grid.GetObjectAt(lastPlacedPosition).DestroyObject();
+                    modulePlacer.TryPlaceModule(gridObject, lastPlacedPosition, facing);
+                }
+                lastPlacedPosition = currentMouseGridPos;
+                lastFacing = facing;
+                lastObjectWasPlaced = placedObject != null;
+            }
+        }
+        modulePlacer.UpdateRotationInput();
+    }
+
+    private Facing FacingFromDirection(Vector2Int direction) {
+        if(direction == Vector2Int.left) {
+            return Facing.West;
+        }
+        else if(direction == Vector2Int.up) {
+            return Facing.North;
+        }
+        else if(direction == Vector2Int.right) {
+            return Facing.East;
+        }
+        else {
+            return Facing.South;
+        }
     }
 }
 

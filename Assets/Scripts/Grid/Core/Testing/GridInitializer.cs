@@ -6,17 +6,18 @@ using UnityEngine;
 public class GridInitializer : MonoBehaviour
 {
     [SerializeField] private bool showGizmos;
+    [SerializeField] private ModulePlacer modulePlacer;
     private FactoryGrid grid;
-    [SerializeField] public List<GameObject> prePlacedObjects;
+    [SerializeField] private List<PrePlacedObjectData> prePlacedObjects;
     
 
     // Start is called before the first frame update
     void Start()
     {
         grid = GetComponent<FactoryGrid>();
-        foreach(GameObject g in prePlacedObjects) {
-            IGridObject gridObject = new TestGridObject();
-            grid.PlaceObject(gridObject, grid.GetCellCoords(g.transform.position));
+        foreach(PrePlacedObjectData objectData in prePlacedObjects) {
+            modulePlacer.TryPlaceModule(objectData.objectDefinition, objectData.gridPosition, objectData.facing);
+            Destroy(objectData.previewObject);
         }
     }
 
@@ -27,23 +28,31 @@ public class GridInitializer : MonoBehaviour
 
         grid = GetComponent<FactoryGrid>();
         Gizmos.color = Color.yellow;
-        foreach(GameObject g in prePlacedObjects) {
-            Vector3 pos = grid.GetCellCenter(g.transform.position);
+        foreach(PrePlacedObjectData objectData in prePlacedObjects) {
+            Vector3 pos = grid.GetCellCenter(objectData.gridPosition);
             Gizmos.DrawWireSphere(pos, Mathf.Min(grid.CellSize.x, grid.CellSize.y) / 3f);
         }
     }
+
+    public void PrePlaceObject(GridObjectSO objectDefinition, Facing facing, Vector2Int gridPosition) {
+        Vector3 worldPosition = grid.GetCellCenter(gridPosition);
+        GameObject previewObject = Instantiate(objectDefinition.PreviewPrefab, worldPosition, facing.GetRotationFromFacing());
+        PrePlacedObjectData newData = new PrePlacedObjectData
+        {
+            previewObject = previewObject,
+            facing = facing,
+            objectDefinition = objectDefinition,
+            gridPosition = gridPosition
+        };
+        prePlacedObjects.Add(newData);
+    }
+
+    [System.Serializable]
+    private struct PrePlacedObjectData {
+        public GameObject previewObject;
+        public Facing facing;
+        public GridObjectSO objectDefinition;
+        public Vector2Int gridPosition;
+    }
 }
 
-public class TestGridObject : IGridObject {
-    public void DestroyObject() {
-        throw new System.NotImplementedException();
-    }
-
-    public void OnPlacedOnGrid(Vector2Int startCell, FactoryGrid grid) {
-        throw new System.NotImplementedException();
-    }
-
-    public void RemoveFromGrid(FactoryGrid grid) {
-        throw new System.NotImplementedException();
-    }
-}

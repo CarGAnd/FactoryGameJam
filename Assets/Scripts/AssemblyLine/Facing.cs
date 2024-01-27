@@ -34,7 +34,6 @@ public static class FacingExtentions {
         if(newNumRotations < 0) {
             newNumRotations += 4;
         }
-
         return facingMap[newNumRotations];
     }
 

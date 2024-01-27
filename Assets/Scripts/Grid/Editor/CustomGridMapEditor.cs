@@ -124,9 +124,7 @@ public class CustomGridMapEditor : Editor
 
     private void Paint(Vector2 clickPosition, bool value) {
         Ray ray = HandleUtility.GUIPointToWorldRay(clickPosition);
-        Plane plane = new Plane(grid.Rotation * Vector3.up, grid.Origin);
-        plane.Raycast(ray, out float distance);
-        Vector3 worldPosition = ray.GetPoint(distance);
+        Vector3 worldPosition = grid.RaycastGridPlane(ray);
         Vector2Int gridPosition = grid.GetCellCoords(worldPosition);
         customLayout.SetMaskValue(gridPosition.x, gridPosition.y, value);
         //Manually update the scene view as the update rate would otherwise be very choppy

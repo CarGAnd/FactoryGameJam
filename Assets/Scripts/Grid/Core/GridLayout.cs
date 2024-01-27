@@ -95,6 +95,13 @@ public class GridLayout : MonoBehaviour
         return positions;
     }
 
+    public Vector3 RaycastGridPlane(Ray ray) {
+        Plane plane = new Plane(Rotation * Vector3.up, Origin);
+        plane.Raycast(ray, out float distance);
+        Vector3 worldPosition = ray.GetPoint(distance);
+        return worldPosition;
+    }
+
     public void MoveGrid(Vector3 newOrigin) {
         Origin = newOrigin;
     }

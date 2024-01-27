@@ -54,12 +54,21 @@ public class ModulePlacer : MonoBehaviour
         moduleChanged?.Invoke(newBuilding);
     }
 
+    public void UpdateRotationInput() {
+        if (Input.mouseScrollDelta.y > 0.1f) {
+            RotateModuleCounterClockwise();
+        }
+        if (Input.mouseScrollDelta.y < -0.1f) {
+            RotateModuleClockwise();
+        }
+    }
+
     public void ExitPlacementMode() {
         placementHandler = new NoPlacement();
         moduleChanged.Invoke(null);
     }
 
-    private void SetModuleRotation(Facing facing) {
+    public void SetModuleRotation(Facing facing) {
         CurrentFacing = facing;
         CurrentPlacementRotation = grid.Rotation * CurrentFacing.GetRotationFromFacing();
         moduleRotated?.Invoke();

@@ -22,9 +22,7 @@ public class MouseInput : MonoBehaviour {
 
     private void UpdateMousePosition() {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Plane gridPlane = new Plane(BuildGrid.Rotation * Vector3.up, BuildGrid.Origin);
-        gridPlane.Raycast(ray, out float distance);
-        Vector3 worldPosition = ray.GetPoint(distance);
+        Vector3 worldPosition = BuildGrid.RaycastGridPlane(ray);
         Vector2Int mouseGridPosition = BuildGrid.GetCellCoords(worldPosition);
 
         LastGroundHitPoint = worldPosition;

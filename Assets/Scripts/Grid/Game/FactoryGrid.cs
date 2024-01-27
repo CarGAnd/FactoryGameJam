@@ -128,6 +128,10 @@ public class FactoryGrid : MonoBehaviour, ISearchable
         return gridLayout.GetPositionsInSubgrid(lowerLeft, subgridDimensions);
     }
 
+    public Vector3 RaycastGridPlane(Ray ray) {
+        return gridLayout.RaycastGridPlane(ray);
+    }
+
     public string SaveGrid() {
         //GridSerializer<IGridObject> serializer = new GridSerializer<IGridObject>();
         //return serializer.GridToJson(placementGrid, (IGridObject gridObject) => "1");
