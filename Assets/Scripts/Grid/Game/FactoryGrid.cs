@@ -132,12 +132,6 @@ public class FactoryGrid : MonoBehaviour, ISearchable
         return gridLayout.RaycastGridPlane(ray);
     }
 
-    public string SaveGrid() {
-        //GridSerializer<IGridObject> serializer = new GridSerializer<IGridObject>();
-        //return serializer.GridToJson(placementGrid, (IGridObject gridObject) => "1");
-        return "123";
-    }
-
     #region Debugging
     [SerializeField] private bool showOccupiedCells = true;
     [SerializeField] private bool showGridLines = true;

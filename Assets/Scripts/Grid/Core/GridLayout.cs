@@ -7,7 +7,7 @@ public class GridLayout : MonoBehaviour
     [field: SerializeField] public Vector3 Origin { get; private set; }
     [field: SerializeField] public Quaternion Rotation { get; private set; }
     [field: SerializeField] public Vector2 CellSize { get; private set; }
-
+    
     public Vector3 RotationPivot { get { return Vector3.zero; } }
     private IGridLayout layout = new SquareGridLayout();
     

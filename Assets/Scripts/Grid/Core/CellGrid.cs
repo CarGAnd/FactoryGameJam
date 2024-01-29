@@ -92,6 +92,25 @@ public class CellGrid<T> : ISearchable
         }
     }
 
+    public List<T> GetAllPlacedObjects() {
+        HashSet<Vector2Int> visitedPositions = new HashSet<Vector2Int>();
+        List<T> placedObjects = new List<T>();
+        for (int x = 0; x < Columns; x++) {
+            for (int y = 0; y < Rows; y++) {
+                Vector2Int coord = new Vector2Int(x, y);
+                if (PositionIsOccupied(coord) && !visitedPositions.Contains(coord)) {
+                    T obj = GetObjectAt(coord);
+                    placedObjects.Add(obj);
+                    List<Vector2Int> sharedPositions = GetSharedPositions(coord);
+                    foreach (Vector2Int position in sharedPositions) {
+                        visitedPositions.Add(position);
+                    }
+                }
+            }
+        }
+        return placedObjects;
+    }
+
     public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
         List<Vector2Int> sharedPositions = new List<Vector2Int>();
         List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();

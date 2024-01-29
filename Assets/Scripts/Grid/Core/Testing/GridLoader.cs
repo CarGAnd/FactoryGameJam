@@ -13,8 +13,7 @@ public class GridLoader : MonoBehaviour
 
     [Button("Test Save")]
     private void Save() {
-        string saveData = factoryGrid.SaveGrid();
-        jsonData = saveData;
+        
     }
 
     /*[Button("Test Load")]
@@ -30,14 +29,25 @@ public class GridLoader : MonoBehaviour
     private void ClearGrid() {
         for(int x = 0; x < factoryGrid.Columns; x++) {
             for(int y = 0; y < factoryGrid.Rows; y++) {
-                IGridObject gridObject = factoryGrid.GetObjectAt(new Vector2Int(x, y));
-                gridObject.DestroyObject();
+                Vector2Int gridPosition = new Vector2Int(x, y);
+                IGridObject gridObject = factoryGrid.GetObjectAt(gridPosition);
+                if(gridObject != null) {
+                    gridObject.DestroyObject();
+                }
             }
         }
     }
 
-    /*private void PlaceSavedObject(string id, Vector2Int position, string jsonData) {
-        IGridObject gridObject = modulePlacer.TryPlaceModule(testObject, position, Quaternion.identity);
-        gridObject.Deserialize(jsonData);
-    }*/
+    private void PlaceSavedObject(ObjectPlacementData placementData) {
+        IGridObject gridObject = modulePlacer.TryPlaceModule(testObject, new Vector2Int(placementData.x, placementData.y), placementData.facing);
+        //gridObject.Deserialize(placementData.buildingData);
+    }
+}
+
+public class ObjectPlacementData {
+    public string id;
+    public int x;
+    public int y;
+    public Facing facing;
+    public object buildingData;
 }
