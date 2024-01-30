@@ -16,10 +16,6 @@ public class BuildingSelector : MonoBehaviour
         selectedObjectChanged?.Invoke(newSelectedObject);
     }
 
-    private void Start() {
-        SetObjectSelection(placeableObjects[0]);
-    }
-
     private void Update() {
         int keyPressed = GetNumberKeyPressed();
         if(keyPressed >= 0) {

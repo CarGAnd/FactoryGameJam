@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridVisual : MonoBehaviour
+public class PlacementModeVisuals : MonoBehaviour
 {
-    [SerializeField] private MouseInput mouseInput;
-    [SerializeField] private ModulePlacer modulePlacer;
     [SerializeField] private GameObject indicatorPrefab;
     [SerializeField] private GameObject arrowPrefab;
+    [SerializeField] private PlacementMode placementMode;
+    [SerializeField] private PlayerModeManager playerModeManager;
 
     private FactoryGrid buildGrid;
     private List<GameObject> indicatorObjects;
@@ -19,22 +19,40 @@ public class GridVisual : MonoBehaviour
     private Vector2Int buildingDimensions;
 
     private void Awake() {
+        buildGrid = playerModeManager.Grid;
         indicatorObjects = new List<GameObject>();
-        buildGrid = mouseInput.BuildGrid;
         for(int i = 0; i < 9; i++) {
-            CreateIndicatorObject();
+            GameObject newIndicator = CreateIndicatorObject();
+            indicatorObjects.Add(newIndicator);
         }
         CreateArrowObject();
     }
 
     private void OnEnable() {
-        modulePlacer.moduleChanged.AddListener(OnModuleChanged);
-        modulePlacer.moduleRotated.AddListener(OnModuleRotated);
+        placementMode.moduleChanged.AddListener(OnModuleChanged);
+        placementMode.moduleRotated.AddListener(OnModuleRotated);
+        placementMode.enterPlacementMode.AddListener(OnEnterPlacementMode);
+        placementMode.exitPlacementMode.AddListener(OnExitPlacementMode);
     }
 
     private void OnDisable() {
-        modulePlacer.moduleChanged.RemoveListener(OnModuleChanged);
-        modulePlacer.moduleRotated.RemoveListener(OnModuleRotated);
+        placementMode.moduleChanged.RemoveListener(OnModuleChanged);
+        placementMode.moduleRotated.RemoveListener(OnModuleRotated);
+        placementMode.enterPlacementMode.RemoveListener(OnEnterPlacementMode);
+        placementMode.exitPlacementMode.RemoveListener(OnExitPlacementMode);
+
+    }
+
+    private void OnEnterPlacementMode() {
+        placementPreview.SetActive(true);
+        arrowObject.SetActive(true);
+        UpdateGroundIndicators();
+    }
+
+    private void OnExitPlacementMode() {
+        placementPreview.SetActive(false);
+        arrowObject.SetActive(false);
+        SetActiveIndicatorCount(0);
     }
 
     private void OnModuleRotated() {
@@ -42,10 +60,10 @@ public class GridVisual : MonoBehaviour
             return;
         }
 
-        Quaternion newRotation = modulePlacer.CurrentPlacementRotation;
+        Quaternion newRotation = placementMode.CurrentPlacementRotation;
         placementPreview.transform.rotation = newRotation;
 
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing);
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(placementMode.CurrentFacing);
         
         UpdatePreviewPositions(lastOriginCoord, buildingDimensions);
     }
@@ -55,12 +73,12 @@ public class GridVisual : MonoBehaviour
         arrowObject.SetActive(newBuilding != null);
 
         if(newBuilding == null) {
-            UpdateGroundIndicators();
+            SetActiveIndicatorCount(0);
             return;
         }
-
         selectedObjectData = newBuilding;
-        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(modulePlacer.CurrentFacing);
+
+        buildingDimensions = selectedObjectData.GetLayoutShapeDimensions(placementMode.CurrentFacing);
         
         placementPreview = Instantiate(newBuilding.PreviewPrefab);
     
@@ -70,7 +88,8 @@ public class GridVisual : MonoBehaviour
 
     private void SetActiveIndicatorCount(int newCount) {
         while (indicatorObjects.Count < newCount) {
-            CreateIndicatorObject();
+            GameObject newIndicator = CreateIndicatorObject();
+            indicatorObjects.Add(newIndicator);
         }
 
         for (int i = 0; i < newCount; i++) {
@@ -91,7 +110,7 @@ public class GridVisual : MonoBehaviour
             return;
         }
 
-        Vector3 mouseHitPosition = mouseInput.LastGroundHitPoint;
+        Vector3 mouseHitPosition = placementMode.CurrentMouseWorldPos;
         Vector2Int subgridOriginCoord = buildGrid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
 
         if(subgridOriginCoord == lastOriginCoord) {
@@ -111,7 +130,7 @@ public class GridVisual : MonoBehaviour
     }
 
     private void UpdateGroundIndicators() {
-        List<Vector2Int> hoveredPositions = modulePlacer.GetHoveredPositions();
+        List<Vector2Int> hoveredPositions = placementMode.GetHoveredPositions();
         SetActiveIndicatorCount(hoveredPositions.Count);
         for(int i = 0; i < hoveredPositions.Count; i++) {
             Vector2Int buildPosition = hoveredPositions[i];
@@ -132,20 +151,20 @@ public class GridVisual : MonoBehaviour
 
     private void UpdateArrowObject(Vector2Int buildingOriginCoord, Vector2Int buildingDimensions) {
         Vector3 buildingCenter = buildGrid.GetSubgridCenter(buildingOriginCoord, buildingDimensions);
-        Vector3 arrowDelta = modulePlacer.CurrentPlacementRotation * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
+        Vector3 arrowDelta = placementMode.CurrentPlacementRotation * (new Vector3(-buildGrid.CellSize.x * buildingDimensions.x, 0, 0) / 2f + Vector3.left * buildGrid.CellSize.x / 2f);
         Vector3 arrowPosition = buildingCenter + arrowDelta;
         arrowObject.transform.position = arrowPosition;
-        Quaternion moduleRot = modulePlacer.CurrentPlacementRotation;
+        Quaternion moduleRot = placementMode.CurrentPlacementRotation;
         arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
     }
 
-    private void CreateIndicatorObject() {
+    private GameObject CreateIndicatorObject() {
         GameObject newIndicatorObject = Instantiate(indicatorPrefab);
         newIndicatorObject.transform.localScale = Vector3.one * buildGrid.CellSize;
         Quaternion oldRot = newIndicatorObject.transform.rotation;
         newIndicatorObject.transform.rotation = buildGrid.Rotation * oldRot;
         newIndicatorObject.transform.parent = transform;
-        indicatorObjects.Add(newIndicatorObject);
+        return newIndicatorObject;
     }
 
     private void CreateArrowObject() {

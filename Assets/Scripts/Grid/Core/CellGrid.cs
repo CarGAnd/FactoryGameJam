@@ -114,6 +114,9 @@ public class CellGrid<T> : ISearchable
     public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
         List<Vector2Int> sharedPositions = new List<Vector2Int>();
         List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
+        if(sharedCells == null) {
+            return sharedPositions;
+        }
         foreach(Cell<T> c in sharedCells) {
             sharedPositions.Add(c.GetCellCoordinates());
         }

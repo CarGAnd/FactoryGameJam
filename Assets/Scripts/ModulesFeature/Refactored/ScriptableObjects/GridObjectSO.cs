@@ -80,8 +80,8 @@ public abstract class GridObjectSO : ScriptableObject
         }
     }
 
-    public virtual IPlacementStrategy GetPlacementHandler() {
-        return new ClickPlacer(this);
+    public virtual IPlacementStrategy GetPlacementHandler(FactoryGrid grid, PlacementMode placementMode) {
+        return new ClickPlacer(this, grid, placementMode);
     }
 
     public abstract IGridObject CreateInstance(Vector3 position, Quaternion rotation, Facing facing, AssemblyLineSystem assemblyLineSystem);
