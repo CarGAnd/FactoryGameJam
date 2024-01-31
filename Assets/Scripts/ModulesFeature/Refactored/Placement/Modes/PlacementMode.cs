@@ -30,7 +30,7 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
     public void UpdateInput(MouseInput mouseInput) {
         CurrentMouseWorldPos = mouseInput.LastGroundHitPoint;
         placementHandler.UpdateInput(mouseInput);
-        if (mouseInput.RightMouseButtonPressed()) {
+        if (mouseInput.RightMouseButtonWasPressed()) {
             playerModeManager.GoToSelectionMode();
         }
     }
@@ -75,10 +75,12 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
     }
 
     public IGridObject TryPlaceModule(GridObjectSO gridObject, Vector3 worldPos, Facing facing) {
-        return modulePlacer.TryPlaceModule(gridObject, worldPos, facing);
+        Vector2Int gridPosition = modulePlacer.GetModulePlacementPosition(gridObject, worldPos, facing);
+        return TryPlaceModule(gridObject, gridPosition, facing);
     }
 
     public IGridObject TryPlaceModule(GridObjectSO gridObject, Vector2Int gridPos, Facing facing) {
+        //Anything extra like cost could go here
         return modulePlacer.TryPlaceModule(gridObject, gridPos, facing);
     }
 

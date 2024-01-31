@@ -23,7 +23,18 @@ public class SelectionMode : MonoBehaviour, IMouseMode {
 
     public void UpdateInput(MouseInput mouseInput) {
         LastMouseGridPosition = mouseInput.LastGroundHitPoint;
+
+        if (mouseInput.RightMouseButtonIsPressed()) {
+            RemoveModule(grid.GetCellCoords(LastMouseGridPosition));
+        }
     }
+
+    public void RemoveModule(Vector2Int gridPosition) {
+        IGridObject gridObject = grid.GetObjectAt(gridPosition);
+        if(gridObject != null) {
+            gridObject.DestroyObject();
+        }
+    }   
 }
 
 

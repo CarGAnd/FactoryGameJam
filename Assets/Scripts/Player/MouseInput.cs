@@ -36,15 +36,15 @@ public class MouseInput : MonoBehaviour {
 
     public Vector3 GetMousePosOnGrid(FactoryGrid grid) {
         Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Vector3 worldPosition = BuildGrid.RaycastGridPlane(ray);
+        Vector3 worldPosition = grid.RaycastGridPlane(ray);
         return worldPosition;
     }
 
-    public bool LeftMouseButtonPressed() {
+    public bool LeftMouseButtonWasPressed() {
         return Mouse.current.leftButton.wasPressedThisFrame;
     }
 
-    public bool RightMouseButtonPressed() {
+    public bool RightMouseButtonWasPressed() {
         return Mouse.current.rightButton.wasPressedThisFrame;
     }
 
@@ -54,5 +54,9 @@ public class MouseInput : MonoBehaviour {
 
     public bool MouseScrolledDown() {
         return Mouse.current.scroll.ReadValue().y < -0.1f;
+    }
+
+    public bool RightMouseButtonIsPressed() {
+        return Mouse.current.rightButton.IsPressed();
     }
 }

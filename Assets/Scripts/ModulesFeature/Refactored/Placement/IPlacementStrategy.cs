@@ -29,7 +29,7 @@ public class ClickPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(MouseInput mouseInput) {
-        if (mouseInput.LeftMouseButtonPressed()) {
+        if (mouseInput.LeftMouseButtonWasPressed()) {
             placementMode.TryPlaceModule(currentModule, mouseInput.LastGroundHitPoint, placementMode.CurrentFacing);
         }
         placementMode.UpdateRotationInput(mouseInput);    

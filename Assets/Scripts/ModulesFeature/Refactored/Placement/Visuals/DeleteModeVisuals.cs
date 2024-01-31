@@ -10,22 +10,38 @@ public class DeleteModeVisuals : MonoBehaviour
 
     private FactoryGrid grid;
     private List<GameObject> indicatorObjects;
+    private bool isActive;
 
     private void Awake() {
         indicatorObjects = new List<GameObject>();
         grid = playerModeManager.Grid;
+        //Create 5 indicator objects and set them all as inactive
         SetActiveIndicatorCount(5);
     }
 
     private void OnEnable() {
-        
+        deleteMode.enterDeleteMode.AddListener(OnEnterDeleteMode);
+        deleteMode.exitDeleteMode.AddListener(OnExitDeleteMove);
     }
 
     private void OnDisable() {
-        
+        deleteMode.enterDeleteMode.RemoveListener(OnEnterDeleteMode);
+        deleteMode.exitDeleteMode.RemoveListener(OnExitDeleteMove);
+    }
+
+    private void OnEnterDeleteMode() {
+        isActive = true;
+    }
+
+    private void OnExitDeleteMove() {
+        SetActiveIndicatorCount(0);
+        isActive = false;
     }
 
     private void Update() {
+        if (!isActive) {
+            return;
+        }
         Vector2Int gridPos = grid.GetCellCoords(deleteMode.LastMouseGridPosition);
         if (grid.CellWithinBounds(gridPos)) {
             UpdateGroundIndicators(gridPos); 
@@ -34,6 +50,9 @@ public class DeleteModeVisuals : MonoBehaviour
 
     private void UpdateGroundIndicators(Vector2Int hoveredPosition) {
         List<Vector2Int> sharedPositions = grid.GetSharedPositions(hoveredPosition);
+        if(sharedPositions.Count == 0) {
+            sharedPositions.Add(hoveredPosition);
+        }
         SetActiveIndicatorCount(sharedPositions.Count);
         for(int i = 0; i < sharedPositions.Count; i++) {
             Vector2Int buildPosition = sharedPositions[i];
