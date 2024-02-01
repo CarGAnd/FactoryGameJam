@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SpawnModule : Module
+public class SpawnerModule : Module
 {
     [SerializeField] private float timeBetweenSpawns;
     [SerializeField] private AssemblyTravelingObject objectToSpawn;

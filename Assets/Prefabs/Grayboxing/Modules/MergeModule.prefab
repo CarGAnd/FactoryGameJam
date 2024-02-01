@@ -333,14 +333,14 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   isOutConnection: 0
 --- !u!1 &2269984433714533968
 GameObject:
@@ -12513,14 +12513,14 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   isOutConnection: 0
 --- !u!1 &4381492415477421321
 GameObject:
@@ -12966,14 +12966,14 @@ MonoBehaviour:
     name: 
     scriptableObject: {fileID: 11400000, guid: 524aec41d7c01ad40ab92c9d6defc53b, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   minimumDistance:
     name: 
     scriptableObject: {fileID: 11400000, guid: 416bf476b9482e7419dd138e435540b1, type: 2}
     useLocalConstant: 0
-    localConstantValue: 0
     debugRef: 0
+    localConstantValue: 0
   isOutConnection: 1
 --- !u!1 &5819931380753502364
 GameObject:
@@ -12985,7 +12985,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7789215538526329153}
   - component: {fileID: 1190836643848922082}
-  - component: {fileID: 3913431361984725190}
   m_Layer: 7
   m_Name: MergeModule
   m_TagString: Untagged
@@ -13031,45 +13030,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.32
   m_Center: {x: -0.58, y: 0.35, z: 0}
---- !u!114 &3913431361984725190
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5819931380753502364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b308bb00f70a91448bff53d1599c2ab4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onModuleMenuOpen:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 12d5d0ec0b1e8ee46a44386e9316587d, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-    debugRef: 0
-  onModuleMenuClose:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: c366a8e330c1dfa4ab2a4397a474a1cb, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-    debugRef: 0
-  onUIButtonPressed:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
-    useLocalConstant: 0
-    allowInvoking: 1
-    subscribeOnPlay: 1
-  cost: 10
-  LevelCost:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
-    debugRef: 0
-  UICanvas: {fileID: 6376078344063804977}
-  UI: {fileID: 4018780380296214932}
 --- !u!1 &6352338464046533124
 GameObject:
   m_ObjectHideFlags: 0
@@ -37646,12 +37606,6 @@ PrefabInstance:
 --- !u!224 &437964316359630129 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2460430560033566954, guid: d8522b9a03f5b1c4089d4346488cec76,
-    type: 3}
-  m_PrefabInstance: {fileID: 2609487126847909339}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &4018780380296214932 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1437582599666275407, guid: d8522b9a03f5b1c4089d4346488cec76,
     type: 3}
   m_PrefabInstance: {fileID: 2609487126847909339}
   m_PrefabAsset: {fileID: 0}

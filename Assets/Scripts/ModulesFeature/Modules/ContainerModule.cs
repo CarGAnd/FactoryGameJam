@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ContainModule : Module
+public class ContainerModule : Module
 {
     private void Update() {
         AssemblyTravelingObject inputObj = GetObjectIn();

@@ -2,190 +2,191 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CellGrid<T> : ISearchable
-{
-    public int Columns { get; private set; }
-    public int Rows { get; private set; }
+namespace GridSystem {
+    public class CellGrid<T> : ISearchable {
+        public int Columns { get; private set; }
+        public int Rows { get; private set; }
 
-    private Cell<T>[,] cells;
+        private Cell<T>[,] cells;
 
-    public CellGrid(int numColumns, int numRows) {
-        this.Columns = numColumns;
-        this.Rows = numRows;
-        CreateGrid(numColumns, numRows);
-    }
-
-    // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-    public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
-        if(shapeLayout == null) {
-            PlaceObject(gridObject, startCell);
-            return;
+        public CellGrid(int numColumns, int numRows) {
+            this.Columns = numColumns;
+            this.Rows = numRows;
+            CreateGrid(numColumns, numRows);
         }
 
-        List<Cell<T>> sharedCells = new List<Cell<T>>();
-        
-        foreach (Vector2Int deltaCoord in shapeLayout) {
-            Vector2Int coord = startCell + deltaCoord;
-            if (CellWithinBounds(coord)) {
-                Cell<T> cell = GetCellAt(coord);
-                sharedCells.Add(cell);
+        // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
+        public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
+            if (shapeLayout == null) {
+                PlaceObject(gridObject, startCell);
+                return;
             }
-        }
 
-        foreach (Cell<T> c in sharedCells) {
-            c.SetOccupyingObject(gridObject, startCell, sharedCells);
-        }
-    }
+            List<Cell<T>> sharedCells = new List<Cell<T>>();
 
-    public void PlaceObject(T gridObject, Vector2Int coordinate) {
-        Cell<T> cell = GetCellAt(coordinate);
-        cell.SetOccupyingObject(gridObject);
-    }
+            foreach (Vector2Int deltaCoord in shapeLayout) {
+                Vector2Int coord = startCell + deltaCoord;
+                if (CellWithinBounds(coord)) {
+                    Cell<T> cell = GetCellAt(coord);
+                    sharedCells.Add(cell);
+                }
+            }
 
-    public void RemoveObject(Vector2Int coord) {
-        Cell<T> firstCell = GetCellAt(coord);
-        List<Cell<T>> sharedCells = firstCell.GetSharedCells();
-
-        if(sharedCells == null) {
-            firstCell.RemoveOccupyingObject();
-        }
-        else {
             foreach (Cell<T> c in sharedCells) {
-                c.RemoveOccupyingObject();
+                c.SetOccupyingObject(gridObject, startCell, sharedCells);
             }
         }
-    }
-    
-    public void MoveObject(Vector2Int from, Vector2Int to) {
-        T gridObject = GetObjectAt(from);
-        Cell<T> fromCell = GetCellAt(from);
-        List<Cell<T>> sharedCells = fromCell.GetSharedCells();
-        if(sharedCells == null) {
-            sharedCells = new List<Cell<T>>() { fromCell };
-        }
-        Vector2Int objectOrigin = fromCell.GetOccupyingObjectOrigin();
-        List<Vector2Int> objectLayout = new List<Vector2Int>();
-        foreach(Cell<T> c in sharedCells) {
-            Vector2Int originDelta = c.GetCellCoordinates() - objectOrigin;
-            objectLayout.Add(originDelta);
-        }
-        RemoveObject(from);
-        PlaceObject(gridObject, to, objectLayout);
-    }
 
-    public T GetObjectAt(Vector2Int coord) {
-        if (CellWithinBounds(coord)) {
-            return GetCellAt(coord).GetOccupyingObject();
+        public void PlaceObject(T gridObject, Vector2Int coordinate) {
+            Cell<T> cell = GetCellAt(coordinate);
+            cell.SetOccupyingObject(gridObject);
         }
-        else {
-            return default(T);
-        }   
-    }
 
-    public V GetObjectAsType<V>(Vector2Int coord) {
-        T obj = GetObjectAt(coord);
-        if(obj is V v) {
-            return v;
-        }
-        else {
-            return default(V);
-        }
-    }
+        public void RemoveObject(Vector2Int coord) {
+            Cell<T> firstCell = GetCellAt(coord);
+            List<Cell<T>> sharedCells = firstCell.GetSharedCells();
 
-    public List<T> GetAllPlacedObjects() {
-        HashSet<Vector2Int> visitedPositions = new HashSet<Vector2Int>();
-        List<T> placedObjects = new List<T>();
-        for (int x = 0; x < Columns; x++) {
-            for (int y = 0; y < Rows; y++) {
-                Vector2Int coord = new Vector2Int(x, y);
-                if (PositionIsOccupied(coord) && !visitedPositions.Contains(coord)) {
-                    T obj = GetObjectAt(coord);
-                    placedObjects.Add(obj);
-                    List<Vector2Int> sharedPositions = GetSharedPositions(coord);
-                    foreach (Vector2Int position in sharedPositions) {
-                        visitedPositions.Add(position);
-                    }
+            if (sharedCells == null) {
+                firstCell.RemoveOccupyingObject();
+            }
+            else {
+                foreach (Cell<T> c in sharedCells) {
+                    c.RemoveOccupyingObject();
                 }
             }
         }
-        return placedObjects;
-    }
 
-    public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
-        List<Vector2Int> sharedPositions = new List<Vector2Int>();
-        List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
-        if(sharedCells == null) {
+        public void MoveObject(Vector2Int from, Vector2Int to) {
+            T gridObject = GetObjectAt(from);
+            Cell<T> fromCell = GetCellAt(from);
+            List<Cell<T>> sharedCells = fromCell.GetSharedCells();
+            if (sharedCells == null) {
+                sharedCells = new List<Cell<T>>() { fromCell };
+            }
+            Vector2Int objectOrigin = fromCell.GetOccupyingObjectOrigin();
+            List<Vector2Int> objectLayout = new List<Vector2Int>();
+            foreach (Cell<T> c in sharedCells) {
+                Vector2Int originDelta = c.GetCellCoordinates() - objectOrigin;
+                objectLayout.Add(originDelta);
+            }
+            RemoveObject(from);
+            PlaceObject(gridObject, to, objectLayout);
+        }
+
+        public T GetObjectAt(Vector2Int coord) {
+            if (CellWithinBounds(coord)) {
+                return GetCellAt(coord).GetOccupyingObject();
+            }
+            else {
+                return default(T);
+            }
+        }
+
+        public V GetObjectAsType<V>(Vector2Int coord) {
+            T obj = GetObjectAt(coord);
+            if (obj is V v) {
+                return v;
+            }
+            else {
+                return default(V);
+            }
+        }
+
+        public List<T> GetAllPlacedObjects() {
+            HashSet<Vector2Int> visitedPositions = new HashSet<Vector2Int>();
+            List<T> placedObjects = new List<T>();
+            for (int x = 0; x < Columns; x++) {
+                for (int y = 0; y < Rows; y++) {
+                    Vector2Int coord = new Vector2Int(x, y);
+                    if (PositionIsOccupied(coord) && !visitedPositions.Contains(coord)) {
+                        T obj = GetObjectAt(coord);
+                        placedObjects.Add(obj);
+                        List<Vector2Int> sharedPositions = GetSharedPositions(coord);
+                        foreach (Vector2Int position in sharedPositions) {
+                            visitedPositions.Add(position);
+                        }
+                    }
+                }
+            }
+            return placedObjects;
+        }
+
+        public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
+            List<Vector2Int> sharedPositions = new List<Vector2Int>();
+            List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
+            if (sharedCells == null) {
+                return sharedPositions;
+            }
+            foreach (Cell<T> c in sharedCells) {
+                sharedPositions.Add(c.GetCellCoordinates());
+            }
             return sharedPositions;
         }
-        foreach(Cell<T> c in sharedCells) {
-            sharedPositions.Add(c.GetCellCoordinates());
+
+        public Vector2Int GetObjectOriginCoord(Vector2Int coord) {
+            return GetCellAt(coord).GetOccupyingObjectOrigin();
         }
-        return sharedPositions;
-    }
 
-    public Vector2Int GetObjectOriginCoord(Vector2Int coord) {
-        return GetCellAt(coord).GetOccupyingObjectOrigin();
-    }
-
-    public bool PositionIsOccupied(Vector2Int coord) {
-        if (CellWithinBounds(coord)) {
-            return GetCellAt(coord).IsOccupied();
-        }
-        else {
-            return false;
-        }     
-    }
-
-    public bool AllPositionsAreFree(List<Vector2Int> positions) {
-        foreach(Vector2Int position in positions) {
-            if (PositionIsOccupied(position)) {
+        public bool PositionIsOccupied(Vector2Int coord) {
+            if (CellWithinBounds(coord)) {
+                return GetCellAt(coord).IsOccupied();
+            }
+            else {
                 return false;
             }
         }
-        return true;
-    }
-    
-    public bool CellWithinBounds(Vector2Int cellCoord) {
-        return cellCoord.y >= 0 && cellCoord.y < Rows && cellCoord.x >= 0 && cellCoord.x < Columns;
-    }
 
-    public List<Vector2Int> GetNeighbors(Vector2Int coord) {
-        Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-        foreach(Vector2Int direction in directions) {
-            Vector2Int neighborValue = coord + direction;
-            if (CellWithinBounds(neighborValue)) {
-                neighbors.Add(neighborValue);
+        public bool AllPositionsAreFree(List<Vector2Int> positions) {
+            foreach (Vector2Int position in positions) {
+                if (PositionIsOccupied(position)) {
+                    return false;
+                }
             }
+            return true;
         }
-        return neighbors;
-    }
 
-    public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
-        List<Vector2Int> positions = null;
-        
-        if(PositionIsOccupied(endCoord)) {
+        public bool CellWithinBounds(Vector2Int cellCoord) {
+            return cellCoord.y >= 0 && cellCoord.y < Rows && cellCoord.x >= 0 && cellCoord.x < Columns;
+        }
+
+        public List<Vector2Int> GetNeighbors(Vector2Int coord) {
+            Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+            List<Vector2Int> neighbors = new List<Vector2Int>();
+            foreach (Vector2Int direction in directions) {
+                Vector2Int neighborValue = coord + direction;
+                if (CellWithinBounds(neighborValue)) {
+                    neighbors.Add(neighborValue);
+                }
+            }
+            return neighbors;
+        }
+
+        public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
+            List<Vector2Int> positions = null;
+
+            if (PositionIsOccupied(endCoord)) {
+                return new Path(positions);
+            }
+
+            positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
             return new Path(positions);
         }
-        
-        positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
-        return new Path(positions);
-    }
 
-    public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {
-        List<Vector2Int> path = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
-        return path[path.Count - 1];
-    }
+        public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {
+            List<Vector2Int> path = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
+            return path[path.Count - 1];
+        }
 
-    private Cell<T> GetCellAt(Vector2Int coord) {
-        return cells[coord.y, coord.x];
-    }
+        private Cell<T> GetCellAt(Vector2Int coord) {
+            return cells[coord.y, coord.x];
+        }
 
-    private void CreateGrid(int columns, int rows) {
-        cells = new Cell<T>[rows, columns];
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < columns; x++) {
-                cells[y, x] = new Cell<T>(y, x);
+        private void CreateGrid(int columns, int rows) {
+            cells = new Cell<T>[rows, columns];
+            for (int y = 0; y < rows; y++) {
+                for (int x = 0; x < columns; x++) {
+                    cells[y, x] = new Cell<T>(y, x);
+                }
             }
         }
     }

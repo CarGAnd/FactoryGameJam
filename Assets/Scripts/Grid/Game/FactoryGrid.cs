@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GridSystem;
 
 //This is mainly just a wrapper class for GridOfObjects + GridLayout, as they are usually used together
 public class FactoryGrid : MonoBehaviour, ISearchable
@@ -12,7 +13,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     public Vector2 CellSize { get { return gridLayout.CellSize; } }
     public Vector3 Origin { get { return gridLayout.Origin; } }
 
-    [SerializeField] private GridLayout gridLayout;
+    [SerializeField] private GridSystem.GridLayout gridLayout;
     [SerializeField] private GridCellSpawner cellSpawner;
 
     private CellGrid<IGridObject> placementGrid;

@@ -13270,7 +13270,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7789215538526329153}
   - component: {fileID: 1190836643848922082}
-  - component: {fileID: 7836865504097117679}
   m_Layer: 7
   m_Name: ElseGateModule
   m_TagString: Untagged
@@ -13316,49 +13315,6 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 1.32
   m_Center: {x: -0.58, y: 0.35, z: 0}
---- !u!114 &7836865504097117679
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5819931380753502364}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 691cde241a1cde34f8d841b2a140defc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  onModuleMenuOpen:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 12d5d0ec0b1e8ee46a44386e9316587d, type: 2}
-    useLocalConstant: 0
-    debugRef: 0
-    localConstantValue: 0
-  onModuleMenuClose:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: c366a8e330c1dfa4ab2a4397a474a1cb, type: 2}
-    useLocalConstant: 0
-    debugRef: 0
-    localConstantValue: 0
-  onUIButtonPressed:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 5b6eeb6dc6868b1419988a70a0de5644, type: 2}
-    useLocalConstant: 0
-    allowInvoking: 1
-    subscribeOnPlay: 1
-  cost: 10
-  LevelCost:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: 5bb1f8316da0c74469b5f3622d13a28a, type: 2}
-    useLocalConstant: 0
-    debugRef: 0
-    localConstantValue: 0
-  UICanvas: {fileID: 5718944169615127241}
-  UI: {fileID: 8752724425265803844}
-  propertyToCompare: 0
-  colorToCompare: {r: 1, g: 0, b: 0, a: 0}
-  rotationToCompare: {x: 0, y: 0, z: 0}
-  comparisonText: {fileID: 3544424608372942426}
 --- !u!1 &5851886957305653234
 GameObject:
   m_ObjectHideFlags: 0
@@ -38149,12 +38105,6 @@ PrefabInstance:
 --- !u!224 &5554919812860032554 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6045574675491549390, guid: d6cc5114a53380044a412bf9697dee7c,
-    type: 3}
-  m_PrefabInstance: {fileID: 2229624869795415780}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8752724425265803844 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7459883462402651296, guid: d6cc5114a53380044a412bf9697dee7c,
     type: 3}
   m_PrefabInstance: {fileID: 2229624869795415780}
   m_PrefabAsset: {fileID: 0}

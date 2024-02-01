@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using GridSystem;
 
 public interface IPlacementStrategy {
     void UpdateInput(MouseInput mouseInput);
