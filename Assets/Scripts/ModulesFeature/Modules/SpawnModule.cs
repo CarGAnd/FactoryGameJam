@@ -32,7 +32,6 @@ public class SpawnModule : Module
     }
 }
 
-/*
 [System.Serializable]
 public class SpawnWave {
     [field: SerializeField] public int TotalNumSpawns { get; private set; }
@@ -72,8 +71,8 @@ public class Spawner {
     
     protected AssemblyObject CreateObject() {
         AssemblyObject assemblyLineObject = MonoBehaviour.Instantiate(spawnPrefab).GetComponent<AssemblyObject>();
-        Properties props = currentWave.CreateProperties();
-        assemblyLineObject.Properties = props;
+        //Properties props = currentWave.CreateProperties();
+        //assemblyLineObject.Properties = props;
         return assemblyLineObject;
     }
 
@@ -94,4 +93,3 @@ public class Spawner {
         return aObject;
     }
 }
-*/

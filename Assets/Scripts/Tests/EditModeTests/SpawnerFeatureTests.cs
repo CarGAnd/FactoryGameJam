@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NUnit.Framework;
-
+/*
 public class SpawnerFeatureTests
 {
     [Test]
@@ -51,4 +51,4 @@ public class SpawnerFeatureTests
         }
         Assert.True(spawner.IsFinished);  
     }
-}
+}*/

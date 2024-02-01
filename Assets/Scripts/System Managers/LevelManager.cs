@@ -6,7 +6,6 @@ using SOS;
 public class LevelManager : MonoBehaviour
 {
     public static LevelManager Instance { get; private set; }
-    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent buildPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseStartedEvent;
     [SerializeField] private GameEvent runPhaseEndedEvent;
@@ -36,8 +35,6 @@ public class LevelManager : MonoBehaviour
         if(IsReadyToRun()) {
             CurrentLevelStateRef.Value = LevelState.RunPhase;
             runPhaseStartedEvent.Invoke();
-            ObjectTracker objectTracker = new ObjectTracker();
-            objectTracker.StartTracking(factoryTracker, this);
             Debug.Log("Run phase");
         }  
     }
@@ -52,10 +49,6 @@ public class LevelManager : MonoBehaviour
 
     private bool ASpawnerIsConnected() {
         int totalOutputs = 0;
-        List<SpawnerModule> spawners = factoryTracker.Spawners;
-        foreach (SpawnerModule sm in spawners) {
-            totalOutputs += sm.GetNumberOfConnectedOutputs();
-        }
         return totalOutputs > 0;
     }
 

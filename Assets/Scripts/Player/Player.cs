@@ -37,45 +37,11 @@ public class Player : MonoBehaviour
     void Awake()
     {
         playerControls = new PlayerControls();
-        playerControls.Modules.ToggleBuildMode.performed += OnToggleBuildMode;
-        playerControls.Modules.PlaceTurnGate.performed += OnPlaceTurnModule;
-        playerControls.Modules.PlaceElseGate.performed += OnPlaceElseGateModule;
-        playerControls.Modules.SelectModule.performed += OnSelectModule;
-        playerControls.Modules.PlaceMergeGate.performed += OnPlaceMergeModule;
-    }
-
-    private void PlaceModule(ModuleTypes moduleTypes)
-    {
-    
     }
 
     private void OnToggleBuildMode(InputAction.CallbackContext context)
     {
         buildModeEnabled = !buildModeEnabled;
-    }
-
-    private void OnPlaceTurnModule(InputAction.CallbackContext context)
-    {
-        if (buildModeEnabled)
-        {
-            PlaceModule(ModuleTypes.TurnModule);
-        }
-    }
-
-    private void OnPlaceElseGateModule(InputAction.CallbackContext context)
-    {
-        if (buildModeEnabled)
-        {
-            PlaceModule(ModuleTypes.ElseGateModule);
-        }
-    }
-
-    private void OnPlaceMergeModule(InputAction.CallbackContext context)
-    {
-        if (buildModeEnabled)
-        {
-            PlaceModule(ModuleTypes.MergeModule);
-        }
     }
 
     private void OnSelectModule(InputAction.CallbackContext context)

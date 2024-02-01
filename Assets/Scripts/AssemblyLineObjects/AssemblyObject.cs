@@ -7,7 +7,6 @@ using UnityEngine.Events;
 public class AssemblyObject : MonoBehaviour
 {
     [SerializeField] private UnityEvent<bool> OnMovingOnAssemblyLine = new UnityEvent<bool>();
-    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private ObjectProperties objectProperties;
     [SerializeField] private Renderer lollipopRenderer;
     
@@ -32,7 +31,6 @@ public class AssemblyObject : MonoBehaviour
 
     //Call an event before the object is destroyed
     public void DestroyObject() {
-        factoryTracker.OnObjectDestroyed?.Invoke(gameObject);
         TravelAssemblyLine.OnTraveling.RemoveListener(OnTravelingInvokeOnMovingOnAssemblyLine);
         Destroy(gameObject);
     }

@@ -15,7 +15,6 @@ public class DeleteModeVisuals : MonoBehaviour
     private void Awake() {
         indicatorObjects = new List<GameObject>();
         grid = playerModeManager.Grid;
-        //Create 5 indicator objects and set them all as inactive
         SetActiveIndicatorCount(5);
     }
 

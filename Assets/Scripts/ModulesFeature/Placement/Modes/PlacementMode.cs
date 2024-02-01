@@ -12,15 +12,15 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
     public Quaternion CurrentPlacementRotation { get; private set; }
     public Facing CurrentFacing { get; private set; }
     public Vector3 CurrentMouseWorldPos { get; private set; }
-    public FactoryGrid Grid { get; private set; }
-
+    
+    private FactoryGrid grid;
     private PlayerModeManager playerModeManager;
     private IPlacementStrategy placementHandler;
     private ModulePlacer modulePlacer;
     private GridObjectSO currentBuilding;
 
     public void Initialize(FactoryGrid grid, AssemblyLineSystem assemblyLineSystem, PlayerModeManager playerModeManager){
-        this.Grid = grid;
+        this.grid = grid;
         this.playerModeManager = playerModeManager;
         SetModuleRotation(Facing.West);
         placementHandler = new NoPlacement();
@@ -53,7 +53,7 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
             placementHandler = new NoPlacement();
         }
         else {
-            placementHandler = newBuilding.GetPlacementHandler(Grid, this);
+            placementHandler = newBuilding.GetPlacementHandler(grid, this);
         }
         currentBuilding = newBuilding;
         moduleChanged?.Invoke(newBuilding);
@@ -70,7 +70,7 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
 
     public void SetModuleRotation(Facing facing) {
         CurrentFacing = facing;
-        CurrentPlacementRotation = Grid.Rotation * CurrentFacing.GetRotationFromFacing();
+        CurrentPlacementRotation = grid.Rotation * CurrentFacing.GetRotationFromFacing();
         moduleRotated?.Invoke();
     }
 

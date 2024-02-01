@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class WinLoseDecider : MonoBehaviour
 {
-    [SerializeField] private FactoryTracker factoryTracker;
     [SerializeField] private GameEvent runPhaseEndedEvent;
     [SerializeField] private GameEvent winGameEvent;
     [SerializeField] private GameEvent loseGameEvent;
@@ -19,15 +18,6 @@ public class WinLoseDecider : MonoBehaviour
     }
 
     private void CheckWinLose() {
-        int totalSpawns = factoryTracker.GetNumObjectsInLevel();
-        int correctObjectCollected = factoryTracker.GetNumCorrectItemsCollected();
-
-        if(correctObjectCollected >= totalSpawns) {
-            winGameEvent.Invoke();
-        }
-        else {
-            loseGameEvent.Invoke();
-        }
     }
 
 }

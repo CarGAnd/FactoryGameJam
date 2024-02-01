@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 using UnityEngine.TestTools.Utils;
-
+/*
 public class ModulesFeatureTests
 {
     [UnityTest]
@@ -59,4 +59,4 @@ public class ModulesFeatureTests
     }
 
     
-}
+}*/

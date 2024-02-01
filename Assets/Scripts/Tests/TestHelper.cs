@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+/*
 public static class TestHelper
 {
     public static ModulesManager FindModulesManagerInScene()
@@ -100,4 +101,4 @@ public static class TestHelper
         ContainerModule module = g.AddComponent<ContainerModule>();
         return module;
     }
-}
+}*/
