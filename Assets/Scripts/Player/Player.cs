@@ -1,11 +1,9 @@
-using SOS;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private LevelStateRef currentLevelStateRef;
     PlayerControls playerControls;
 
     private void OnEnable()
