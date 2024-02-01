@@ -69,15 +69,15 @@ public class Spawner {
         spawnLeftThisWave = currentWave.TotalNumSpawns;
     }
     
-    protected AssemblyObject CreateObject() {
-        AssemblyObject assemblyLineObject = MonoBehaviour.Instantiate(spawnPrefab).GetComponent<AssemblyObject>();
+    protected AssemblyTravelingObject CreateObject() {
+        AssemblyTravelingObject assemblyLineObject = MonoBehaviour.Instantiate(spawnPrefab).GetComponent<AssemblyTravelingObject>();
         //Properties props = currentWave.CreateProperties();
         //assemblyLineObject.Properties = props;
         return assemblyLineObject;
     }
 
-    public virtual AssemblyObject GetNextObject() {
-        AssemblyObject aObject = CreateObject();
+    public virtual AssemblyTravelingObject GetNextObject() {
+        AssemblyTravelingObject aObject = CreateObject();
         spawnLeftThisWave -= 1;
 
         if (spawnLeftThisWave <= 0) {

@@ -15,9 +15,6 @@ public struct LevelData {
     private string sceneName;
     [SerializeField]
     [Required]
-    private LevelProperties levelProperties;
-    [SerializeField]
-    [Required]
     private string leaderboardID;
 
     private Scene scene;
@@ -25,7 +22,6 @@ public struct LevelData {
     public int SceneIndex { get => sceneIndex; private set => sceneIndex = value; }
     public string SceneName { get => sceneName; private set => sceneName = value; }
     public Scene Scene { get => scene; private set => scene = value; }
-    public LevelProperties LevelProperties { get => levelProperties; private set => levelProperties = value; }
     public string LeaderboardID { get => leaderboardID; private set => leaderboardID = value; }
 
     public void GetSceneNameByIndex() {

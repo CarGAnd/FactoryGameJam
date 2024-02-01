@@ -7,27 +7,9 @@ using UnityEngine.Events;
 public class AssemblyObject : MonoBehaviour
 {
     [SerializeField] private UnityEvent<bool> OnMovingOnAssemblyLine = new UnityEvent<bool>();
-    [SerializeField] private ObjectProperties objectProperties;
     [SerializeField] private Renderer lollipopRenderer;
-    
-    private Properties properties = null;
-    public Properties Properties 
-    { 
-        get => properties; 
-        set 
-        {
-            properties = value; 
-            ApplyAllProperties();
-        } 
-    }
 
     public bool IsGhost { get; set; }
-
-    private void Awake(){
-        if (objectProperties != null && properties == null)
-            Properties = objectProperties.CreateProperties();
-        
-    }
 
     //Call an event before the object is destroyed
     public void DestroyObject() {
@@ -62,35 +44,6 @@ public class AssemblyObject : MonoBehaviour
             return;
 
         TravelAssemblyLine.UpdateTravel();
-    }
-
-    public void ApplyAllProperties()
-    {
-        foreach(PropertyType propertyType in System.Enum.GetValues(typeof(PropertyType)))
-        {
-            ApplyProperty(propertyType);
-        }
-    }
-
-    public void ApplyProperty(PropertyType propertyType)
-    {
-        switch (propertyType)
-        {
-            case PropertyType.Rotation:
-                transform.rotation = properties.GetProperty<Quaternion>(PropertyType.Rotation);
-                break;
-            case PropertyType.Color:
-                if(lollipopRenderer == null)
-                    return;
-                Color color = properties.GetProperty<Color>(PropertyType.Color);
-                MaterialPropertyBlock propBlock = new MaterialPropertyBlock();
-                lollipopRenderer.GetPropertyBlock(propBlock, 0);
-
-                propBlock.SetColor("_BaseColor", color);
-
-                lollipopRenderer.SetPropertyBlock(propBlock, 0);
-                break;
-        }
     }
     
 }
