@@ -13,7 +13,7 @@ namespace GridSystem {
 
             Queue<PathCell> frontier = new Queue<PathCell>();
             frontier.Enqueue(new PathCell(null, startCell));
-            List<Vector2Int> visited = new List<Vector2Int>();
+            HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
 
             while (frontier.Count > 0) {
                 PathCell currentCell = frontier.Dequeue();
@@ -60,15 +60,23 @@ namespace GridSystem {
 
     public class Path {
 
+        public static Path CombinePaths(List<Path> paths) {
+            List<Vector2Int> allPathPositions = new List<Vector2Int>();
+            foreach(Path p in paths) {
+                if (!p.isValid()) {
+                    continue;
+                }
+                foreach(Vector2Int position in p.GetPositions()) {
+                    allPathPositions.Add(position);
+                }
+            }
+            return new Path(allPathPositions);
+        }
+
         private List<Vector2Int> pathCoords;
 
         public Path(List<Vector2Int> pathCoords) {
-            if (pathCoords == null) {
-                this.pathCoords = new List<Vector2Int>();
-            }
-            else {
-                this.pathCoords = pathCoords;
-            }
+            this.pathCoords = pathCoords;    
         }
 
         public List<Vector2Int> GetPositions() {
@@ -89,8 +97,8 @@ namespace GridSystem {
             return pathDirections;
         }
 
-        public bool IsEmpty() {
-            return pathCoords.Count == 0;
+        public bool isValid() {
+            return pathCoords != null;
         }
     }
 }

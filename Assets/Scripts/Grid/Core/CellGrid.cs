@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace GridSystem {
     public class CellGrid<T> : ISearchable {
+        
+        private static Vector2Int[] neighborDirections = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
+        
         public int Columns { get; private set; }
         public int Rows { get; private set; }
 
@@ -150,9 +153,8 @@ namespace GridSystem {
         }
 
         public List<Vector2Int> GetNeighbors(Vector2Int coord) {
-            Vector2Int[] directions = new Vector2Int[] { Vector2Int.up, Vector2Int.right, Vector2Int.down, Vector2Int.left };
-            List<Vector2Int> neighbors = new List<Vector2Int>();
-            foreach (Vector2Int direction in directions) {
+            List<Vector2Int> neighbors = new List<Vector2Int>(neighborDirections.Length);
+            foreach (Vector2Int direction in neighborDirections) {
                 Vector2Int neighborValue = coord + direction;
                 if (CellWithinBounds(neighborValue)) {
                     neighbors.Add(neighborValue);

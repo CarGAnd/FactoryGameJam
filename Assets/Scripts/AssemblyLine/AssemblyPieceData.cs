@@ -20,6 +20,6 @@ public class AssemblyPieceData : GridObjectSO
     }
 
     public override IPlacementStrategy GetPlacementHandler(FactoryGrid grid, PlacementMode placementMode) {
-        return new DragPlacer(this, grid, placementMode);
+        return new PathPlacer(this, grid, placementMode);
     }
 }
