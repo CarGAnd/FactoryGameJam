@@ -5,14 +5,14 @@ using System;
 
 namespace GridSystem {
     public class GridBFS {
-        public static List<Vector2Int> FindPath(ISearchable grid, Vector2Int startCell, Func<Vector2Int, bool> goalCondition, Func<Vector2Int, bool> isWalkableCell) {
-            if (goalCondition(startCell)) {
+        public static List<Vector2Int> FindPath(ISearchable grid, Vector2Int startPosition, Func<Vector2Int, bool> goalCondition, Func<Vector2Int, bool> isWalkableCell) {
+            if (goalCondition(startPosition)) {
                 //if the condition is satisfied in the starting cell then the path is just the starting cell
-                return new List<Vector2Int>() { startCell };
+                return new List<Vector2Int>() { startPosition };
             }
 
             Queue<PathCell> frontier = new Queue<PathCell>();
-            frontier.Enqueue(new PathCell(null, startCell));
+            frontier.Enqueue(new PathCell(null, startPosition));
             HashSet<Vector2Int> visited = new HashSet<Vector2Int>();
 
             while (frontier.Count > 0) {

@@ -35,7 +35,7 @@ public class GridFeatureTests
             Vector2Int pos = delta + gridPosition;
             Assert.True(grid.GetObjectAt(pos) == value);
             Assert.True(grid.PositionIsOccupied(pos));
-            Assert.True(grid.GetObjectOriginCoord(pos) == gridPosition);
+            Assert.True(grid.GetObjectOrigin(pos) == gridPosition);
         }
     }
 
@@ -55,19 +55,19 @@ public class GridFeatureTests
     public void WorldToGridAndGridToWorldAreConsistent() {
         GameObject g = new GameObject();
         GridSystem.GridLayout layout = g.AddComponent<GridSystem.GridLayout>();
-        layout.MoveGrid(new Vector3(1, 2, 3));
-        layout.RotateGrid(Quaternion.Euler(new Vector3(34, 54, 17)));
-        layout.AdjustCellSize(3, 5);
+        layout.SetOrigin(new Vector3(1, 2, 3));
+        layout.SetRotation(Quaternion.Euler(new Vector3(34, 54, 17)));
+        layout.SetCellSize(3, 5);
 
         Vector2Int gridPosition = new Vector2Int(4, 5);
 
-        Vector3 worldPos = layout.GetCellWorldPosition(gridPosition);
-        Vector2Int gridCoords = layout.GetCellCoords(worldPos);
+        Vector3 worldPos = layout.GridToWorld(gridPosition);
+        Vector2Int gridCoords = layout.WorldToGrid(worldPos);
 
         Assert.True(gridCoords.x == gridPosition.x && gridCoords.y == gridPosition.y);
 
         Vector3 worldPosCenter = layout.GetCellCenter(gridPosition);
-        Vector2Int gridCoordsCenter = layout.GetCellCoords(worldPosCenter);
+        Vector2Int gridCoordsCenter = layout.WorldToGrid(worldPosCenter);
 
         Assert.True(gridCoordsCenter.x == gridPosition.x && gridCoordsCenter.y == gridPosition.y);
     }

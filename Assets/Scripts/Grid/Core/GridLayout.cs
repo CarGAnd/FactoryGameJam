@@ -9,13 +9,13 @@ namespace GridSystem {
         [field: SerializeField] public Vector2 CellSize { get; private set; }
 
         public Vector3 RotationPivot { get { return Vector3.zero; } }
-        private IGridLayout layout = new SquareGridLayout();
+        private IGridType layout = new SquareGridLayout();
 
         // Cell via world position
-        public Vector2Int GetCellCoords(Vector3 worldPosition) {
+        public Vector2Int WorldToGrid(Vector3 worldPosition) {
             Vector3 normalizedPosition = RemoveScaleRotationOffset(worldPosition);
             //The grid now has origin at 0,0 with a rotation of 0 and a cellsize of 1x1
-            Vector2Int cellCoordinates = layout.GetCellCoordinate(normalizedPosition);
+            Vector2Int cellCoordinates = layout.WorldToGrid(normalizedPosition);
             return cellCoordinates;
         }
 
@@ -27,15 +27,15 @@ namespace GridSystem {
             return worldPosition;
         }
 
-        public Vector3 GetCellCenter(Vector3 worldPosition) {
-            Vector2Int cellCoords = GetCellCoords(worldPosition);
+        public Vector3 SnapToCellCenter(Vector3 worldPosition) {
+            Vector2Int cellCoords = WorldToGrid(worldPosition);
             return GetCellCenter(cellCoords);
         }
 
         // World position via cell
-        public Vector3 GetCellWorldPosition(Vector2Int cellCoord) {
+        public Vector3 GridToWorld(Vector2Int gridPosition) {
             //Calculate the position in a grid with no rotation, the origin at (0,0), and a cellsize of 1x1
-            Vector3 normalizedPosition = layout.CalculateCellPosition(cellCoord);
+            Vector3 normalizedPosition = layout.GridToWorld(gridPosition);
             //Apply scale, rotation and offset to the position
             Vector3 worldPosition = ApplyScaleRotationOffset(normalizedPosition);
             return worldPosition;
@@ -65,31 +65,30 @@ namespace GridSystem {
             return normalizedPosition;
         }
 
-        //Get the origin position of the cell that a given position is in
-        public Vector3 GetCellWorldPosition(Vector3 worldPosition) {
-            Vector2Int cellCoord = GetCellCoords(worldPosition);
-            return GetCellWorldPosition(cellCoord);
+        public Vector3 SnapToCell(Vector3 worldPosition) {
+            Vector2Int cellCoord = WorldToGrid(worldPosition);
+            return GridToWorld(cellCoord);
         }
 
         public Vector3 GetSubgridCenter(Vector2Int bottomLeft, Vector2Int dimensions) {
-            Vector3 bottomLeftPos = layout.CalculateCellPosition(bottomLeft);
+            Vector3 bottomLeftPos = layout.GridToWorld(bottomLeft);
             Vector3 normalizedCenter = bottomLeftPos + new Vector3(dimensions.x, 0, dimensions.y) / 2f;
             Vector3 worldPos = ApplyScaleRotationOffset(normalizedCenter);
             return worldPos;
         }
 
-        public Vector2Int GetSubgridOriginCoord(Vector3 subgridCenter, Vector2Int subgridDimensions) {
+        public Vector2Int GetSubgridBottomLeft(Vector3 subgridCenter, Vector2Int subgridDimensions) {
             Vector3 normalizedPosition = RemoveScaleRotationOffset(subgridCenter);
             Vector3 offset = new Vector3(1 / 2f * (subgridDimensions.x - 1), 0, 1 / 2f * (subgridDimensions.y - 1));
             Vector3 offsetHitPos = normalizedPosition - offset;
-            return layout.GetCellCoordinate(offsetHitPos);
+            return layout.WorldToGrid(offsetHitPos);
         }
 
-        public List<Vector2Int> GetPositionsInSubgrid(Vector2Int lowerLeft, Vector2Int subgridDimensions) {
+        public List<Vector2Int> GetPositionsInSubgrid(Vector2Int bottomLeft, Vector2Int subgridDimensions) {
             List<Vector2Int> positions = new List<Vector2Int>();
             for (int x = 0; x < subgridDimensions.x; x++) {
                 for (int y = 0; y < subgridDimensions.y; y++) {
-                    positions.Add(new Vector2Int(x, y) + lowerLeft);
+                    positions.Add(new Vector2Int(x, y) + bottomLeft);
                 }
             }
             return positions;
@@ -102,15 +101,15 @@ namespace GridSystem {
             return worldPosition;
         }
 
-        public void MoveGrid(Vector3 newOrigin) {
+        public void SetOrigin(Vector3 newOrigin) {
             Origin = newOrigin;
         }
 
-        public void RotateGrid(Quaternion newRotation) {
+        public void SetRotation(Quaternion newRotation) {
             Rotation = newRotation;
         }
 
-        public void AdjustCellSize(float length, float width) {
+        public void SetCellSize(float length, float width) {
             CellSize = new Vector2(width, length);
         }
     }

@@ -51,7 +51,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Vector2Int GetObjectOriginCoord(Vector2Int coord) {
-        return placementGrid.GetObjectOriginCoord(coord);
+        return placementGrid.GetObjectOrigin(coord);
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
@@ -59,7 +59,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public bool PositionIsOccupied(Vector3 worldPos) {
-        Vector2Int cellCoords = gridLayout.GetCellCoords(worldPos);
+        Vector2Int cellCoords = gridLayout.WorldToGrid(worldPos);
         return PositionIsOccupied(cellCoords);
     }
 
@@ -97,7 +97,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Vector2Int GetCellCoords(Vector3 worldPosition) {
-        return gridLayout.GetCellCoords(worldPosition);
+        return gridLayout.WorldToGrid(worldPosition);
     }
 
     public Vector3 GetCellCenter(Vector2Int cellCoord) {
@@ -110,11 +110,11 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Vector3 GetCellWorldPosition(Vector2Int cellCoord) {
-        return gridLayout.GetCellWorldPosition(cellCoord);    
+        return gridLayout.GridToWorld(cellCoord);    
     }
 
     public Vector3 GetCellWorldPosition(Vector3 worldPosition) {
-        return gridLayout.GetCellWorldPosition(worldPosition);    
+        return gridLayout.SnapToCell(worldPosition);    
     }
 
     public Vector3 GetSubgridCenter(Vector2Int bottomLeft, Vector2Int dimensions) {
@@ -122,7 +122,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public Vector2Int GetSubgridOriginCoord(Vector3 subgridCenter, Vector2Int subgridDimensions) {
-        return gridLayout.GetSubgridOriginCoord(subgridCenter, subgridDimensions);
+        return gridLayout.GetSubgridBottomLeft(subgridCenter, subgridDimensions);
     }
 
     public List<Vector2Int> GetPositionsInSubgrid(Vector2Int lowerLeft, Vector2Int subgridDimensions) {

@@ -19,16 +19,16 @@ namespace GridSystem {
         }
 
         // Shape Layout represents the cells in addition to the center or start cell in relative coordinates to the start cell.
-        public void PlaceObject(T gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
+        public void PlaceObject(T gridObject, Vector2Int originPosition, List<Vector2Int> shapeLayout) {
             if (shapeLayout == null) {
-                PlaceObject(gridObject, startCell);
+                PlaceObject(gridObject, originPosition);
                 return;
             }
 
             List<Cell<T>> sharedCells = new List<Cell<T>>();
 
             foreach (Vector2Int deltaCoord in shapeLayout) {
-                Vector2Int coord = startCell + deltaCoord;
+                Vector2Int coord = originPosition + deltaCoord;
                 if (CellWithinBounds(coord)) {
                     Cell<T> cell = GetCellAt(coord);
                     sharedCells.Add(cell);
@@ -36,17 +36,17 @@ namespace GridSystem {
             }
 
             foreach (Cell<T> c in sharedCells) {
-                c.SetOccupyingObject(gridObject, startCell, sharedCells);
+                c.SetOccupyingObject(gridObject, originPosition, sharedCells);
             }
         }
 
-        public void PlaceObject(T gridObject, Vector2Int coordinate) {
-            Cell<T> cell = GetCellAt(coordinate);
+        public void PlaceObject(T gridObject, Vector2Int position) {
+            Cell<T> cell = GetCellAt(position);
             cell.SetOccupyingObject(gridObject);
         }
 
-        public void RemoveObject(Vector2Int coord) {
-            Cell<T> firstCell = GetCellAt(coord);
+        public void RemoveObject(Vector2Int cellPosition) {
+            Cell<T> firstCell = GetCellAt(cellPosition);
             List<Cell<T>> sharedCells = firstCell.GetSharedCells();
 
             if (sharedCells == null) {
@@ -76,17 +76,17 @@ namespace GridSystem {
             PlaceObject(gridObject, to, objectLayout);
         }
 
-        public T GetObjectAt(Vector2Int coord) {
-            if (CellWithinBounds(coord)) {
-                return GetCellAt(coord).GetOccupyingObject();
+        public T GetObjectAt(Vector2Int cellPosition) {
+            if (CellWithinBounds(cellPosition)) {
+                return GetCellAt(cellPosition).GetOccupyingObject();
             }
             else {
                 return default(T);
             }
         }
 
-        public V GetObjectAsType<V>(Vector2Int coord) {
-            T obj = GetObjectAt(coord);
+        public V GetObjectAsType<V>(Vector2Int cellPosition) {
+            T obj = GetObjectAt(cellPosition);
             if (obj is V v) {
                 return v;
             }
@@ -114,9 +114,9 @@ namespace GridSystem {
             return placedObjects;
         }
 
-        public List<Vector2Int> GetSharedPositions(Vector2Int coord) {
+        public List<Vector2Int> GetSharedPositions(Vector2Int cellPosition) {
             List<Vector2Int> sharedPositions = new List<Vector2Int>();
-            List<Cell<T>> sharedCells = GetCellAt(coord).GetSharedCells();
+            List<Cell<T>> sharedCells = GetCellAt(cellPosition).GetSharedCells();
             if (sharedCells == null) {
                 return sharedPositions;
             }
@@ -126,13 +126,13 @@ namespace GridSystem {
             return sharedPositions;
         }
 
-        public Vector2Int GetObjectOriginCoord(Vector2Int coord) {
-            return GetCellAt(coord).GetOccupyingObjectOrigin();
+        public Vector2Int GetObjectOrigin(Vector2Int cellPosition) {
+            return GetCellAt(cellPosition).GetOccupyingObjectOrigin();
         }
 
-        public bool PositionIsOccupied(Vector2Int coord) {
-            if (CellWithinBounds(coord)) {
-                return GetCellAt(coord).IsOccupied();
+        public bool PositionIsOccupied(Vector2Int cellPosition) {
+            if (CellWithinBounds(cellPosition)) {
+                return GetCellAt(cellPosition).IsOccupied();
             }
             else {
                 return false;
@@ -152,10 +152,10 @@ namespace GridSystem {
             return cellCoord.y >= 0 && cellCoord.y < Rows && cellCoord.x >= 0 && cellCoord.x < Columns;
         }
 
-        public List<Vector2Int> GetNeighbors(Vector2Int coord) {
+        public List<Vector2Int> GetNeighbors(Vector2Int cellPosition) {
             List<Vector2Int> neighbors = new List<Vector2Int>(neighborDirections.Length);
             foreach (Vector2Int direction in neighborDirections) {
-                Vector2Int neighborValue = coord + direction;
+                Vector2Int neighborValue = cellPosition + direction;
                 if (CellWithinBounds(neighborValue)) {
                     neighbors.Add(neighborValue);
                 }
@@ -163,19 +163,19 @@ namespace GridSystem {
             return neighbors;
         }
 
-        public Path FindPath(Vector2Int startCoord, Vector2Int endCoord) {
+        public Path FindPath(Vector2Int startPosition, Vector2Int endPosition) {
             List<Vector2Int> positions = null;
 
-            if (PositionIsOccupied(endCoord)) {
+            if (PositionIsOccupied(endPosition)) {
                 return new Path(positions);
             }
 
-            positions = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => coord == endCoord, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
+            positions = GridBFS.FindPath(this, startPosition, (Vector2Int coord) => coord == endPosition, (Vector2Int coord) => CellWithinBounds(coord) && !PositionIsOccupied(coord));
             return new Path(positions);
         }
 
-        public Vector2Int FindClosestUnoccupiedCell(Vector2Int startCoord) {
-            List<Vector2Int> path = GridBFS.FindPath(this, startCoord, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
+        public Vector2Int FindClosestUnoccupiedCell(Vector2Int cellPosition) {
+            List<Vector2Int> path = GridBFS.FindPath(this, cellPosition, (Vector2Int coord) => !PositionIsOccupied(coord), (Vector2Int coord) => CellWithinBounds(coord));
             return path[path.Count - 1];
         }
 

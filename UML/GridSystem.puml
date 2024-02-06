@@ -1,106 +1,102 @@
-@startuml GridSystem
+@startuml GridSystemV2
 
-class Grid{
-    - rows : int
-    - columns : int
-    - cellWidth : float
-    - cellHeight : float
-    - origin : Vector3
-    - rotation : Quaternion
-    - cells : Cell[,]
-    - pathfindingAlgorithm : PathfindingAlgorithm
-    + GridSaved : UnityEvent
-    + GridLoaded : UnityEvent
-    - gridId : String
+interface GridLayout <<MonoBehaviour>> {
+    + Origin : Vector3
+    + Rotation : Quaternion
+    + CellSize : Vector2
+    - layout : IGridLayout
 
-    + CreateGrid(rows : int, columns : int, cellWidth : float, cellHeight : float, origin : Vector3, rotation : Quaternion) : void
-    + ResizeGrid (newRows : int, newColumns : int) : void
-    + AdjustCellSize(newCellWidth : float, newCellHeight : float) : void
-    + MoveGrid(newOrigin : Vector3) : void
-    + SaveToFile(filePath : String) : void
-    + LoadFromFile(filePath : String) : void
-    + FindPath(startPosition : Cell, endPosition : Cell) : List<Cell>
-    + GetCell(row : int, column : int) : Cell
-    + GetCellSize() : Vector2
-    + GetCell(mousePos : Vector2) : Cell
-    + SetCell(row : int, column : int, cell : Cell) : void
-    + CombineGrids(otherGrids : List<Grid>) : void
-    + GetGridID() : String
-    + PlaceOnGrid(startingCell : Cell, gridObject : GameObject) : void
-    + GetCellWorldPosition(row : int, column : int) : Vector3
-    - IsWithinBounds(row : int, column : int) : bool
-    - OnDrawGizmos() : void
-    - OnGridSaved() : void
-    - OnGridLoaded() : void
+    + WorldToGrid(worldPosition : Vector3) : Vector2Int
+    + GridToWorld(gridPosition : Vector2Int) : Vector3
+    + GetCellCenter(cellPosition : Vector2Int) : Vector3
+    + SnapToCell(worldPosition : Vector3) : Vector3
+    + SnapToCellCenter(worldPosition : Vector3) : Vector3
+    + GetSubgridCenter(bottomLeft : Vector2Int, subgridDimensions : Vector2Int) : Vector3
+    + GetSubgridBottomLeft(subgridCenter : Vector3, subgridDimensions : Vector2Int) : Vector2Int
+    + GetPositionsInSubgrid(bottomLeft : Vector2Int, subgridDimensions : Vector2Int) : List<Vector2Int>
+    + RaycastGridPlane(ray : Ray) : Vector3
+    + SetCellSize(length : float, width : float) : void
+    + SetOrigin(origin : Vector3) : void
+    + SetRotation(rotation : Quaternion) : void
 }
 
-class Cell {
-    - grid : Grid
+class SquareGridLayout implements IGridType {
+    + WorldToGrid(worldPosition : Vector3) : Vector2Int
+    + GridToWorld(gridPosition : Vector2Int) : Vector3
+    + GetCellCenter(cellPosition : Vector2Int) : Vector3
+}
+
+class HexGridLayout implements IGridType {
+    + WorldToGrid(worldPosition : Vector3) : Vector2Int
+    + GridToWorld(gridPosition : Vector2Int) : Vector3
+    + GetCellCenter(cellPosition : Vector2Int) : Vector3
+}
+
+interface IGridType {
+    + WorldToGrid(worldPosition : Vector3) : Vector2Int
+    + GridToWorld(gridPosition : Vector2Int) : Vector3
+    + GetCellCenter(cellPosition : Vector2Int) : Vector3
+}
+
+interface ISearchable {
+    GetNeighbors(Vector2Int cellPosition) : List<Vector2Int>
+}
+
+class GridBFS {
+    + FindPath(grid : ISearchable, startPosition : Vector2Int, goalCondition, isWalkableCell) : List<Vector2Int>
+}
+
+class CellGrid<T> implements ISearchable {
+    + Columns : int
+    + Rows : int
+    - cells : Cell<T>[,]
+
+    + CellGrid(columns : int, rows : int)
+    + PlaceObject(object : T, startCell : Cell, shapeLayout : List<Vector2Int>) : void
+    + PlaceObject(object : T, startCell : Cell) : void
+    + RemoveObject(cellPosition : Vector2Int) : void
+    + MoveObject(from : Vector2Int, to : Vector2Int) : void
+    + GetObjectAt(cellPosition : Vector2Int) : T
+    + GetObjectAsType<V>(cellPosition : Vector2Int) : V
+    + GetAllPlacedObjects() : List<T>
+    + GetSharedPositions(cellPosition : Vector2Int) : List<Vector2Int>
+    + GetObjectOrigin(cellPosition : Vector2Int) : Vector2Int
+    + PositionIsOccupied(cellPosition : Vector2Int) : bool
+    + AllPositionsAreFree(positions : List<Vector2Int>) : bool
+    + CellWithinBounds(cellPosition : Vector2Int) : bool
+    + GetNeighbors(cellPosition : Vector2Int) : List<Vector2Int>
+    + FindPath(startCell : Vector2Int, endCell : Vector2Int) : List<Vector2Int>
+}
+
+class Cell<T>{
     - row : int
     - column : int
     - state : CellState
-    - occupant : IGridObject
-    - groundPrefab : GameObject
-
-    + Cell(row : int, column : int, grid : Grid) : Cell
-    + GetState() : CellState
-    + GetOccupant() : IGridObject
-    + SetOccupant(occupant : IGridObject) : void
-    + GetGroundPrefab() : GameObject
-    + GetCoordinnates() : Vector2Int
-    + AttachCellGround(groundObject : GameObject) : void
-    + IsOccupied() : bool
-    + GetNeighbors(neighborConfiguration : NeighborConfiguration) : List<Cell>
-    + SaveCell() : void
-    + LoadCell() : void
-    + GetCenter() : Vector3
-    + GetGridId() : String
-}
-
-class CellGround <<MonoBehaviour>> {
-    - cell : Cell
+    - occupyingObject : T
+    - sharedCells : List<Cell<T>>
+    - occupyingObjectOrigin : Vector2Int
     
-    + OnMouseDown() : void
-    + SetCellReference(cell : Cell) : void
+    + Cell(row : int, column : int, state : CellState)
+    + GetState() : CellState
+    + GetOccupyingObject() : T
+    + SetOccupyingObject(occupyingObject : T) : void
+    + SetOccupyingObject(occupyingObject : T, objectOriginCell : Vector2Int, sharedCells : List<Cell<T>>) : void
+    + GetSharedCells() : List<Cell<T>>
+    + GetOccupyingObjectOrigin() : Vector2Int
+    + RemoveOccupyingObject() : void
+    + GetCellCoordinates() : Vector2Int
+    + IsOccupied() : bool
 }
 
-enum CellState {
+enum CellState{
     EMPTY
     OCCUPIED
 }
 
-enum NeighborConfiguration{
-    FOUR_WAY
-    EIGHT_WAY
-}
+CellGrid "1" -- "0..*" Cell : contains
+CellGrid --> GridBFS : uses
+GridLayout "1" -- "1" IGridType : has
+Cell --> CellState : has
 
-interface IGridObject {
-    + GetOccupiedCells(grid : Grid, startingCell : Cell) : List<Cell>
-    + PlaceOnGrid(grid : Grid, startingCell : Cell) : void
-    + RemoveFromGrid() : void
-    + GetOccupant<T>() : T
-}
-
-interface IGridInteractable extends IGridObject {
-    + OnSelected() : void
-    + IsSelected() : bool
-    + IsPlaced() : bool
-
-}
-
-class GridInteractableObject implements IGridInteractable {
-    - isSelected : bool
-    - isPlaced : bool
-    - occupiedCells : List<Cell>
-    + Selected : UnityEvent
-    + PlacedGridElement : UnityEvent
-    + RemovedGridElement : UnityEvent	
-}
-
-Cell --> CellState : uses
-Cell --> NeighborConfiguration : uses
-Cell "1" -- "1" CellGround : has
-Cell "0..*" -- "0..1" IGridObject : occupied by
-Grid "1" -- "0..*" Cell : contains
 
 @enduml
