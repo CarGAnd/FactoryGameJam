@@ -34,13 +34,14 @@ public class PathPlacer : IPlacementStrategy {
             isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(lastMousePosition);
             AddSubPathTo(endDragPos);
-            Path totalPath = new Path(Path.CombinePaths(subPaths).GetPositions());
+            Path totalPath = Path.CombinePaths(subPaths);
             
             if(!totalPath.isValid()) {
                 //If no path is found, we cannot place modules
                 return;
             }
-            if(totalPath.GetPositions().Count == 0) {
+            if(totalPath.Length() == 1) {
+                //If the path has only one positions, treat it as placing a module normally
                 placementMode.TryPlaceModule(currentModule, endDragPos, placementMode.CurrentFacing);
             }
             else {
@@ -58,21 +59,29 @@ public class PathPlacer : IPlacementStrategy {
     }
 
     private void AddSubPathTo(Vector2Int goalPos) {
-        Path p = grid.FindPath(subpathStart, goalPos);
-        if (!p.isValid()) {
+        Path newSubPath = CreateSubPathTo(goalPos);
+        if (!newSubPath.isValid()) {
             return;
         }
-        //The returned path contains both the start and end position
-        //for all subpaths after the first, the start position of subpath i is the end position of subpath i-1
-        //Therefore we remove the start position of all subpaths after the first one to not have duplicate positions in the path
-        if (subPaths.Count > 0 && p.GetPositions().Count > 0) {
-            p.GetPositions().RemoveAt(0);
-        }
-        if (p.GetPositions().Count > 0) {
-            subPaths.Add(p);
+            
+        if (newSubPath.Length() > 0) {
+            subPaths.Add(newSubPath);
             subpathStart = goalPos;
             currentTotalPath = Path.CombinePaths(subPaths).GetPositions();
         }
+    }
+
+    private Path CreateSubPathTo(Vector2Int goalPos) {
+        Path newPath = grid.FindPath(subpathStart, goalPos);
+        if(newPath.isValid()) {
+            //The returned path contains both the start and end position
+            //for all subpaths after the first, the start position of subpath i is the end position of subpath i-1
+            //Therefore we remove the start position of all subpaths after the first one to not have duplicate positions in the path
+            if(subPaths.Count > 0 && newPath.Length() > 0) {
+                newPath.RemoveFirstPosition();
+            }
+        }
+        return newPath;
     }
 
     private void RemoveSubPath() {
@@ -93,16 +102,9 @@ public class PathPlacer : IPlacementStrategy {
         List<Path> paths = new List<Path>();
         paths.Add(new Path(currentTotalPath));
         
-        Path lastPath = grid.FindPath(subpathStart, grid.GetCellCoords(lastMousePosition));
-        if(lastPath.isValid()) {
-            if(subPaths.Count > 0 && lastPath.GetPositions().Count > 0) {
-                lastPath.GetPositions().RemoveAt(0);
-            }
-
-            if(lastPath.GetPositions().Count > 0) {
-                paths.Add(lastPath);
-            }
-        }
+        Path lastPath = CreateSubPathTo(grid.GetCellCoords(lastMousePosition));
+        paths.Add(lastPath);
+       
         Path totalPath = Path.CombinePaths(paths);
         return totalPath.GetPositions();
     }

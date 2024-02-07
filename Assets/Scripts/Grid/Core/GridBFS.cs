@@ -73,32 +73,49 @@ namespace GridSystem {
             return new Path(allPathPositions);
         }
 
-        private List<Vector2Int> pathCoords;
+        private List<Vector2Int> pathPositions;
 
         public Path(List<Vector2Int> pathCoords) {
-            this.pathCoords = pathCoords;    
+            this.pathPositions = pathCoords;    
         }
 
         public List<Vector2Int> GetPositions() {
-            return pathCoords;
+            return pathPositions;
+        }
+
+        public void RemoveFirstPosition() {
+            pathPositions.RemoveAt(0);
+        }
+
+        public void RemoveLastPosition() {
+            pathPositions.RemoveAt(pathPositions.Count - 1);
+        }
+
+        public int Length() {
+            return pathPositions.Count;
         }
 
         public List<Vector2Int> GetDirections() {
-            if (pathCoords.Count == 1) {
+            if (!isValid()) {
+                return null;
+            }
+
+            if (pathPositions.Count == 1) {
                 return new List<Vector2Int>() { Vector2Int.right };
             }
+
             List<Vector2Int> pathDirections = new List<Vector2Int>();
-            for (int i = 0; i < pathCoords.Count - 1; i++) {
-                pathDirections.Add(pathCoords[i + 1] - pathCoords[i]);
+            for (int i = 0; i < pathPositions.Count - 1; i++) {
+                pathDirections.Add(pathPositions[i + 1] - pathPositions[i]);
             }
             //We assume that the last object in the list has the same direction as the second last object, as we don't have a "next" object to compare to
-            pathDirections.Add(pathDirections[pathCoords.Count - 2]);
+            pathDirections.Add(pathDirections[pathPositions.Count - 2]);
 
             return pathDirections;
         }
 
         public bool isValid() {
-            return pathCoords != null;
+            return pathPositions != null && pathPositions.Count > 0;
         }
     }
 }
