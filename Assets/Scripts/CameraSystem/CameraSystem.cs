@@ -12,7 +12,7 @@ public class CameraSystem : MonoBehaviour
     {
         // Use inputManager to get movement input and apply it to the camera.
         // Leverage Cinemachine's smooth movement capabilities for isometric movement (Design Doc: Camera Movement).
-        virtualCamera.transform.position += delta * movementSettings.moveSpeed;
+        virtualCamera.transform.position += (Quaternion.Euler(virtualCamera.transform.root.eulerAngles.y * Vector3.up) * delta) * movementSettings.moveSpeed;
         // Implementation to move the virtualCamera using Cinemachine
     }
 
