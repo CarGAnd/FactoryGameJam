@@ -40,7 +40,6 @@ public class PlacementModeVisuals : MonoBehaviour
         placementMode.moduleRotated.RemoveListener(OnModuleRotated);
         placementMode.enterPlacementMode.RemoveListener(OnEnterPlacementMode);
         placementMode.exitPlacementMode.RemoveListener(OnExitPlacementMode);
-
     }
 
     private void OnEnterPlacementMode() {

@@ -2,6 +2,7 @@
 
 
 [System.Serializable]
+[ExecuteInEditMode]
 public class PrePlacedObjectData : MonoBehaviour {
     public FactoryGrid grid;
     public Facing facing;
@@ -15,5 +16,11 @@ public class PrePlacedObjectData : MonoBehaviour {
         }
     }
 
+    private void Awake() {
+        GridInitializer gridInitializer = FindObjectOfType<GridInitializer>();
+        if (gridInitializer != null) {
+            gridInitializer.AddNewObject(this);
+        }
+    }
 }
 

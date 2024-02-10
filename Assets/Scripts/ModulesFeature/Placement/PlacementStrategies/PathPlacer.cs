@@ -19,6 +19,7 @@ public class PathPlacer : IPlacementStrategy {
         this.currentModule = obj;
         this.grid = grid;
         this.placementMode = placementMode;
+        lastMousePosition = placementMode.CurrentMouseWorldPos;
     }
 
     public void UpdateInput(MouseInput mouseInput) {

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class GridPrePlacer : OdinEditorWindow {
 
-    [MenuItem("Grid/Snapping")]
+    [MenuItem("Grid/Level Editor")]
     private static void OpenWindow() {
         GetWindow<GridPrePlacer>().Show();
     }
@@ -39,8 +39,8 @@ public class GridPrePlacer : OdinEditorWindow {
     private void CreateObject(GridObjectSO objectToCreate) {
         Ray screenCenterRay = SceneView.lastActiveSceneView.camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 1.0f));
         Vector3 worldPosition = snappingGrid.RaycastGridPlane(screenCenterRay);
-        Vector2Int gridPosition = snappingGrid.GetCellCoords(worldPosition);
-        worldPosition = snappingGrid.GetCellCenter(gridPosition);
+        Vector2Int gridPosition = snappingGrid.GetSubgridOriginCoord(worldPosition, objectToCreate.GetLayoutShapeDimensions(Facing.West));
+        worldPosition = snappingGrid.GetSubgridCenter(gridPosition, objectToCreate.GetLayoutShapeDimensions(Facing.West));
         GameObject previewObject = Instantiate(objectToCreate.PreviewPrefab, worldPosition, snappingGrid.Rotation * Facing.West.GetRotationFromFacing());
         PrePlacedObjectData objectData = previewObject.AddComponent<PrePlacedObjectData>();
         objectData.facing = Facing.West;

@@ -7,43 +7,45 @@ public class GridInitializer : MonoBehaviour
 {
     [SerializeField] private bool showGizmos;
     [SerializeField] private ModulePlacer modulePlacer;
-    private FactoryGrid grid;
     [SerializeField] private List<PrePlacedObjectData> prePlacedObjects;
+    private FactoryGrid grid;
     
-
     // Start is called before the first frame update
     void Start()
     {
         grid = GetComponent<FactoryGrid>();
         foreach(PrePlacedObjectData objectData in prePlacedObjects) {
             modulePlacer.TryPlaceModule(objectData.objectDefinition, objectData.gridPosition, objectData.facing);
+            Destroy(objectData.gameObject);
         }
     }
 
     private void OnDrawGizmos() {
-        RemoveNullValues();
         if (!showGizmos) {
             return;
         }
 
         grid = GetComponent<FactoryGrid>();
         Gizmos.color = Color.yellow;
+        Matrix4x4 rotMatrix = new Matrix4x4();
+        rotMatrix.SetTRS(grid.Origin, grid.Rotation, Vector3.one);
+        Gizmos.matrix = rotMatrix;
         foreach(PrePlacedObjectData objectData in prePlacedObjects) {
-            Vector3 pos = grid.GetCellCenter(objectData.gridPosition);
-            Gizmos.DrawCube(pos, new Vector3(grid.CellSize.x, 0.1f, grid.CellSize.y));
-        }
-    }
-
-    private void RemoveNullValues() {
-        for (int i = prePlacedObjects.Count - 1; i >= 0; i--) {
-            if (prePlacedObjects[i] == null) {
-                prePlacedObjects.RemoveAt(i);
+            GridObjectSO gridObject = objectData.objectDefinition;
+            foreach(Vector2Int delta in gridObject.GetLayoutShape(objectData.facing)) {
+                Vector2Int gridPos = delta + objectData.gridPosition;
+                Vector3 pos = grid.GetCellCenter(gridPos);
+                Vector3 cubePos = Quaternion.Inverse(grid.Rotation) * (pos - grid.Origin);
+                Vector3 cubeSize = new Vector3(1, 0.01f, 1) * Mathf.Min(grid.CellSize.x, grid.CellSize.y);
+                Gizmos.DrawCube(cubePos, cubeSize);
             }
         }
     }
 
     public void AddNewObject(PrePlacedObjectData newObjectData) {
-        prePlacedObjects.Add(newObjectData);
+        if (!prePlacedObjects.Contains(newObjectData)) {
+            prePlacedObjects.Add(newObjectData);
+        }
     }
 
     public void RemoveObject(PrePlacedObjectData objectToRemove) {

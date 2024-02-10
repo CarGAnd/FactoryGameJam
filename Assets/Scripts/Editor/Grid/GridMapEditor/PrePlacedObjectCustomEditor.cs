@@ -40,9 +40,9 @@ public class PrePlacedObjectCustomEditor : Editor
         Vector3 position = Handles.PositionHandle(g.transform.position, g.transform.rotation);
         if (position != g.transform.position) {
             Undo.RecordObject(g.transform, "moved object");
-            g.transform.position = GetSnappedPosition(position);
-            Vector2Int gridPosition = snappingGrid.GetCellCoords(position);
+            Vector2Int gridPosition = snappingGrid.GetSubgridOriginCoord(position, objectData.objectDefinition.GetLayoutShapeDimensions(objectData.facing));
             objectData.gridPosition = gridPosition;
+            g.transform.position = snappingGrid.GetSubgridCenter(gridPosition, objectData.objectDefinition.GetLayoutShapeDimensions(objectData.facing));
         }
     }
 
@@ -64,12 +64,7 @@ public class PrePlacedObjectCustomEditor : Editor
                 g.transform.rotation = snappingGrid.Rotation * newFacing.GetRotationFromFacing();
                 objectData.facing = newFacing;
             }
+            g.transform.position = snappingGrid.GetSubgridCenter(objectData.gridPosition, objectData.objectDefinition.GetLayoutShapeDimensions(objectData.facing));
         }
-    }
-
-    private Vector3 GetSnappedPosition(Vector3 position) {
-        return snappingGrid.GetCellCenter(position);
-    }
-
-    
+    }    
 }
