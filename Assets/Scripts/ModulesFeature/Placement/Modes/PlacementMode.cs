@@ -19,12 +19,12 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
     private ModulePlacer modulePlacer;
     private GridObjectSO currentBuilding;
 
-    public void Initialize(FactoryGrid grid, AssemblyLineSystem assemblyLineSystem, PlayerModeManager playerModeManager){
+    public void Initialize(FactoryGrid grid, ModulePlacer modulePlacer, PlayerModeManager playerModeManager){
         this.grid = grid;
         this.playerModeManager = playerModeManager;
         SetModuleRotation(Facing.West);
         placementHandler = new NoPlacement();
-        modulePlacer = new ModulePlacer(grid, assemblyLineSystem);
+        this.modulePlacer = modulePlacer;
     }
 
     public void UpdateInput(MouseInput mouseInput) {

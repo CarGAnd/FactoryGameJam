@@ -17,11 +17,11 @@ public class GridInitializer : MonoBehaviour
         grid = GetComponent<FactoryGrid>();
         foreach(PrePlacedObjectData objectData in prePlacedObjects) {
             modulePlacer.TryPlaceModule(objectData.objectDefinition, objectData.gridPosition, objectData.facing);
-            Destroy(objectData.previewObject);
         }
     }
 
     private void OnDrawGizmos() {
+        RemoveNullValues();
         if (!showGizmos) {
             return;
         }
@@ -30,29 +30,24 @@ public class GridInitializer : MonoBehaviour
         Gizmos.color = Color.yellow;
         foreach(PrePlacedObjectData objectData in prePlacedObjects) {
             Vector3 pos = grid.GetCellCenter(objectData.gridPosition);
-            Gizmos.DrawWireSphere(pos, Mathf.Min(grid.CellSize.x, grid.CellSize.y) / 3f);
+            Gizmos.DrawCube(pos, new Vector3(grid.CellSize.x, 0.1f, grid.CellSize.y));
         }
     }
 
-    public void PrePlaceObject(GridObjectSO objectDefinition, Facing facing, Vector2Int gridPosition) {
-        Vector3 worldPosition = grid.GetCellCenter(gridPosition);
-        GameObject previewObject = Instantiate(objectDefinition.PreviewPrefab, worldPosition, facing.GetRotationFromFacing());
-        PrePlacedObjectData newData = new PrePlacedObjectData
-        {
-            previewObject = previewObject,
-            facing = facing,
-            objectDefinition = objectDefinition,
-            gridPosition = gridPosition
-        };
-        prePlacedObjects.Add(newData);
+    private void RemoveNullValues() {
+        for (int i = prePlacedObjects.Count - 1; i >= 0; i--) {
+            if (prePlacedObjects[i] == null) {
+                prePlacedObjects.RemoveAt(i);
+            }
+        }
     }
 
-    [System.Serializable]
-    private struct PrePlacedObjectData {
-        public GameObject previewObject;
-        public Facing facing;
-        public GridObjectSO objectDefinition;
-        public Vector2Int gridPosition;
+    public void AddNewObject(PrePlacedObjectData newObjectData) {
+        prePlacedObjects.Add(newObjectData);
+    }
+
+    public void RemoveObject(PrePlacedObjectData objectToRemove) {
+        prePlacedObjects.Remove(objectToRemove);
     }
 }
 

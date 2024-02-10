@@ -2,15 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ModulePlacer
+public class ModulePlacer : MonoBehaviour
 {
-    private FactoryGrid grid;
-    private AssemblyLineSystem assemblyLineSystem;
-
-    public ModulePlacer(FactoryGrid grid, AssemblyLineSystem assemblyLineSystem) {
-        this.grid = grid;
-        this.assemblyLineSystem = assemblyLineSystem;
-    }
+    [SerializeField] private FactoryGrid grid;
+    [SerializeField] private AssemblyLineSystem assemblyLineSystem;
 
     public Vector2Int GetModulePlacementPosition(GridObjectSO moduleData, Vector3 mouseHitPosition, Facing facing) {
         Vector2Int buildingDimensions = moduleData.GetLayoutShapeDimensions(facing);

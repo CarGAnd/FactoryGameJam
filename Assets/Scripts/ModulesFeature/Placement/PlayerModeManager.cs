@@ -6,7 +6,7 @@ public class PlayerModeManager : MonoBehaviour
     [SerializeField] private MouseInput mouseInput;
     [SerializeField] private BuildingSelector buildingSelector;
     [SerializeField] private FactoryGrid grid;
-    [SerializeField] private AssemblyLineSystem assemblyLineSystem;
+    [SerializeField] private ModulePlacer modulePlacer;
 
     [SerializeField] private PlacementMode PlacementMode;
     [SerializeField] private SelectionMode SelectionMode;
@@ -17,7 +17,7 @@ public class PlayerModeManager : MonoBehaviour
     private IMouseMode currentMode;
 
     private void Awake() {
-        PlacementMode.Initialize(grid, assemblyLineSystem, this);
+        PlacementMode.Initialize(grid, modulePlacer, this);
         SelectionMode.Initialize(grid);
         DeleteMode.Initialize(grid, this);
     }
