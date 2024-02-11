@@ -39,14 +39,18 @@ public class GridPrePlacer : OdinEditorWindow {
     private void CreateObject(GridObjectSO objectToCreate) {
         Ray screenCenterRay = SceneView.lastActiveSceneView.camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 1.0f));
         Vector3 worldPosition = snappingGrid.RaycastGridPlane(screenCenterRay);
-        Vector2Int gridPosition = snappingGrid.GetSubgridOriginCoord(worldPosition, objectToCreate.GetLayoutShapeDimensions(Facing.West));
-        worldPosition = snappingGrid.GetSubgridCenter(gridPosition, objectToCreate.GetLayoutShapeDimensions(Facing.West));
-        GameObject previewObject = Instantiate(objectToCreate.PreviewPrefab, worldPosition, snappingGrid.Rotation * Facing.West.GetRotationFromFacing());
+        Facing startingFacing = Facing.West;
+        Vector2Int layoutDimensions = objectToCreate.GetLayoutShapeDimensions(startingFacing);
+        Vector2Int gridPosition = snappingGrid.GetSubgridOriginCoord(worldPosition, layoutDimensions);
+        worldPosition = snappingGrid.GetSubgridCenter(gridPosition, layoutDimensions);
+        GameObject previewObject = (GameObject) PrefabUtility.InstantiatePrefab(objectToCreate.PreviewPrefab);
+        previewObject.transform.SetPositionAndRotation(worldPosition, snappingGrid.Rotation * startingFacing.GetRotationFromFacing());
         PrePlacedObjectData objectData = previewObject.AddComponent<PrePlacedObjectData>();
-        objectData.facing = Facing.West;
+        objectData.facing = startingFacing;
         objectData.objectDefinition = objectToCreate;
         objectData.grid = snappingGrid;
         objectData.gridPosition = gridPosition;
         gridInitializer.AddNewObject(objectData);
+        Selection.activeObject = previewObject;
     }
 }
