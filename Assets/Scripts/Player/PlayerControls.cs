@@ -28,34 +28,16 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ""id"": ""d1a202f8-4adb-45d2-a190-0a18f57f5da6"",
             ""actions"": [
                 {
-                    ""name"": ""PlaceElseGate"",
-                    ""type"": ""Button"",
-                    ""id"": ""dd1bb58d-3cbd-4065-8e0e-2ccaed6b4e1b"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""PlaceTurnGate"",
-                    ""type"": ""Button"",
-                    ""id"": ""a858d013-712a-48e1-9d53-4b9bc2b17e5c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""ToggleBuildMode"",
-                    ""type"": ""Button"",
+                    ""name"": ""RotateModule"",
+                    ""type"": ""Value"",
                     ""id"": ""a052e65f-2af7-4fdb-a3c5-ddfcd01fac93"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
-                    ""initialStateCheck"": false
+                    ""initialStateCheck"": true
                 },
                 {
-                    ""name"": ""SelectModule"",
+                    ""name"": ""PlaceModule"",
                     ""type"": ""Button"",
                     ""id"": ""340f904c-489c-4876-8fdc-610aae87f74d"",
                     ""expectedControlType"": ""Button"",
@@ -64,9 +46,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""PlaceMergeGate"",
+                    ""name"": ""DeleteModule"",
                     ""type"": ""Button"",
-                    ""id"": ""6cf2d337-ac9a-4f27-b840-b5e942104f41"",
+                    ""id"": ""f5690711-daed-477b-bb2b-847d83a30609"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""CancelModulePlacement"",
+                    ""type"": ""Button"",
+                    ""id"": ""fe0527e3-9359-448a-ac08-d1d050bdfbff"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -75,37 +66,37 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": """",
-                    ""id"": ""cb4a8d35-275e-4ccd-9e31-21265f561bda"",
-                    ""path"": ""<Keyboard>/e"",
+                    ""name"": ""MouseScroll"",
+                    ""id"": ""e7ebd7b1-7c29-4d54-a75b-563bd79323ee"",
+                    ""path"": ""1DAxis(whichSideWins=1)"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PlaceElseGate"",
-                    ""isComposite"": false,
+                    ""action"": ""RotateModule"",
+                    ""isComposite"": true,
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""954e97c5-23b1-44da-8746-5fb9839ee7a5"",
-                    ""path"": ""<Keyboard>/r"",
+                    ""name"": ""negative"",
+                    ""id"": ""26ed74c4-53cc-463e-b47f-fda7e0b91225"",
+                    ""path"": ""<Mouse>/scroll/down"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Clamp(min=-1)"",
                     ""groups"": """",
-                    ""action"": ""PlaceTurnGate"",
+                    ""action"": ""RotateModule"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
-                    ""name"": """",
-                    ""id"": ""d41fe6d3-92b2-4aa0-9be0-22154ddeea77"",
-                    ""path"": ""<Keyboard>/b"",
+                    ""name"": ""positive"",
+                    ""id"": ""1f6c5f46-a751-4417-97fc-f4eace2efa2f"",
+                    ""path"": ""<Mouse>/scroll/up"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""Clamp(max=1)"",
                     ""groups"": """",
-                    ""action"": ""ToggleBuildMode"",
+                    ""action"": ""RotateModule"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": false
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": """",
@@ -114,29 +105,29 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SelectModule"",
+                    ""action"": ""PlaceModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""6d8abbde-8e3f-4389-85ef-f5cd8252883e"",
-                    ""path"": ""<Keyboard>/m"",
+                    ""id"": ""372fa6d3-d2f2-4973-b3d9-25b198218a83"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""SelectModule"",
+                    ""action"": ""DeleteModule"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""7abd3f69-1ea5-423d-8e39-3d2ad3dab5ad"",
-                    ""path"": ""<Keyboard>/t"",
+                    ""id"": ""3b9f64a6-0542-4a9c-84a2-9c031e40bfad"",
+                    ""path"": ""<Mouse>/rightButton"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""PlaceMergeGate"",
+                    ""action"": ""CancelModulePlacement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -147,11 +138,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
 }");
         // Modules
         m_Modules = asset.FindActionMap("Modules", throwIfNotFound: true);
-        m_Modules_PlaceElseGate = m_Modules.FindAction("PlaceElseGate", throwIfNotFound: true);
-        m_Modules_PlaceTurnGate = m_Modules.FindAction("PlaceTurnGate", throwIfNotFound: true);
-        m_Modules_ToggleBuildMode = m_Modules.FindAction("ToggleBuildMode", throwIfNotFound: true);
-        m_Modules_SelectModule = m_Modules.FindAction("SelectModule", throwIfNotFound: true);
-        m_Modules_PlaceMergeGate = m_Modules.FindAction("PlaceMergeGate", throwIfNotFound: true);
+        m_Modules_RotateModule = m_Modules.FindAction("RotateModule", throwIfNotFound: true);
+        m_Modules_PlaceModule = m_Modules.FindAction("PlaceModule", throwIfNotFound: true);
+        m_Modules_DeleteModule = m_Modules.FindAction("DeleteModule", throwIfNotFound: true);
+        m_Modules_CancelModulePlacement = m_Modules.FindAction("CancelModulePlacement", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -213,20 +203,18 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     // Modules
     private readonly InputActionMap m_Modules;
     private List<IModulesActions> m_ModulesActionsCallbackInterfaces = new List<IModulesActions>();
-    private readonly InputAction m_Modules_PlaceElseGate;
-    private readonly InputAction m_Modules_PlaceTurnGate;
-    private readonly InputAction m_Modules_ToggleBuildMode;
-    private readonly InputAction m_Modules_SelectModule;
-    private readonly InputAction m_Modules_PlaceMergeGate;
+    private readonly InputAction m_Modules_RotateModule;
+    private readonly InputAction m_Modules_PlaceModule;
+    private readonly InputAction m_Modules_DeleteModule;
+    private readonly InputAction m_Modules_CancelModulePlacement;
     public struct ModulesActions
     {
         private @PlayerControls m_Wrapper;
         public ModulesActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @PlaceElseGate => m_Wrapper.m_Modules_PlaceElseGate;
-        public InputAction @PlaceTurnGate => m_Wrapper.m_Modules_PlaceTurnGate;
-        public InputAction @ToggleBuildMode => m_Wrapper.m_Modules_ToggleBuildMode;
-        public InputAction @SelectModule => m_Wrapper.m_Modules_SelectModule;
-        public InputAction @PlaceMergeGate => m_Wrapper.m_Modules_PlaceMergeGate;
+        public InputAction @RotateModule => m_Wrapper.m_Modules_RotateModule;
+        public InputAction @PlaceModule => m_Wrapper.m_Modules_PlaceModule;
+        public InputAction @DeleteModule => m_Wrapper.m_Modules_DeleteModule;
+        public InputAction @CancelModulePlacement => m_Wrapper.m_Modules_CancelModulePlacement;
         public InputActionMap Get() { return m_Wrapper.m_Modules; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -236,40 +224,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_ModulesActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_ModulesActionsCallbackInterfaces.Add(instance);
-            @PlaceElseGate.started += instance.OnPlaceElseGate;
-            @PlaceElseGate.performed += instance.OnPlaceElseGate;
-            @PlaceElseGate.canceled += instance.OnPlaceElseGate;
-            @PlaceTurnGate.started += instance.OnPlaceTurnGate;
-            @PlaceTurnGate.performed += instance.OnPlaceTurnGate;
-            @PlaceTurnGate.canceled += instance.OnPlaceTurnGate;
-            @ToggleBuildMode.started += instance.OnToggleBuildMode;
-            @ToggleBuildMode.performed += instance.OnToggleBuildMode;
-            @ToggleBuildMode.canceled += instance.OnToggleBuildMode;
-            @SelectModule.started += instance.OnSelectModule;
-            @SelectModule.performed += instance.OnSelectModule;
-            @SelectModule.canceled += instance.OnSelectModule;
-            @PlaceMergeGate.started += instance.OnPlaceMergeGate;
-            @PlaceMergeGate.performed += instance.OnPlaceMergeGate;
-            @PlaceMergeGate.canceled += instance.OnPlaceMergeGate;
+            @RotateModule.started += instance.OnRotateModule;
+            @RotateModule.performed += instance.OnRotateModule;
+            @RotateModule.canceled += instance.OnRotateModule;
+            @PlaceModule.started += instance.OnPlaceModule;
+            @PlaceModule.performed += instance.OnPlaceModule;
+            @PlaceModule.canceled += instance.OnPlaceModule;
+            @DeleteModule.started += instance.OnDeleteModule;
+            @DeleteModule.performed += instance.OnDeleteModule;
+            @DeleteModule.canceled += instance.OnDeleteModule;
+            @CancelModulePlacement.started += instance.OnCancelModulePlacement;
+            @CancelModulePlacement.performed += instance.OnCancelModulePlacement;
+            @CancelModulePlacement.canceled += instance.OnCancelModulePlacement;
         }
 
         private void UnregisterCallbacks(IModulesActions instance)
         {
-            @PlaceElseGate.started -= instance.OnPlaceElseGate;
-            @PlaceElseGate.performed -= instance.OnPlaceElseGate;
-            @PlaceElseGate.canceled -= instance.OnPlaceElseGate;
-            @PlaceTurnGate.started -= instance.OnPlaceTurnGate;
-            @PlaceTurnGate.performed -= instance.OnPlaceTurnGate;
-            @PlaceTurnGate.canceled -= instance.OnPlaceTurnGate;
-            @ToggleBuildMode.started -= instance.OnToggleBuildMode;
-            @ToggleBuildMode.performed -= instance.OnToggleBuildMode;
-            @ToggleBuildMode.canceled -= instance.OnToggleBuildMode;
-            @SelectModule.started -= instance.OnSelectModule;
-            @SelectModule.performed -= instance.OnSelectModule;
-            @SelectModule.canceled -= instance.OnSelectModule;
-            @PlaceMergeGate.started -= instance.OnPlaceMergeGate;
-            @PlaceMergeGate.performed -= instance.OnPlaceMergeGate;
-            @PlaceMergeGate.canceled -= instance.OnPlaceMergeGate;
+            @RotateModule.started -= instance.OnRotateModule;
+            @RotateModule.performed -= instance.OnRotateModule;
+            @RotateModule.canceled -= instance.OnRotateModule;
+            @PlaceModule.started -= instance.OnPlaceModule;
+            @PlaceModule.performed -= instance.OnPlaceModule;
+            @PlaceModule.canceled -= instance.OnPlaceModule;
+            @DeleteModule.started -= instance.OnDeleteModule;
+            @DeleteModule.performed -= instance.OnDeleteModule;
+            @DeleteModule.canceled -= instance.OnDeleteModule;
+            @CancelModulePlacement.started -= instance.OnCancelModulePlacement;
+            @CancelModulePlacement.performed -= instance.OnCancelModulePlacement;
+            @CancelModulePlacement.canceled -= instance.OnCancelModulePlacement;
         }
 
         public void RemoveCallbacks(IModulesActions instance)
@@ -289,10 +271,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public ModulesActions @Modules => new ModulesActions(this);
     public interface IModulesActions
     {
-        void OnPlaceElseGate(InputAction.CallbackContext context);
-        void OnPlaceTurnGate(InputAction.CallbackContext context);
-        void OnToggleBuildMode(InputAction.CallbackContext context);
-        void OnSelectModule(InputAction.CallbackContext context);
-        void OnPlaceMergeGate(InputAction.CallbackContext context);
+        void OnRotateModule(InputAction.CallbackContext context);
+        void OnPlaceModule(InputAction.CallbackContext context);
+        void OnDeleteModule(InputAction.CallbackContext context);
+        void OnCancelModulePlacement(InputAction.CallbackContext context);
     }
 }

@@ -7,6 +7,7 @@ public class MouseInput : MonoBehaviour {
     public UnityEvent<Vector3> MouseOverGridSpace;
     
     [SerializeField] private Camera cam;
+    [SerializeField] private PlayerControls playerControls;
     [field: SerializeField] public FactoryGrid BuildGrid { get; private set; }
 
     public Vector3 LastGroundHitPoint { get; private set; }
@@ -59,4 +60,34 @@ public class MouseInput : MonoBehaviour {
     public bool RightMouseButtonIsPressed() {
         return Mouse.current.rightButton.IsPressed();
     }
+
+    public bool RotateModuleClockwise() {
+        return playerControls.Modules.RotateModule.ReadValue<float>() > 0.01f;
+    }
+
+    public bool RotateModuleCounterClockwise() {
+        return playerControls.Modules.RotateModule.ReadValue<float>() < -0.01f;
+    }
+
+    public bool PlaceModule() {
+        return playerControls.Modules.PlaceModule.WasPressedThisFrame();
+    }
+
+    public bool PlaceModuleStarted() {
+        return playerControls.Modules.PlaceModule.WasPressedThisFrame();
+    }
+
+    public bool PlaceModuleEnded() {
+        return playerControls.Modules.PlaceModule.WasReleasedThisFrame();
+    }
+
+    public bool DeleteModule() {
+        return playerControls.Modules.DeleteModule.WasPressedThisFrame();
+    }
+
+    public bool CancelModulePlacement() {
+        return playerControls.Modules.CancelModulePlacement.WasPressedThisFrame();
+    }
+
+
 }

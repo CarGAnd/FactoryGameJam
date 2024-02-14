@@ -7,7 +7,7 @@ using GridSystem;
 public class GridFeatureTests
 {
     [Test]
-    public void GridObjectsCanBeSet() {
+    public void GridObjectsCanBePlaced() {
         CellGrid<int> grid = new CellGrid<int>(5, 5);
         int value = 17;
         Vector2Int gridPosition = new Vector2Int(2, 3);
@@ -70,5 +70,35 @@ public class GridFeatureTests
         Vector2Int gridCoordsCenter = layout.WorldToGrid(worldPosCenter);
 
         Assert.True(gridCoordsCenter.x == gridPosition.x && gridCoordsCenter.y == gridPosition.y);
+    }
+
+    [Test]
+    public void GridObjectsCanBeRemoved() {
+        CellGrid<int> grid = new CellGrid<int>(5, 5);
+        int value = 17;
+        Vector2Int gridPosition = new Vector2Int(2, 3);
+        List<Vector2Int> deltas = new List<Vector2Int>()
+        {
+            new Vector2Int(0,0),
+            new Vector2Int(1,0),
+            new Vector2Int(0,1),
+            new Vector2Int(1,1)
+        };
+        grid.PlaceObject(value, gridPosition, deltas);
+        
+        foreach (Vector2Int delta in deltas) {
+            Vector2Int pos = delta + gridPosition;
+            Assert.True(grid.GetObjectAt(pos) == value);
+            Assert.True(grid.PositionIsOccupied(pos));
+            Assert.True(grid.GetObjectOrigin(pos) == gridPosition);
+        }
+
+        grid.RemoveObject(gridPosition);
+
+        foreach (Vector2Int delta in deltas) {
+            Vector2Int pos = delta + gridPosition;
+            Assert.True(grid.GetObjectAt(pos) == 0);
+            Assert.False(grid.PositionIsOccupied(pos));
+        }
     }
 }

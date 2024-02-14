@@ -1,7 +1,7 @@
 using UnityEngine;
 
 //This class is not fully developed yet, but serves as a placeholder to implement the camera system. will definitely be revised
-public class InputManager : MonoBehaviour
+public class CameraInput : MonoBehaviour
 {
     public Vector3 GetMovementInput()
     {
@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
         //WASD interaction
         moveDir.x = Input.GetAxisRaw("Horizontal");
         moveDir.z = Input.GetAxisRaw("Vertical");
+        moveDir += GetMouseMovement();
         moveDir.Normalize();
 
         return moveDir;
@@ -21,7 +22,7 @@ public class InputManager : MonoBehaviour
         return delta;
     }
 
-    public Vector3 GetMouseMovement() {
+    private Vector3 GetMouseMovement() {
         if (!MouseIsInsideGame()) {
             return Vector3.zero;
         }

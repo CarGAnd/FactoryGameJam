@@ -6,34 +6,16 @@
             "id": "d1a202f8-4adb-45d2-a190-0a18f57f5da6",
             "actions": [
                 {
-                    "name": "PlaceElseGate",
-                    "type": "Button",
-                    "id": "dd1bb58d-3cbd-4065-8e0e-2ccaed6b4e1b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "PlaceTurnGate",
-                    "type": "Button",
-                    "id": "a858d013-712a-48e1-9d53-4b9bc2b17e5c",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ToggleBuildMode",
-                    "type": "Button",
+                    "name": "RotateModule",
+                    "type": "Value",
                     "id": "a052e65f-2af7-4fdb-a3c5-ddfcd01fac93",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": false
+                    "initialStateCheck": true
                 },
                 {
-                    "name": "SelectModule",
+                    "name": "PlaceModule",
                     "type": "Button",
                     "id": "340f904c-489c-4876-8fdc-610aae87f74d",
                     "expectedControlType": "Button",
@@ -42,9 +24,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "PlaceMergeGate",
+                    "name": "DeleteModule",
                     "type": "Button",
-                    "id": "6cf2d337-ac9a-4f27-b840-b5e942104f41",
+                    "id": "f5690711-daed-477b-bb2b-847d83a30609",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "CancelModulePlacement",
+                    "type": "Button",
+                    "id": "fe0527e3-9359-448a-ac08-d1d050bdfbff",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -53,37 +44,37 @@
             ],
             "bindings": [
                 {
-                    "name": "",
-                    "id": "cb4a8d35-275e-4ccd-9e31-21265f561bda",
-                    "path": "<Keyboard>/e",
+                    "name": "MouseScroll",
+                    "id": "e7ebd7b1-7c29-4d54-a75b-563bd79323ee",
+                    "path": "1DAxis(whichSideWins=1)",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PlaceElseGate",
-                    "isComposite": false,
+                    "action": "RotateModule",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "954e97c5-23b1-44da-8746-5fb9839ee7a5",
-                    "path": "<Keyboard>/r",
+                    "name": "negative",
+                    "id": "26ed74c4-53cc-463e-b47f-fda7e0b91225",
+                    "path": "<Mouse>/scroll/down",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Clamp(min=-1)",
                     "groups": "",
-                    "action": "PlaceTurnGate",
+                    "action": "RotateModule",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "d41fe6d3-92b2-4aa0-9be0-22154ddeea77",
-                    "path": "<Keyboard>/b",
+                    "name": "positive",
+                    "id": "1f6c5f46-a751-4417-97fc-f4eace2efa2f",
+                    "path": "<Mouse>/scroll/up",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "Clamp(max=1)",
                     "groups": "",
-                    "action": "ToggleBuildMode",
+                    "action": "RotateModule",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
                     "name": "",
@@ -92,29 +83,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SelectModule",
+                    "action": "PlaceModule",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "6d8abbde-8e3f-4389-85ef-f5cd8252883e",
-                    "path": "<Keyboard>/m",
+                    "id": "372fa6d3-d2f2-4973-b3d9-25b198218a83",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SelectModule",
+                    "action": "DeleteModule",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "7abd3f69-1ea5-423d-8e39-3d2ad3dab5ad",
-                    "path": "<Keyboard>/t",
+                    "id": "3b9f64a6-0542-4a9c-84a2-9c031e40bfad",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "PlaceMergeGate",
+                    "action": "CancelModulePlacement",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
