@@ -10,6 +10,8 @@ public class CustomGridMapEditor : Editor
     private SerializedProperty factoryGrid;
     private SerializedProperty customSpawnMask;
     private SerializedProperty showCustomLayout;
+    private SerializedProperty currentHeight;
+    private SerializedProperty currentWidth;
 
     private CustomGridMap customLayout;
     private FactoryGrid grid;
@@ -24,6 +26,8 @@ public class CustomGridMapEditor : Editor
         grid = (FactoryGrid)factoryGrid.objectReferenceValue;
         customSpawnMask = serializedObject.FindProperty("customSpawnMask");
         showCustomLayout = serializedObject.FindProperty("showCustomLayout");
+        currentHeight = serializedObject.FindProperty("currentHeight");
+        currentWidth = serializedObject.FindProperty("currentWidth");
     }
 
     public override void OnInspectorGUI() {
@@ -40,17 +44,29 @@ public class CustomGridMapEditor : Editor
             }
         }
 
-        /*if(grid.Rows != currentHeight || grid.Columns != currentWidth) {
+        if(grid.Rows != currentHeight.intValue || grid.Columns != currentWidth.intValue || customSpawnMask.arraySize != currentHeight.intValue * currentWidth.intValue) {
+            Undo.RegisterCompleteObjectUndo(customLayout, "Resize");
+            customSpawnMask.arraySize = currentWidth.intValue * currentHeight.intValue;
             bool[] newMask = new bool[grid.Rows * grid.Columns];
-            for(int y = 0; y < Mathf.Min(currentHeight, grid.Rows); y++) {
-                for(int x = 0; x < Mathf.Min(currentWidth, grid.Columns); x++) {
-                    newMask[y * grid.Columns + x] = GetMaskValue(x, y);
+            int newWidth = Mathf.Min(currentWidth.intValue, grid.Columns);
+            for (int y = 0; y < Mathf.Min(currentHeight.intValue, grid.Rows); y++) {
+                for(int x = 0; x < newWidth; x++) {
+                    newMask[y * grid.Columns + x] = customSpawnMask.GetArrayElementAtIndex(y * currentWidth.intValue + x).boolValue;
                 }
             }
-            customSpawnMask = newMask;
-            currentWidth = grid.Columns;
-            currentHeight = grid.Rows;
-        }   */
+            currentWidth.intValue = grid.Columns;
+            currentHeight.intValue = grid.Rows;
+            customSpawnMask.arraySize = currentWidth.intValue * currentHeight.intValue;
+
+            for (int y = 0; y < currentHeight.intValue; y++) {
+                for (int x = 0; x < currentWidth.intValue; x++) {
+                    int index = y * currentWidth.intValue + x;
+                    customSpawnMask.GetArrayElementAtIndex(index).boolValue = newMask[index];
+                }
+            }
+            EditorWindow view = EditorWindow.GetWindow<SceneView>();
+            view.Repaint();
+        }
         serializedObject.ApplyModifiedProperties();
     }
 
@@ -58,6 +74,11 @@ public class CustomGridMapEditor : Editor
         for(int i = 0; i < customSpawnMask.arraySize; i++) {
             customSpawnMask.GetArrayElementAtIndex(i).boolValue = value;
         }
+    }
+
+    private void SetGridValue(int x, int y, bool value) {
+        int index = currentWidth.intValue * y + x;
+        customSpawnMask.GetArrayElementAtIndex(index).boolValue = value;
     }
 
     private void FillGrid() {
@@ -120,13 +141,14 @@ public class CustomGridMapEditor : Editor
         if (rightMousePressed) {
             Paint(e.mousePosition, false);
         }
+        serializedObject.ApplyModifiedProperties();
     }
 
     private void Paint(Vector2 clickPosition, bool value) {
         Ray ray = HandleUtility.GUIPointToWorldRay(clickPosition);
         Vector3 worldPosition = grid.RaycastGridPlane(ray);
         Vector2Int gridPosition = grid.GetCellCoords(worldPosition);
-        customLayout.SetMaskValue(gridPosition.x, gridPosition.y, value);
+        SetGridValue(gridPosition.x, gridPosition.y, value);
         //Manually update the scene view as the update rate would otherwise be very choppy
         EditorWindow view = EditorWindow.GetWindow<SceneView>();
         view.Repaint();

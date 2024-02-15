@@ -4,15 +4,19 @@ using UnityEngine;
 
 public class PlacementModeVisuals : MonoBehaviour
 {
-    [SerializeField] private GameObject indicatorPrefab;
-    [SerializeField] private GameObject arrowPrefab;
     [SerializeField] private PlacementMode placementMode;
     [SerializeField] private PlayerModeManager playerModeManager;
+    
+    [Header("Prefabs")]
+    [SerializeField] private GameObject indicatorPrefab;
+    [SerializeField] private GameObject arrowPrefab;
+    private GameObject gridPlanePrefab;
 
     private FactoryGrid buildGrid;
     private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
     private GameObject arrowObject;
+    private GameObject gridPlaneObject;
     private Vector2Int lastOriginCoord;
 
     private GridObjectSO selectedObjectData;
@@ -26,6 +30,7 @@ public class PlacementModeVisuals : MonoBehaviour
             indicatorObjects.Add(newIndicator);
         }
         CreateArrowObject();
+        //CreateGridPlane();
     }
 
     private void OnEnable() {
@@ -169,5 +174,19 @@ public class PlacementModeVisuals : MonoBehaviour
     private void CreateArrowObject() {
         arrowObject = Instantiate(arrowPrefab);
         arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0);
+    }
+
+    private void CreateGridPlane() {
+        gridPlaneObject = Instantiate(gridPlanePrefab);
+        Vector3 gridSize = new Vector3(buildGrid.CellSize.x * buildGrid.Columns, 0, buildGrid.CellSize.y * buildGrid.Rows); 
+
+        gridPlaneObject.transform.position = buildGrid.Origin + gridSize / 2 + Vector3.up * 0.01f;
+        gridPlaneObject.transform.rotation = Quaternion.Euler(0, buildGrid.Rotation.eulerAngles.y, 0);
+        gridPlaneObject.transform.localScale = gridSize / 10f;
+
+        Material gridPlaneMat = gridPlaneObject.GetComponent<Renderer>().material;
+        gridPlaneMat.SetFloat("_Rotation", buildGrid.Rotation.eulerAngles.y);
+        gridPlaneMat.SetVector("_TileSize", new Vector4(buildGrid.CellSize.x, buildGrid.CellSize.y, 0, 0));
+        gridPlaneMat.SetVector("_GridOffset", new Vector4(Mathf.Abs(buildGrid.Origin.x % buildGrid.CellSize.x), Mathf.Abs(buildGrid.Origin.z % buildGrid.CellSize.y)));
     }
 }

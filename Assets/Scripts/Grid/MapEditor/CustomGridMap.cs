@@ -25,21 +25,6 @@ public class CustomGridMap : MonoBehaviour
         return customSpawnMask[y * currentWidth + x];
     }
 
-    private void OnValidate() {
-        grid = GetComponent<FactoryGrid>();
-        if(grid.Rows != currentHeight || grid.Columns != currentWidth) {
-            bool[] newMask = new bool[grid.Rows * grid.Columns];
-            for(int y = 0; y < Mathf.Min(currentHeight, grid.Rows); y++) {
-                for(int x = 0; x < Mathf.Min(currentWidth, grid.Columns); x++) {
-                    newMask[y * grid.Columns + x] = GetMaskValue(x, y);
-                }
-            }
-            customSpawnMask = newMask;
-            currentWidth = grid.Columns;
-            currentHeight = grid.Rows;
-        }    
-    }
-
     [SerializeField] private bool showCustomLayout;
 
     private void OnDrawGizmosSelected() {

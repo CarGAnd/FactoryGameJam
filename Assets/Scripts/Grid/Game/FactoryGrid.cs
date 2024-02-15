@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GridSystem;
+using UnityEngine.Events;
 
 //This is mainly just a wrapper class for GridOfObjects + GridLayout, as they are usually used together
 public class FactoryGrid : MonoBehaviour, ISearchable
 {
+    [HideInInspector] public UnityEvent<IGridObject, List<Vector2Int>> objectPlaced;
+
     [field: SerializeField] public int Rows { get; private set; }
     [field: SerializeField] public int Columns { get; private set; }
 
@@ -23,11 +26,17 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
  
     public void PlaceObject(IGridObject gridObject, Vector2Int startCell, List<Vector2Int> shapeLayout) {
-        placementGrid.PlaceObject(gridObject, startCell, shapeLayout);    
+        placementGrid.PlaceObject(gridObject, startCell, shapeLayout);
+        List<Vector2Int> positions = new List<Vector2Int>();
+        foreach(Vector2Int delta in shapeLayout) {
+            positions.Add(startCell + delta);
+        }
+        objectPlaced.Invoke(gridObject, positions);
     }
 
     public void PlaceObject(IGridObject gridObject, Vector2Int coordinate) {
-        placementGrid.PlaceObject(gridObject, coordinate);    
+        placementGrid.PlaceObject(gridObject, coordinate);
+        objectPlaced.Invoke(gridObject, new List<Vector2Int>() { coordinate });
     }
 
     public void RemoveObject(Vector2Int coord) {
@@ -55,7 +64,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
 
     public bool PositionIsOccupied(Vector2Int coord) {
-        return placementGrid.PositionIsOccupied(coord) || !cellSpawner.CellHasSpawnedPrefab(coord);
+        return placementGrid.PositionIsOccupied(coord);
     }
 
     public bool PositionIsOccupied(Vector3 worldPos) {
@@ -73,7 +82,7 @@ public class FactoryGrid : MonoBehaviour, ISearchable
     }
     
     public bool CellWithinBounds(Vector2Int cellCoord) {
-        return placementGrid.CellWithinBounds(cellCoord);
+        return placementGrid.CellWithinBounds(cellCoord) && cellSpawner.CellHasSpawnedPrefab(cellCoord);
     }
 
     public List<Vector2Int> GetNeighbors(Vector2Int coord) {

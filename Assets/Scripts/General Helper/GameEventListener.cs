@@ -6,18 +6,36 @@ using SOS;
 
 public class GameEventListener : MonoBehaviour
 {
-    public GameEvent gameEvent;
-    public UnityEvent onEventTriggered;
+    [SerializeField] private GameEventAction[] gameEvents;
 
     private void OnEnable() {
-        gameEvent.OnInvoked += TriggerEvent;    
+        foreach(GameEventAction g in gameEvents) {
+            g.SubEvent();
+        }
     }
 
     private void OnDisable() {
-        gameEvent.OnInvoked -= TriggerEvent;
+        foreach (GameEventAction g in gameEvents) {
+            g.UnsubEvent();
+        }
     }
 
-    private void TriggerEvent() {
-        onEventTriggered.Invoke();
+    [System.Serializable]
+    private class GameEventAction {
+        public GameEvent gameEvent;
+        public UnityEvent onEventTriggered;
+
+        private void TriggerListenEvent() {
+            onEventTriggered.Invoke();
+        }
+
+        public void SubEvent() {
+            gameEvent.OnInvoked += TriggerListenEvent;
+        }
+
+        public void UnsubEvent() {
+            gameEvent.OnInvoked -= TriggerListenEvent;
+        }
     }
 }
+
