@@ -4,35 +4,18 @@ using UnityEngine.InputSystem;
 
 public class MouseInput : MonoBehaviour {
     
-    public UnityEvent<Vector3> MouseOverGridSpace;
-    
+    [SerializeField] private Player playerInput;
     [SerializeField] private Camera cam;
-    [SerializeField] private PlayerControls playerControls;
-    [field: SerializeField] public FactoryGrid BuildGrid { get; private set; }
 
-    public Vector3 LastGroundHitPoint { get; private set; }
-    public Vector2Int LastMouseGridPos { get; private set; }
-
+    private PlayerControls playerControls;
+    
     void Awake() {
         cam = Camera.main;
     }
 
-    void Update() {
-        UpdateMousePosition();
-    }
-
-    private void UpdateMousePosition() {
-        Ray ray = cam.ScreenPointToRay(Mouse.current.position.ReadValue());
-        Vector3 worldPosition = BuildGrid.RaycastGridPlane(ray);
-        Vector2Int mouseGridPosition = BuildGrid.GetCellCoords(worldPosition);
-
-        LastGroundHitPoint = worldPosition;
-
-        if (mouseGridPosition != LastMouseGridPos) {
-            Vector3 gridCellCenter = BuildGrid.GetCellCenter(mouseGridPosition);
-            LastMouseGridPos = mouseGridPosition;
-            MouseOverGridSpace?.Invoke(gridCellCenter);
-        }
+    private void Start() {
+        this.playerControls = playerInput.PlayerControls;
+        playerControls.Modules.Enable();
     }
 
     public Vector3 GetMousePosOnGrid(FactoryGrid grid) {
@@ -41,32 +24,16 @@ public class MouseInput : MonoBehaviour {
         return worldPosition;
     }
 
-    public bool LeftMouseButtonWasPressed() {
-        return Mouse.current.leftButton.wasPressedThisFrame;
-    }
-
-    public bool RightMouseButtonWasPressed() {
-        return Mouse.current.rightButton.wasPressedThisFrame;
-    }
-
-    public bool MouseScrolledUp() {
-        return Mouse.current.scroll.ReadValue().y > 0.1f;
-    }
-
-    public bool MouseScrolledDown() {
-        return Mouse.current.scroll.ReadValue().y < -0.1f;
-    }
-
-    public bool RightMouseButtonIsPressed() {
-        return Mouse.current.rightButton.IsPressed();
+    public Vector2 GetMousePosition() {
+        return Mouse.current.position.ReadValue();
     }
 
     public bool RotateModuleClockwise() {
-        return playerControls.Modules.RotateModule.ReadValue<float>() > 0.01f;
+        return playerControls.Modules.RotateModule.ReadValue<float>() < -0.01f;
     }
 
     public bool RotateModuleCounterClockwise() {
-        return playerControls.Modules.RotateModule.ReadValue<float>() < -0.01f;
+        return playerControls.Modules.RotateModule.ReadValue<float>() > 0.01f;
     }
 
     public bool PlaceModule() {
@@ -88,6 +55,4 @@ public class MouseInput : MonoBehaviour {
     public bool CancelModulePlacement() {
         return playerControls.Modules.CancelModulePlacement.WasPressedThisFrame();
     }
-
-
 }

@@ -24,13 +24,13 @@ public class DeleteMode : MonoBehaviour, IMouseMode {
         exitDeleteMode.Invoke();
     }
 
-    public void UpdateInput(MouseInput mouseInput) {
-        LastMouseGridPosition = mouseInput.LastGroundHitPoint;
-        if (mouseInput.RightMouseButtonWasPressed()) {
+    public void UpdateInput(MouseInput mouseInput, Vector3 mousePositionOnGrid) {
+        LastMouseGridPosition = mousePositionOnGrid;
+        if (mouseInput.CancelModulePlacement()) {
             playerModeManager.GoToSelectionMode();
         }
-        if (mouseInput.LeftMouseButtonWasPressed()) {
-            RemoveModule(grid.GetCellCoords(LastMouseGridPosition));
+        if (mouseInput.DeleteModule()) {
+            RemoveModule(grid.GetCellCoords(mousePositionOnGrid));
         }
     }
 

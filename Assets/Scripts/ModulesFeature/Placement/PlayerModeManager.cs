@@ -5,9 +5,12 @@ public class PlayerModeManager : MonoBehaviour
 {
     [SerializeField] private MouseInput mouseInput;
     [SerializeField] private BuildingSelector buildingSelector;
-    [SerializeField] private FactoryGrid grid;
-    [SerializeField] private ModulePlacer modulePlacer;
 
+    [Header("Systems")]
+    [SerializeField] private ModulePlacer modulePlacer;
+    [SerializeField] private FactoryGrid grid;
+    
+    [Header("Input modes")]
     [SerializeField] private PlacementMode PlacementMode;
     [SerializeField] private SelectionMode SelectionMode;
     [SerializeField] private DeleteMode DeleteMode;
@@ -45,7 +48,8 @@ public class PlayerModeManager : MonoBehaviour
     }
 
     private void Update() {
-        currentMode.UpdateInput(mouseInput);
+        Vector3 mousePositionOnGrid = mouseInput.GetMousePosOnGrid(grid);
+        currentMode.UpdateInput(mouseInput, mousePositionOnGrid);
         if (Input.GetKeyDown(KeyCode.Escape)) {
             GoToSelectionMode();
         }
@@ -75,7 +79,7 @@ public class PlayerModeManager : MonoBehaviour
 }
 
 public interface IMouseMode {
-    void UpdateInput(MouseInput mouseInput);
+    void UpdateInput(MouseInput mouseInput, Vector3 mousePositionOnGrid);
     void EnterMode();
     void ExitMode();
 }

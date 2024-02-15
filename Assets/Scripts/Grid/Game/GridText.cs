@@ -15,7 +15,7 @@ public class GridText : MonoBehaviour
     }
 
     private void Update() {
-        Vector2Int mouseGridPos = grid.GetCellCoords(mouseInput.LastGroundHitPoint);
+        Vector2Int mouseGridPos = grid.GetCellCoords(mouseInput.GetMousePosOnGrid(grid));
         Vector3 cellPos = grid.GetCellCenter(mouseGridPos);
         Vector3 textPos = cellPos + Vector3.up * 0.6f;
         text.transform.position = textPos;

@@ -27,10 +27,10 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
         this.modulePlacer = modulePlacer;
     }
 
-    public void UpdateInput(MouseInput mouseInput) {
-        CurrentMouseWorldPos = mouseInput.LastGroundHitPoint;
+    public void UpdateInput(MouseInput mouseInput, Vector3 mousePosOnGrid) {
+        CurrentMouseWorldPos = mousePosOnGrid;
         placementHandler.UpdateInput(mouseInput);
-        if (mouseInput.RightMouseButtonWasPressed()) {
+        if (mouseInput.CancelModulePlacement()) {
             playerModeManager.GoToSelectionMode();
         }
     }
@@ -60,10 +60,10 @@ public class PlacementMode : MonoBehaviour, IMouseMode {
     }
 
     public void UpdateRotationInput(MouseInput mouseInput) {
-        if (mouseInput.MouseScrolledUp()) {
+        if (mouseInput.RotateModuleCounterClockwise()) {
             RotateModuleCounterClockwise();
         }
-        if (mouseInput.MouseScrolledDown()) {
+        if (mouseInput.RotateModuleClockwise()) {
             RotateModuleClockwise();
         }
     }

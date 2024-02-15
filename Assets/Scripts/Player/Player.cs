@@ -1,23 +1,21 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 public class Player : MonoBehaviour
 {
-    PlayerControls playerControls;
+    public PlayerControls PlayerControls { get; private set; }
+
+    void Awake()
+    {
+        PlayerControls = new PlayerControls();
+    }
 
     private void OnEnable()
     {
-        playerControls.Modules.Enable();
+        PlayerControls.Enable();
     }
 
     private void OnDisable()
     {
-        playerControls.Modules.Disable();
-    }
-
-    void Awake()
-    {
-        playerControls = new PlayerControls();
+        PlayerControls.Disable();
     }
 }

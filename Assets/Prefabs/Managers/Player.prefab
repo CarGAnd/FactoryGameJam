@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 134143049018504998}
   - component: {fileID: 2750247008988382449}
+  - component: {fileID: 4454226514002870591}
+  - component: {fileID: 3268330709649174407}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -44,8 +46,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ef6565d0f7d33f4197fbb174c3e1455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentLevelStateRef:
-    name: 
-    scriptableObject: {fileID: 11400000, guid: fb4c6e10bc51e01418ff4c293fa9157a, type: 2}
-    useLocalConstant: 0
-    localConstantValue: 0
+--- !u!114 &4454226514002870591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502089078972059952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 401ed5cfc77b3824980f698a8d866f90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MouseOverGridSpace:
+    m_PersistentCalls:
+      m_Calls: []
+  playerInput: {fileID: 2750247008988382449}
+  cam: {fileID: 0}
+  <BuildGrid>k__BackingField: {fileID: 0}
+--- !u!114 &3268330709649174407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502089078972059952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bce148f4e9ced2143b17a31ad5af5597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerInput: {fileID: 2750247008988382449}

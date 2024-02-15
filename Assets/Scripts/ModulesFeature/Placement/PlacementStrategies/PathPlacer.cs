@@ -23,15 +23,15 @@ public class PathPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(MouseInput mouseInput) {
-        lastMousePosition = mouseInput.LastGroundHitPoint;
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+        lastMousePosition = mouseInput.GetMousePosOnGrid(grid);
+        if (mouseInput.PlaceModuleStarted()) {
             startDragPos = grid.GetCellCoords(lastMousePosition);
             subpathStart = startDragPos;
             isDragging = true;
             subPaths = new List<Path>();
             currentTotalPath = new List<Vector2Int>();
         }
-        if (Input.GetKeyUp(KeyCode.Mouse0) && isDragging) {
+        if (mouseInput.PlaceModuleEnded() && isDragging) {
             isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(lastMousePosition);
             AddSubPathTo(endDragPos);

@@ -22,15 +22,15 @@ public class PlaceAsYouGo : IPlacementStrategy {
     }
 
     public void UpdateInput(MouseInput mouseInput) {
-        Vector3 mousePosOnGrid = mouseInput.LastGroundHitPoint;
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+        Vector3 mousePosOnGrid = mouseInput.GetMousePosOnGrid(grid);
+        if (mouseInput.PlaceModuleStarted()) {
             isDragging = true;
             IGridObject placedObject = placementMode.TryPlaceModule(gridObject, mousePosOnGrid, placementMode.CurrentFacing);
             lastObjectWasPlaced = placedObject != null;
             lastFacing = placementMode.CurrentFacing;
             lastPlacedPosition = grid.GetCellCoords(mousePosOnGrid);
         }    
-        if(Input.GetKeyUp(KeyCode.Mouse0) && isDragging) {
+        if(mouseInput.PlaceModuleEnded() && isDragging) {
             isDragging = false;
         }
         if (isDragging) {

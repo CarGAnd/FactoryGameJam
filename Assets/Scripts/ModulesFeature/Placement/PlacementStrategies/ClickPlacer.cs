@@ -24,8 +24,8 @@ public class ClickPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(MouseInput mouseInput) {
-        if (mouseInput.LeftMouseButtonWasPressed()) {
-            placementMode.TryPlaceModule(currentModule, mouseInput.LastGroundHitPoint, placementMode.CurrentFacing);
+        if (mouseInput.PlaceModule()) {
+            placementMode.TryPlaceModule(currentModule, mouseInput.GetMousePosOnGrid(grid), placementMode.CurrentFacing);
         }
         placementMode.UpdateRotationInput(mouseInput);    
     }

@@ -21,10 +21,10 @@ public class SelectionMode : MonoBehaviour, IMouseMode {
         exitSelectionMode.Invoke();
     }
 
-    public void UpdateInput(MouseInput mouseInput) {
-        LastMouseGridPosition = mouseInput.LastGroundHitPoint;
+    public void UpdateInput(MouseInput mouseInput, Vector3 mousePosOnGrid) {
+        LastMouseGridPosition = mousePosOnGrid;
 
-        if (mouseInput.RightMouseButtonIsPressed()) {
+        if (mouseInput.DeleteModule()) {
             RemoveModule(grid.GetCellCoords(LastMouseGridPosition));
         }
     }

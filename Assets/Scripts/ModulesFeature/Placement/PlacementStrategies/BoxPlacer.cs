@@ -25,12 +25,12 @@ public class BoxPlacer : IPlacementStrategy {
     }
 
     public void UpdateInput(MouseInput mouseInput) {
-        Vector3 mousePosOnGrid = mouseInput.LastGroundHitPoint;
-        if (Input.GetKeyDown(KeyCode.Mouse0)) {
+        Vector3 mousePosOnGrid = mouseInput.GetMousePosOnGrid(grid);
+        if (mouseInput.PlaceModuleStarted()) {
             isDragging = true;
             startDragPos = grid.GetCellCoords(mousePosOnGrid);
         }    
-        if(Input.GetKeyUp(KeyCode.Mouse0) && isDragging) {
+        if(mouseInput.PlaceModuleEnded() && isDragging) {
             isDragging = false;
             Vector2Int endDragPos = grid.GetCellCoords(mousePosOnGrid);
             List<Vector2Int> draggedSubgrid = GetPositionsInBox(startDragPos, endDragPos, grid);
