@@ -15,8 +15,17 @@ public class GridInitializer : MonoBehaviour
     {
         grid = GetComponent<FactoryGrid>();
         foreach(PrePlacedObjectData objectData in prePlacedObjects) {
-            modulePlacer.TryPlaceModule(objectData.objectDefinition, objectData.gridPosition, objectData.facing);
-            Destroy(objectData.gameObject);
+            IGridObject gridObject = objectData.gameObject.GetComponent<IGridObject>();
+            //If the object in the editor has an IGridObject component, we can keep the existing object and just connect it to the grid. Otherwise we create a new object from the object definition SO 
+            //TODO: keeping the existing object is disabled until we can connect an object to the assembly line system after object creating. 
+            //Currently it is only possible to connect an object to the assembly line system when the object is created
+            if(gridObject != null && false) {
+                modulePlacer.ConnectExistingBuilding(gridObject, objectData.gridPosition, objectData.objectDefinition.GetLayoutShape(objectData.facing));
+            }
+            else {
+                modulePlacer.TryPlaceModule(objectData.objectDefinition, objectData.gridPosition, objectData.facing);
+                Destroy(objectData.gameObject);
+            }
         }
     }
 

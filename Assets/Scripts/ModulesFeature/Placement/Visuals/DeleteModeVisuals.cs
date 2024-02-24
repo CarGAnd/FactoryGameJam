@@ -8,14 +8,14 @@ public class DeleteModeVisuals : MonoBehaviour
     [SerializeField] private PlayerModeManager playerModeManager;
     [SerializeField] private GameObject indicatorPrefab;
 
+    private CellMarker deleteMarker;
+
     private FactoryGrid grid;
-    private List<GameObject> indicatorObjects;
     private bool isActive;
 
     private void Awake() {
-        indicatorObjects = new List<GameObject>();
         grid = playerModeManager.Grid;
-        SetActiveIndicatorCount(5);
+        deleteMarker = new CellMarker(CreateIndicatorObject, grid);
     }
 
     private void OnEnable() {
@@ -33,7 +33,7 @@ public class DeleteModeVisuals : MonoBehaviour
     }
 
     private void OnExitDeleteMove() {
-        SetActiveIndicatorCount(0);
+        deleteMarker.RemoveAllMarkers();
         isActive = false;
     }
 
@@ -52,25 +52,10 @@ public class DeleteModeVisuals : MonoBehaviour
         if(sharedPositions.Count == 0) {
             sharedPositions.Add(hoveredPosition);
         }
-        SetActiveIndicatorCount(sharedPositions.Count);
+        deleteMarker.MarkPositions(sharedPositions);
         for(int i = 0; i < sharedPositions.Count; i++) {
             Vector2Int buildPosition = sharedPositions[i];
-            indicatorObjects[i].transform.position = grid.GetCellCenter(buildPosition);
-        }
-    }
-
-    private void SetActiveIndicatorCount(int newCount) {
-        while (indicatorObjects.Count < newCount) {
-            GameObject newIndicator = CreateIndicatorObject();
-            indicatorObjects.Add(newIndicator);
-        }
-
-        for (int i = 0; i < newCount; i++) {
-            indicatorObjects[i].SetActive(true);
-        }
-
-        for (int i = newCount; i < indicatorObjects.Count; i++) {
-            indicatorObjects[i].SetActive(false);
+            deleteMarker.GetMarker(i).transform.position = grid.GetCellCenter(buildPosition);
         }
     }
 

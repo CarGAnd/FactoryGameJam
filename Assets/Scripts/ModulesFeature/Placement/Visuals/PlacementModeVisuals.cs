@@ -10,10 +10,11 @@ public class PlacementModeVisuals : MonoBehaviour
     [Header("Prefabs")]
     [SerializeField] private GameObject indicatorPrefab;
     [SerializeField] private GameObject arrowPrefab;
-    private GameObject gridPlanePrefab;
+    [SerializeField] private GameObject gridPlanePrefab;
+
+    private CellMarker hoveredCellsMarker;
 
     private FactoryGrid buildGrid;
-    private List<GameObject> indicatorObjects;
     private GameObject placementPreview;
     private GameObject arrowObject;
     private GameObject gridPlaneObject;
@@ -22,14 +23,16 @@ public class PlacementModeVisuals : MonoBehaviour
     private GridObjectSO selectedObjectData;
     private Vector2Int buildingDimensions;
 
+    private Vector3 arrowObjectRotationOffset = new Vector3(90, 90, 0);
+    private float groundIndicatorAlpha = 0.6f;
+
     private void Awake() {
         buildGrid = playerModeManager.Grid;
-        indicatorObjects = new List<GameObject>();
-        for(int i = 0; i < 9; i++) {
-            GameObject newIndicator = CreateIndicatorObject();
-            indicatorObjects.Add(newIndicator);
-        }
         CreateArrowObject();
+        hoveredCellsMarker = new CellMarker(CreateIndicatorObject, buildGrid);
+    }
+
+    private void Start() {
         //CreateGridPlane();
     }
 
@@ -56,7 +59,7 @@ public class PlacementModeVisuals : MonoBehaviour
     private void OnExitPlacementMode() {
         placementPreview.SetActive(false);
         arrowObject.SetActive(false);
-        SetActiveIndicatorCount(0);
+        hoveredCellsMarker.RemoveAllMarkers();
     }
 
     private void OnModuleRotated() {
@@ -77,7 +80,7 @@ public class PlacementModeVisuals : MonoBehaviour
         arrowObject.SetActive(newBuilding != null);
 
         if(newBuilding == null) {
-            SetActiveIndicatorCount(0);
+            hoveredCellsMarker.RemoveAllMarkers();
             return;
         }
         selectedObjectData = newBuilding;
@@ -90,21 +93,6 @@ public class PlacementModeVisuals : MonoBehaviour
         OnModuleRotated();
     }
 
-    private void SetActiveIndicatorCount(int newCount) {
-        while (indicatorObjects.Count < newCount) {
-            GameObject newIndicator = CreateIndicatorObject();
-            indicatorObjects.Add(newIndicator);
-        }
-
-        for (int i = 0; i < newCount; i++) {
-            indicatorObjects[i].SetActive(true);
-        }
-
-        for (int i = newCount; i < indicatorObjects.Count; i++) {
-            indicatorObjects[i].SetActive(false);
-        }
-    }
-
     private void Update() {
         UpdatePreview();
     }
@@ -115,6 +103,7 @@ public class PlacementModeVisuals : MonoBehaviour
         }
 
         Vector3 mouseHitPosition = placementMode.CurrentMouseWorldPos;
+        //UpdateGridPlane(mouseHitPosition);
         Vector2Int subgridOriginCoord = buildGrid.GetSubgridOriginCoord(mouseHitPosition, buildingDimensions);
 
         if(subgridOriginCoord == lastOriginCoord) {
@@ -135,14 +124,15 @@ public class PlacementModeVisuals : MonoBehaviour
 
     private void UpdateGroundIndicators() {
         List<Vector2Int> hoveredPositions = placementMode.GetHoveredPositions();
-        SetActiveIndicatorCount(hoveredPositions.Count);
+        hoveredCellsMarker.MarkPositions(hoveredPositions);
         for(int i = 0; i < hoveredPositions.Count; i++) {
+            GameObject markerObject = hoveredCellsMarker.GetMarker(i);
             Vector2Int buildPosition = hoveredPositions[i];
-            bool isOccupied = buildGrid.PositionIsOccupied(buildPosition);
-            indicatorObjects[i].transform.position = buildGrid.GetCellCenter(buildPosition);
-            Color color = isOccupied ? Color.red : Color.green;
-            color = new Vector4(color.r, color.g, color.b, 0.6f);
-            indicatorObjects[i].GetComponent<MeshRenderer>().material.color = color;
+            bool isBuildable = buildGrid.CellWithinBounds(buildPosition) && !buildGrid.PositionIsOccupied(buildPosition);
+            markerObject.transform.position = buildGrid.GetCellCenter(buildPosition);
+            Color color = isBuildable ? Color.green : Color.red;
+            color = new Vector4(color.r, color.g, color.b, groundIndicatorAlpha);
+            markerObject.GetComponent<MeshRenderer>().material.color = color;
         }
     }
 
@@ -159,7 +149,11 @@ public class PlacementModeVisuals : MonoBehaviour
         Vector3 arrowPosition = buildingCenter + arrowDelta;
         arrowObject.transform.position = arrowPosition;
         Quaternion moduleRot = placementMode.CurrentPlacementRotation;
-        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
+        arrowObject.transform.rotation = Quaternion.Euler(arrowObjectRotationOffset) * Quaternion.Euler(moduleRot.eulerAngles.x, moduleRot.eulerAngles.z, -moduleRot.eulerAngles.y);
+    }
+
+    private void UpdateGridPlane(Vector3 mouseWorldPos) {
+        gridPlaneObject.GetComponent<Renderer>().material.SetVector("_CenterPos", new Vector4(mouseWorldPos.x, mouseWorldPos.y, mouseWorldPos.z));
     }
 
     private GameObject CreateIndicatorObject() {
@@ -173,12 +167,17 @@ public class PlacementModeVisuals : MonoBehaviour
 
     private void CreateArrowObject() {
         arrowObject = Instantiate(arrowPrefab);
-        arrowObject.transform.rotation = Quaternion.Euler(90, 90, 0);
+        arrowObject.transform.rotation = Quaternion.Euler(arrowObjectRotationOffset);
     }
 
     private void CreateGridPlane() {
         gridPlaneObject = Instantiate(gridPlanePrefab);
-        Vector3 gridSize = new Vector3(buildGrid.CellSize.x * buildGrid.Columns, 0, buildGrid.CellSize.y * buildGrid.Rows); 
+        Vector3 gridSize = new Vector3(buildGrid.CellSize.x * buildGrid.Columns, 0, buildGrid.CellSize.y * buildGrid.Rows);
+        List<Vector2Int> positionsToRemove = FindAllOutOfBoundsPositions();
+
+        GridPixelManager pixelManager = gridPlaneObject.GetComponent<GridPixelManager>();
+        pixelManager.Initialize(new Vector2Int(buildGrid.Columns, buildGrid.Rows));
+        pixelManager.TurnOffCells(positionsToRemove);
 
         gridPlaneObject.transform.position = buildGrid.Origin + gridSize / 2 + Vector3.up * 0.01f;
         gridPlaneObject.transform.rotation = Quaternion.Euler(0, buildGrid.Rotation.eulerAngles.y, 0);
@@ -187,6 +186,20 @@ public class PlacementModeVisuals : MonoBehaviour
         Material gridPlaneMat = gridPlaneObject.GetComponent<Renderer>().material;
         gridPlaneMat.SetFloat("_Rotation", buildGrid.Rotation.eulerAngles.y);
         gridPlaneMat.SetVector("_TileSize", new Vector4(buildGrid.CellSize.x, buildGrid.CellSize.y, 0, 0));
-        gridPlaneMat.SetVector("_GridOffset", new Vector4(Mathf.Abs(buildGrid.Origin.x % buildGrid.CellSize.x), Mathf.Abs(buildGrid.Origin.z % buildGrid.CellSize.y)));
+        Vector2 gridOffset = new Vector2(-buildGrid.Origin.x, -buildGrid.Origin.z);
+        gridPlaneMat.SetVector("_GridOffset", new Vector4(gridOffset.x, gridOffset.y));
+    }
+
+    private List<Vector2Int> FindAllOutOfBoundsPositions() {
+        List<Vector2Int> positionsOutOfBounds = new List<Vector2Int>();
+        for(int y = 0; y < buildGrid.Rows; y++) {
+            for(int x = 0; x < buildGrid.Columns; x++) {
+                Vector2Int position = new Vector2Int(x, y);
+                if(!buildGrid.CellWithinBounds(position)) {
+                    positionsOutOfBounds.Add(position);
+                }
+            }
+        }
+        return positionsOutOfBounds;
     }
 }

@@ -28,8 +28,21 @@ public class ModulePlacer : MonoBehaviour
         for(int i = 0; i < buildingPositions.Count; i++) {
             buildingPositions[i] += lowerLeft;
         }
-        bool allPositionsAreFree = grid.AllPositionsAreFree(buildingPositions);
-        return allPositionsAreFree;
+        bool allPositionsAreBuildable = AllPositionsAreBuildable(buildingPositions);
+        return allPositionsAreBuildable;
+    }
+
+    private bool AllPositionsAreBuildable(List<Vector2Int> positions) {
+        foreach(Vector2Int position in positions) {
+            if (!PositionsIsBuildable(position)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private bool PositionsIsBuildable(Vector2Int position) {
+        return grid.CellWithinBounds(position) && !grid.PositionIsOccupied(position);
     }
 
     private IGridObject PlaceModule(GridObjectSO moduleData, Vector2Int lowerLeft, Facing facing) {
@@ -48,5 +61,9 @@ public class ModulePlacer : MonoBehaviour
         }
     }   
 
+    public void ConnectExistingBuilding(IGridObject gridObject, Vector2Int lowerLeft, List<Vector2Int> layoutShape) {
+        grid.PlaceObject(gridObject, lowerLeft, layoutShape);
+        gridObject.OnPlacedOnGrid(lowerLeft, grid);
+    }
  
 }

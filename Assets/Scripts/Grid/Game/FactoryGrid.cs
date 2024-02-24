@@ -72,15 +72,6 @@ public class FactoryGrid : MonoBehaviour, ISearchable
         return PositionIsOccupied(cellCoords);
     }
 
-    public bool AllPositionsAreFree(List<Vector2Int> positions) {
-        foreach(Vector2Int position in positions) {
-            if (PositionIsOccupied(position)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
     public bool CellWithinBounds(Vector2Int cellCoord) {
         return placementGrid.CellWithinBounds(cellCoord) && cellSpawner.CellHasSpawnedPrefab(cellCoord);
     }
